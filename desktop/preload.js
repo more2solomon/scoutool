@@ -33,32 +33,44 @@ contextBridge.exposeInMainWorld(
         "open-scoutool"
       ),
 
-    checkForUpdates: () =>
+    startPairing: () =>
       ipcRenderer.invoke(
-        "check-for-updates"
+        "start-pairing"
       ),
 
-    onUpdateStatus: (callback) => {
-      const handler = (
-        event,
-        status
-      ) => callback(status);
+    getDevice: () =>
+      ipcRenderer.invoke(
+        "get-device"
+      ),
+
+    savePairedDevice: (device) =>
+      ipcRenderer.invoke(
+        "save-paired-device",
+        device
+      ),
+
+    syncAccounts: () =>
+      ipcRenderer.invoke(
+        "sync-accounts"
+      ),
+
+    onAccountsUpdated: (
+      callback
+    ) => {
+      const handler =
+        (event, accounts) =>
+          callback(accounts);
 
       ipcRenderer.on(
-        "update-status",
+        "accounts-updated",
         handler
       );
 
       return () =>
         ipcRenderer.removeListener(
-          "update-status",
+          "accounts-updated",
           handler
         );
-    },
-
-    closeAllMail: () =>
-      ipcRenderer.invoke(
-        "close-all-mail"
-      )
+    }
   }
 );

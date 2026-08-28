@@ -14,6 +14,9 @@ const path = require("path");
 const SCOUTOOL_URL =
   "https://scoutool-mail.created.app/";
 
+const API_URL =
+  "https://scoutool-lilac.vercel.app";
+
 let mainWindow = null;
 let scoutView = null;
 
@@ -23,6 +26,43 @@ function accountsPath() {
   return path.join(
     app.getPath("userData"),
     "accounts.json"
+  );
+}
+
+function devicePath() {
+  return path.join(
+    app.getPath("userData"),
+    "device.json"
+  );
+}
+
+function loadDevice() {
+  try {
+    if (!fs.existsSync(devicePath())) {
+      return null;
+    }
+
+    return JSON.parse(
+      fs.readFileSync(
+        devicePath(),
+        "utf8"
+      )
+    );
+  } catch {
+    return null;
+  }
+}
+
+function saveDevice(device) {
+  fs.mkdirSync(
+    path.dirname(devicePath()),
+    { recursive: true }
+  );
+
+  fs.writeFileSync(
+    devicePath(),
+    JSON.stringify(device, null, 2),
+    "utf8"
   );
 }
 
@@ -475,6 +515,86 @@ ipcMain.handle(
     return {
       ok: true
     };
+  }
+);
+
+
+ipcMain.handle(
+  "start-pairing",
+  async () => {
+    const response = await fetch(
+      `${API_URL}/api/pair/start`,
+      {
+        method: "POST"
+      }
+    );
+
+    const data =
+      await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error ||
+        "Unable to create pairing code."
+      );
+    }
+
+    return data;
+  }
+);
+
+ipcMain.handle(
+  "get-device",
+  () => loadDevice()
+);
+
+ipcMain.handle(
+  "save-paired-device",
+  (event, device) => {
+    saveDevice(device);
+    return true;
+  }
+);
+
+ipcMain.handle(
+  "sync-accounts",
+  async () => {
+    const device =
+      loadDevice();
+
+    if (!device?.desktopToken) {
+      return {
+        ok: false,
+        accounts: []
+      };
+    }
+
+    const response =
+      await fetch(
+        `${API_URL}/api/accounts`,
+        {
+          headers: {
+            Authorization:
+              `Bearer ${device.desktopToken}`
+          }
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error ||
+        "Account sync failed."
+      );
+    }
+
+    saveAccounts(
+      data.accounts || []
+    );
+
+    return data;
   }
 );
 

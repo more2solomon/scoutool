@@ -148,3 +148,27 @@ window.scoutMail
 window.scoutMail
   .getAccounts()
   .then(render);
+
+document
+  .getElementById("pairDevice")
+  .addEventListener(
+    "click",
+    async () => {
+      try {
+        const result =
+          await window.scoutMail
+            .startPairing();
+
+        alert(
+          `Pairing code: ${result.code}\n\n` +
+          `Enter this code in Scout Mail Mobile.\n\n` +
+          `Code expires in 10 minutes.`
+        );
+      } catch (error) {
+        alert(
+          error.message ||
+          "Pairing failed."
+        );
+      }
+    }
+  );
