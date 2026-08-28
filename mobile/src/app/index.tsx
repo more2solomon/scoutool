@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   RefreshControl,
   SafeAreaView,
@@ -10,58 +9,66 @@ import {
   Pressable,
   View,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const API = "https://scoutool-lilac.vercel.app";
 
 type QueueItem = {
   email: string;
-  gmailUrl?: string;
   subject?: string;
+  gmailUrl?: string;
 };
 
-type State = {
+type JobState = {
   running: boolean;
   completed: number;
   failed: number;
   currentIndex: number;
 };
 
-const defaultState: State = {
+const DEFAULT_STATE: JobState = {
   running: false,
   completed: 0,
   failed: 0,
   currentIndex: 0,
 };
 
-export default function Home() {
+export default function HomeScreen() {
   const [queue, setQueue] = useState<QueueItem[]>([]);
-  const [state, setState] = useState<State>(defaultState);
+  const [state, setState] = useState<JobState>(DEFAULT_STATE);
   const [connected, setConnected] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
-  const [delay, setDelay] = useState("6");
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
+
   const [pairCode, setPairCode] = useState("");
-  const [deviceName, setDeviceName] = useState("My Scout Mail PC");
+  const [deviceName, setDeviceName] =
+    useState("My Scout Mail PC");
   const [pairing, setPairing] = useState(false);
   const [paired, setPaired] = useState(false);
 
-  async function load() {
-    try {
-      const [q, s] = await Promise.all([
-        fetch(`${API}/api/bridge/queue`, {
-          cache: "no-store",
-        }),
-        fetch(`${API}/api/bridge/state`, {
-          cache: "no-store",
-        }),
-      ]);
+  const [delay, setDelay] = useState("6");
 
-      if (!q.ok || !s.ok) {
+  async function loadBackend() {
+    try {
+      setError("");
+
+      const [queueResponse, stateResponse] =
+        await Promise.all([
+          fetch(`${API}/api/bridge/queue`, {
+            cache: "no-store",
+          }),
+          fetch(`${API}/api/bridge/state`, {
+            cache: "no-store",
+          }),
+        ]);
+
+      if (!queueResponse.ok || !stateResponse.ok) {
         throw new Error("Backend unavailable");
       }
 
-      const queueData = await q.json();
-      const stateData = await s.json();
+      const queueData = await queueResponse.json();
+      const stateData = await stateResponse.json();
 
       setQueue(
         Array.isArray(queueData.items)
@@ -70,24 +77,87 @@ export default function Home() {
       );
 
       setState({
-        ...defaultState,
+        ...DEFAULT_STATE,
         ...(stateData.state || {}),
       });
 
       setConnected(true);
-      setError("");
-    } catch (e) {
+    } catch (err) {
       setConnected(false);
       setError(
-        e instanceof Error
-          ? e.message
+        err instanceof Error
+          ? err.message
           : "Connection failed"
       );
     }
   }
 
-  async function updateState(patch: Partial<State>) {
+  async function pairDesktop() {
+    const code = pairCode.trim();
+
+    if (!/^\d{6}$/.test(code)) {
+      setError(
+        "Enter the 6-digit pairing code."
+      );
+      return;
+    }
+
     try {
+      setPairing(true);
+      setError("");
+      setMessage("");
+
+      const response = await fetch(
+        `${API}/api/pair/claim`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            code,
+            deviceName:
+              deviceName.trim() ||
+              "My Scout Mail PC",
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Pairing failed."
+        );
+      }
+
+      await AsyncStorage.multiSet([
+        ["scoutmail.userToken", data.userToken],
+        ["scoutmail.deviceId", data.deviceId],
+      ]);
+
+      setPaired(true);
+      setMessage(
+        "Desktop paired successfully."
+      );
+      setPairCode("");
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Pairing failed."
+      );
+    } finally {
+      setPairing(false);
+    }
+  }
+
+  async function updateState(
+    patch: Partial<JobState>
+  ) {
+    try {
+      setError("");
+
       const response = await fetch(
         `${API}/api/bridge/state`,
         {
@@ -99,160 +169,64 @@ export default function Home() {
         }
       );
 
-      if (!response.ok) {
-        throw new Error("State update failed");
-      }
-
       const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Unable to update state."
+        );
+      }
 
       setState({
-        ...defaultState,
+        ...DEFAULT_STATE,
         ...(data.state || {}),
       });
-    } catch (e) {
+
+      setMessage("State updated.");
+    } catch (err) {
       setError(
-        e instanceof Error
-          ? e.message
-          : "State update failed"
+        err instanceof Error
+          ? err.message
+          : "Unable to update state."
       );
-    }
-  }
-
-  async function pairDesktop() {
-    if (!/^\\d{6}$/.test(pairCode.trim())) {
-      setError("Enter the 6-digit desktop pairing code.");
-      return;
-    }
-
-    try {
-      setPairing(true);
-      setError("");
-
-      const response = await fetch(
-        `${API}/api/pair/claim`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            code: pairCode.trim(),
-            deviceName,
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.error || "Pairing failed."
-        );
-      }
-
-      await AsyncStorage.setItem(
-        "scoutmail.userToken",
-        data.userToken
-      );
-
-      await AsyncStorage.setItem(
-        "scoutmail.deviceId",
-        data.deviceId
-      );
-
-      setPaired(true);
-      setMessage("Desktop paired successfully.");
-    } catch (e) {
-      setError(
-        e instanceof Error
-          ? e.message
-          : "Pairing failed."
-      );
-    } finally {
-      setPairing(false);
-    }
-  }
-
-  async function pairDesktop() {
-    if (!/^\\d{6}$/.test(pairCode.trim())) {
-      setError("Enter the 6-digit desktop pairing code.");
-      return;
-    }
-
-    try {
-      setPairing(true);
-      setError("");
-
-      const response = await fetch(
-        `${API}/api/pair/claim`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            code: pairCode.trim(),
-            deviceName,
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.error || "Pairing failed."
-        );
-      }
-
-      await AsyncStorage.setItem(
-        "scoutmail.userToken",
-        data.userToken
-      );
-
-      await AsyncStorage.setItem(
-        "scoutmail.deviceId",
-        data.deviceId
-      );
-
-      setPaired(true);
-      setMessage("Desktop paired successfully.");
-    } catch (e) {
-      setError(
-        e instanceof Error
-          ? e.message
-          : "Pairing failed."
-      );
-    } finally {
-      setPairing(false);
     }
   }
 
   async function refresh() {
     setRefreshing(true);
-    await load();
+    await loadBackend();
     setRefreshing(false);
   }
 
   useEffect(() => {
-    load();
+    loadBackend();
 
-    const timer = setInterval(load, 5000);
+    const timer = setInterval(
+      loadBackend,
+      5000
+    );
 
     return () => clearInterval(timer);
   }, []);
 
+  const completed =
+    Number(state.completed || 0);
+
+  const failed =
+    Number(state.failed || 0);
+
   const remaining = Math.max(
     0,
-    queue.length -
-      state.completed -
-      state.failed
+    queue.length - completed - failed
   );
 
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView
-        contentContainerStyle={styles.container}
+        style={styles.scroll}
+        contentContainerStyle={
+          styles.container
+        }
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -275,16 +249,16 @@ export default function Home() {
             <View
               style={[
                 styles.dot,
-                {
-                  backgroundColor: connected
-                    ? "#2e9b78"
-                    : "#a33b3b",
-                },
+                connected
+                  ? styles.online
+                  : styles.offline,
               ]}
             />
 
-            <Text>
-              {connected ? "Online" : "Offline"}
+            <Text style={styles.connectionText}>
+              {connected
+                ? "Online"
+                : "Offline"}
             </Text>
           </View>
         </View>
@@ -297,19 +271,30 @@ export default function Home() {
           </View>
         ) : null}
 
+        {message ? (
+          <View style={styles.message}>
+            <Text style={styles.messageText}>
+              {message}
+            </Text>
+          </View>
+        ) : null}
+
         <View style={styles.stats}>
           <Stat
             label="Queued"
             value={queue.length}
           />
+
           <Stat
             label="Completed"
-            value={state.completed}
+            value={completed}
           />
+
           <Stat
             label="Failed"
-            value={state.failed}
+            value={failed}
           />
+
           <Stat
             label="Remaining"
             value={remaining}
@@ -322,7 +307,7 @@ export default function Home() {
           </Text>
 
           <Text style={styles.label}>
-            Desktop name
+            Computer name
           </Text>
 
           <TextInput
@@ -340,18 +325,23 @@ export default function Home() {
             style={styles.input}
             value={pairCode}
             onChangeText={setPairCode}
-            keyboardType="numeric"
+            keyboardType="number-pad"
             maxLength={6}
             placeholder="123456"
           />
 
           <Pressable
-            style={styles.start}
-            onPress={pairDesktop}
+            style={[
+              styles.start,
+              pairing && styles.disabled,
+            ]}
             disabled={pairing}
+            onPress={pairDesktop}
           >
             <Text style={styles.buttonText}>
-              {pairing ? "CONNECTING..." : "CONNECT DESKTOP"}
+              {pairing
+                ? "CONNECTING..."
+                : "CONNECT DESKTOP"}
             </Text>
           </Pressable>
 
@@ -392,8 +382,8 @@ export default function Home() {
 
             <TextInput
               style={styles.delayInput}
-              keyboardType="numeric"
               value={delay}
+              keyboardType="number-pad"
               onChangeText={(value) =>
                 setDelay(
                   String(
@@ -406,7 +396,9 @@ export default function Home() {
               }
             />
 
-            <Text>seconds</Text>
+            <Text style={styles.seconds}>
+              seconds
+            </Text>
 
             <Pressable
               style={styles.step}
@@ -466,28 +458,44 @@ export default function Home() {
           </Text>
 
           {queue.length === 0 ? (
-            <Text style={styles.muted}>
-              No queue data received yet.
-            </Text>
+            <View style={styles.empty}>
+              <Text style={styles.emptyTitle}>
+                No queue data
+              </Text>
+
+              <Text style={styles.emptyText}>
+                Connect the desktop and open
+                Scoutool to synchronize queue
+                data.
+              </Text>
+            </View>
           ) : (
             queue
               .slice(0, 100)
               .map((item, index) => (
                 <View
                   key={`${item.email}-${index}`}
-                  style={styles.item}
+                  style={styles.queueItem}
                 >
                   <Text style={styles.number}>
                     #{index + 1}
                   </Text>
 
-                  <View style={styles.itemBody}>
-                    <Text style={styles.email}>
+                  <View
+                    style={
+                      styles.queueContent
+                    }
+                  >
+                    <Text
+                      style={styles.email}
+                    >
                       {item.email}
                     </Text>
 
                     {item.subject ? (
-                      <Text style={styles.subject}>
+                      <Text
+                        style={styles.subject}
+                      >
                         {item.subject}
                       </Text>
                     ) : null}
@@ -495,22 +503,6 @@ export default function Home() {
                 </View>
               ))
           )}
-        </View>
-
-        <View style={styles.panel}>
-          <Text style={styles.heading}>
-            Desktop
-          </Text>
-
-          <Text style={styles.muted}>
-            The Windows desktop client holds the
-            Scoutool and mail browser sessions.
-          </Text>
-
-          <Text style={styles.muted}>
-            The mobile app controls and monitors
-            the shared job state.
-          </Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -541,6 +533,10 @@ const styles = StyleSheet.create({
   safe: {
     flex: 1,
     backgroundColor: "#f4f7f6",
+  },
+
+  scroll: {
+    flex: 1,
   },
 
   container: {
@@ -582,15 +578,39 @@ const styles = StyleSheet.create({
     borderRadius: 9,
   },
 
+  online: {
+    backgroundColor: "#2e9b78",
+  },
+
+  offline: {
+    backgroundColor: "#a33b3b",
+  },
+
+  connectionText: {
+    fontWeight: "700",
+    color: "#173b37",
+  },
+
   error: {
     padding: 12,
-    backgroundColor: "#fff0f0",
     borderRadius: 10,
-    marginBottom: 14,
+    backgroundColor: "#fff0f0",
+    marginBottom: 12,
   },
 
   errorText: {
     color: "#a33b3b",
+  },
+
+  message: {
+    padding: 12,
+    borderRadius: 10,
+    backgroundColor: "#edf8f4",
+    marginBottom: 12,
+  },
+
+  messageText: {
+    color: "#2e8067",
   },
 
   stats: {
@@ -604,8 +624,8 @@ const styles = StyleSheet.create({
   card: {
     width: "48%",
     backgroundColor: "#fff",
-    borderRadius: 14,
     padding: 18,
+    borderRadius: 14,
   },
 
   cardLabel: {
@@ -614,9 +634,9 @@ const styles = StyleSheet.create({
   },
 
   cardValue: {
-    color: "#173b37",
     fontSize: 28,
     fontWeight: "800",
+    color: "#173b37",
   },
 
   panel: {
@@ -635,7 +655,18 @@ const styles = StyleSheet.create({
 
   label: {
     fontWeight: "700",
-    marginBottom: 8,
+    color: "#173b37",
+    marginBottom: 7,
+  },
+
+  input: {
+    borderWidth: 1,
+    borderColor: "#d7dfdd",
+    borderRadius: 9,
+    padding: 12,
+    marginBottom: 12,
+    color: "#173b37",
+    backgroundColor: "#fff",
   },
 
   delayRow: {
@@ -650,8 +681,8 @@ const styles = StyleSheet.create({
     height: 42,
     borderRadius: 9,
     backgroundColor: "#117c72",
-    justifyContent: "center",
     alignItems: "center",
+    justifyContent: "center",
   },
 
   stepText: {
@@ -669,12 +700,20 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
+  seconds: {
+    color: "#70807d",
+  },
+
   start: {
     backgroundColor: "#117c72",
     borderRadius: 10,
     padding: 14,
     alignItems: "center",
     marginBottom: 9,
+  },
+
+  disabled: {
+    opacity: 0.6,
   },
 
   stop: {
@@ -703,12 +742,28 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
 
-  muted: {
-    color: "#70807d",
-    lineHeight: 21,
+  success: {
+    color: "#2e8067",
+    marginTop: 8,
+    fontWeight: "700",
   },
 
-  item: {
+  empty: {
+    paddingVertical: 10,
+  },
+
+  emptyTitle: {
+    fontWeight: "700",
+    color: "#173b37",
+  },
+
+  emptyText: {
+    marginTop: 5,
+    color: "#70807d",
+    lineHeight: 20,
+  },
+
+  queueItem: {
     flexDirection: "row",
     gap: 12,
     paddingVertical: 13,
@@ -721,7 +776,7 @@ const styles = StyleSheet.create({
     color: "#70807d",
   },
 
-  itemBody: {
+  queueContent: {
     flex: 1,
   },
 
