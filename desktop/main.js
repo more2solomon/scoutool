@@ -1,22 +1,25 @@
 const {
   app,
   BrowserWindow,
-  ipcMain
+  BrowserView,
+  ipcMain,
+  dialog
 } = require("electron");
+
+const { autoUpdater } = require("electron-updater");
 
 const fs = require("fs");
 const path = require("path");
 
-const SCOUTOOL_URL = "https://scoutool-mail.created.app/";
+const SCOUTOOL_URL =
+  "https://scoutool-mail.created.app/";
 
-const MAX_ACCOUNTS = 7;
+let mainWindow = null;
+let scoutView = null;
 
-let controlWindow = null;
-let scoutWindow = null;
+const mailViews = new Map();
 
-const mailWindows = new Map();
-
-function accountsFile() {
+function accountsPath() {
   return path.join(
     app.getPath("userData"),
     "accounts.json"
@@ -25,13 +28,15 @@ function accountsFile() {
 
 function loadAccounts() {
   try {
-    if (!fs.existsSync(accountsFile())) return [];
+    if (!fs.existsSync(accountsPath())) {
+      return [];
+    }
 
-    const accounts = JSON.parse(
-      fs.readFileSync(accountsFile(), "utf8")
+    const value = JSON.parse(
+      fs.readFileSync(accountsPath(), "utf8")
     );
 
-    return Array.isArray(accounts) ? accounts : [];
+    return Array.isArray(value) ? value : [];
   } catch {
     return [];
   }
@@ -39,66 +44,82 @@ function loadAccounts() {
 
 function saveAccounts(accounts) {
   fs.mkdirSync(
-    path.dirname(accountsFile()),
+    path.dirname(accountsPath()),
     { recursive: true }
   );
 
   fs.writeFileSync(
-    accountsFile(),
+    accountsPath(),
     JSON.stringify(accounts, null, 2),
     "utf8"
   );
 }
 
-function createControlWindow() {
-  controlWindow = new BrowserWindow({
-    width: 700,
-    height: 600,
-    minWidth: 600,
-    minHeight: 500,
-    title: "Scout Mail",
-    webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
-      contextIsolation: true,
-      nodeIntegration: false
-    }
-  });
-
-  controlWindow.loadFile(
-    path.join(__dirname, "renderer", "index.html")
-  );
-
-  controlWindow.on("closed", () => {
-    controlWindow = null;
-  });
-
-  controlWindow.webContents.once(
-    "did-finish-load",
-    () => sendAccounts()
-  );
-}
-
-function openScoutool() {
-  if (scoutWindow && !scoutWindow.isDestroyed()) {
-    scoutWindow.focus();
+function layoutViews() {
+  if (!mainWindow || !scoutView) {
     return;
   }
 
-  scoutWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
-    title: "Scout Mail - Scoutool",
+  const bounds =
+    mainWindow.getContentBounds();
+
+  const headerHeight = 140;
+  const gap = 8;
+
+  const width =
+    Math.floor(
+      (bounds.width - gap) / 2
+    );
+
+  const height =
+    Math.max(
+      300,
+      bounds.height - headerHeight
+    );
+
+  scoutView.setBounds({
+    x: 0,
+    y: headerHeight,
+    width,
+    height
+  });
+
+  scoutView.setAutoResize({
+    width: true,
+    height: true
+  });
+
+  for (const view of mailViews.values()) {
+    view.setBounds({
+      x: width + gap,
+      y: headerHeight,
+      width:
+        bounds.width - width - gap,
+      height
+    });
+
+    view.setAutoResize({
+      width: true,
+      height: true
+    });
+  }
+}
+
+function createScoutoolView() {
+  scoutView = new BrowserView({
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false
     }
   });
 
-  scoutWindow.loadURL(SCOUTOOL_URL);
+  mainWindow.addBrowserView(
+    scoutView
+  );
 
-  scoutWindow.on("closed", () => {
-    scoutWindow = null;
-  });
+  scoutView.webContents.loadURL(
+    SCOUTOOL_URL
+  );
 }
 
 function providerUrl(provider) {
@@ -113,42 +134,224 @@ function providerUrl(provider) {
 
 function openMailAccount(account) {
   if (
-    mailWindows.has(account.id) &&
-    !mailWindows.get(account.id).isDestroyed()
+    mailViews.has(account.id) &&
+    !mailViews
+      .get(account.id)
+      .isDestroyed()
   ) {
-    mailWindows.get(account.id).focus();
+    mailViews
+      .get(account.id)
+      .focus();
+
     return;
   }
 
-  const win = new BrowserWindow({
-    width: 1200,
-    height: 850,
-    title: `Scout Mail - ${account.name}`,
+  const view = new BrowserView({
     webPreferences: {
-      partition: `persist:${account.partition}`,
+      partition:
+        `persist:${account.partition}`,
       contextIsolation: true,
       nodeIntegration: false
     }
   });
 
-  win.loadURL(providerUrl(account.provider));
+  mailViews.set(
+    account.id,
+    view
+  );
 
-  mailWindows.set(account.id, win);
+  mainWindow.addBrowserView(
+    view
+  );
 
-  win.on("closed", () => {
-    mailWindows.delete(account.id);
-  });
+  view.webContents.loadURL(
+    providerUrl(account.provider)
+  );
+
+  layoutViews();
 }
 
 function sendAccounts() {
-  if (!controlWindow || controlWindow.isDestroyed()) {
+  if (
+    !mainWindow ||
+    mainWindow.isDestroyed()
+  ) {
     return;
   }
 
-  controlWindow.webContents.send(
+  mainWindow.webContents.send(
     "accounts-updated",
     loadAccounts()
   );
+}
+
+function createControlWindow() {
+  mainWindow =
+    new BrowserWindow({
+      width: 1500,
+      height: 920,
+      minWidth: 1100,
+      minHeight: 700,
+      title: "Scout Mail",
+
+      webPreferences: {
+        preload: path.join(
+          __dirname,
+          "preload.js"
+        ),
+        contextIsolation: true,
+        nodeIntegration: false
+      }
+    });
+
+  mainWindow.loadFile(
+    path.join(
+      __dirname,
+      "renderer",
+      "index.html"
+    )
+  );
+
+  mainWindow.on(
+    "resize",
+    layoutViews
+  );
+
+  mainWindow.webContents.once(
+    "did-finish-load",
+    () => {
+      createScoutoolView();
+      layoutViews();
+      sendAccounts();
+
+      const accounts =
+        loadAccounts();
+
+      for (const account of accounts) {
+        openMailAccount(account);
+      }
+
+      layoutViews();
+    }
+  );
+}
+
+function setupAutoUpdater() {
+  autoUpdater.autoDownload = true;
+  autoUpdater.autoInstallOnAppQuit = true;
+
+  autoUpdater.on(
+    "checking-for-update",
+    () => {
+      mainWindow?.webContents.send(
+        "update-status",
+        {
+          status: "checking"
+        }
+      );
+    }
+  );
+
+  autoUpdater.on(
+    "update-available",
+    (info) => {
+      mainWindow?.webContents.send(
+        "update-status",
+        {
+          status: "available",
+          version: info.version
+        }
+      );
+    }
+  );
+
+  autoUpdater.on(
+    "update-not-available",
+    () => {
+      mainWindow?.webContents.send(
+        "update-status",
+        {
+          status: "current"
+        }
+      );
+    }
+  );
+
+  autoUpdater.on(
+    "download-progress",
+    (progress) => {
+      mainWindow?.webContents.send(
+        "update-status",
+        {
+          status: "downloading",
+          percent:
+            Math.round(
+              progress.percent
+            )
+        }
+      );
+    }
+  );
+
+  autoUpdater.on(
+    "update-downloaded",
+    (info) => {
+      mainWindow?.webContents.send(
+        "update-status",
+        {
+          status: "downloaded",
+          version: info.version
+        }
+      );
+
+      dialog
+        .showMessageBox({
+          type: "info",
+          buttons: [
+            "Restart now",
+            "Later"
+          ],
+          title:
+            "Scout Mail update ready",
+          message:
+            `Scout Mail ${info.version} is ready to install.`,
+          detail:
+            "Restart Scout Mail to apply the update."
+        })
+        .then((result) => {
+          if (result.response === 0) {
+            autoUpdater.quitAndInstall(
+              false,
+              true
+            );
+          }
+        });
+    }
+  );
+
+  autoUpdater.on(
+    "error",
+    (error) => {
+      console.error(
+        "Auto-update error:",
+        error
+      );
+
+      mainWindow?.webContents.send(
+        "update-status",
+        {
+          status: "error",
+          message: error.message
+        }
+      );
+    }
+  );
+
+  if (app.isPackaged) {
+    setTimeout(() => {
+      autoUpdater.checkForUpdatesAndNotify();
+    }, 5000);
+  }
 }
 
 ipcMain.handle(
@@ -159,11 +362,12 @@ ipcMain.handle(
 ipcMain.handle(
   "add-account",
   (event, data) => {
-    const accounts = loadAccounts();
+    const accounts =
+      loadAccounts();
 
-    if (accounts.length >= MAX_ACCOUNTS) {
+    if (accounts.length >= 7) {
       throw new Error(
-        `Maximum of ${MAX_ACCOUNTS} accounts reached.`
+        "Maximum of 7 mail accounts."
       );
     }
 
@@ -184,13 +388,16 @@ ipcMain.handle(
         `${provider} ${accounts.length + 1}`,
       provider,
       partition: id,
-      createdAt: new Date().toISOString()
+      createdAt:
+        new Date().toISOString()
     };
 
     accounts.push(account);
+
     saveAccounts(accounts);
 
     openMailAccount(account);
+
     sendAccounts();
 
     return account;
@@ -199,17 +406,21 @@ ipcMain.handle(
 
 ipcMain.handle(
   "open-account",
-  (event, id) => {
+  (event, accountId) => {
     const account =
       loadAccounts().find(
-        (item) => item.id === id
+        (item) =>
+          item.id === accountId
       );
 
     if (!account) {
-      throw new Error("Account not found.");
+      throw new Error(
+        "Account not found."
+      );
     }
 
     openMailAccount(account);
+
     return true;
   }
 );
@@ -217,9 +428,12 @@ ipcMain.handle(
 ipcMain.handle(
   "open-all-accounts",
   () => {
-    const accounts = loadAccounts();
+    const accounts =
+      loadAccounts();
 
-    accounts.forEach(openMailAccount);
+    for (const account of accounts) {
+      openMailAccount(account);
+    }
 
     return accounts.length;
   }
@@ -228,38 +442,68 @@ ipcMain.handle(
 ipcMain.handle(
   "open-scoutool",
   () => {
-    openScoutool();
-    return true;
+    if (
+      scoutView &&
+      !scoutView
+        .webContents
+        .isDestroyed()
+    ) {
+      scoutView.webContents.loadURL(
+        SCOUTOOL_URL
+      );
+
+      return true;
+    }
+
+    return false;
   }
 );
 
 ipcMain.handle(
-  "close-all-mail",
-  () => {
-    for (const win of mailWindows.values()) {
-      if (!win.isDestroyed()) {
-        win.close();
-      }
+  "check-for-updates",
+  async () => {
+    if (!app.isPackaged) {
+      return {
+        ok: false,
+        message:
+          "Updates are only checked in packaged builds."
+      };
     }
 
-    mailWindows.clear();
+    await autoUpdater.checkForUpdates();
 
-    return true;
+    return {
+      ok: true
+    };
   }
 );
 
 app.whenReady().then(() => {
   createControlWindow();
+  setupAutoUpdater();
 
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createControlWindow();
+  app.on(
+    "activate",
+    () => {
+      if (
+        BrowserWindow
+          .getAllWindows()
+          .length === 0
+      ) {
+        createControlWindow();
+      }
     }
-  });
+  );
 });
 
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
+app.on(
+  "window-all-closed",
+  () => {
+    if (
+      process.platform !==
+      "darwin"
+    ) {
+      app.quit();
+    }
   }
-});
+);

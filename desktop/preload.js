@@ -7,7 +7,9 @@ contextBridge.exposeInMainWorld(
   "scoutMail",
   {
     getAccounts: () =>
-      ipcRenderer.invoke("get-accounts"),
+      ipcRenderer.invoke(
+        "get-accounts"
+      ),
 
     addAccount: (data) =>
       ipcRenderer.invoke(
@@ -31,27 +33,32 @@ contextBridge.exposeInMainWorld(
         "open-scoutool"
       ),
 
-    closeAllMail: () =>
+    checkForUpdates: () =>
       ipcRenderer.invoke(
-        "close-all-mail"
+        "check-for-updates"
       ),
 
-    onAccountsUpdated: (callback) => {
+    onUpdateStatus: (callback) => {
       const handler = (
         event,
-        accounts
-      ) => callback(accounts);
+        status
+      ) => callback(status);
 
       ipcRenderer.on(
-        "accounts-updated",
+        "update-status",
         handler
       );
 
       return () =>
         ipcRenderer.removeListener(
-          "accounts-updated",
+          "update-status",
           handler
         );
-    }
+    },
+
+    closeAllMail: () =>
+      ipcRenderer.invoke(
+        "close-all-mail"
+      )
   }
 );

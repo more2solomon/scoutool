@@ -1,4 +1,4 @@
-name: Build Scout Mail Windows
+name: Build and Release Scout Mail Windows
 
 on:
   workflow_dispatch:
@@ -6,6 +6,9 @@ on:
     paths:
       - "desktop/**"
       - ".github/workflows/build-desktop-windows.yml"
+
+permissions:
+  contents: write
 
 jobs:
   build-windows:
@@ -16,10 +19,10 @@ jobs:
         working-directory: desktop
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -29,11 +32,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build Windows installer
-        run: npm run dist:win
+      - name: Build and publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run dist:win -- --publish always
 
-      - name: Upload Windows installer
+      - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
           name: scout-mail-windows
-          path: desktop/dist/*.exe
+          path: |
+            desktop/dist/*.exe
+            desktop/dist/latest.yml
