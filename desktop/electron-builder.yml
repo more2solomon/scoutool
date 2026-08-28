@@ -18,3 +18,10 @@ nsis:
   allowToChangeInstallationDirectory: true
   createDesktopShortcut: true
   createStartMenuShortcut: true
+  shortcutName: Scout Mail
+  runAfterFinish: true
+
+publish:
+  provider: github
+  owner: more2solomon
+  repo: scoutool

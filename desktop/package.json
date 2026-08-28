@@ -1,6 +1,6 @@
 {
   "name": "scout-mail-desktop",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Scout Mail desktop client",
   "main": "main.js",
   "private": true,
@@ -11,5 +11,10 @@
   "devDependencies": {
     "electron": "38.0.0",
     "electron-builder": "26.0.12"
+  },
+  "author": "Scout Mail",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/more2solomon/scoutool.git"
   }
 }
