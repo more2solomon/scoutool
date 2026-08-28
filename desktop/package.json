@@ -1,0 +1,13 @@
+{
+  "name": "scout-mail-desktop",
+  "version": "1.0.0",
+  "description": "Scout Mail desktop client",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "38.0.0"
+  }
+}
