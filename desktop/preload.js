@@ -7,35 +7,36 @@ contextBridge.exposeInMainWorld(
   "scoutMail",
   {
     getAccounts: () =>
+      ipcRenderer.invoke("get-accounts"),
+
+    addAccount: (data) =>
       ipcRenderer.invoke(
-        "get-accounts"
+        "add-account",
+        data
       ),
 
-    addGmailAccount: (name) =>
+    openAccount: (id) =>
       ipcRenderer.invoke(
-        "add-gmail-account",
-        name
-      ),
-
-    selectAccount: (id) =>
-      ipcRenderer.invoke(
-        "select-account",
+        "open-account",
         id
       ),
 
-    reloadScoutool: () =>
+    openAllAccounts: () =>
       ipcRenderer.invoke(
-        "reload-scoutool"
+        "open-all-accounts"
       ),
 
-    reloadMail: () =>
+    openScoutool: () =>
       ipcRenderer.invoke(
-        "reload-mail"
+        "open-scoutool"
       ),
 
-    onAccountsUpdated: (
-      callback
-    ) => {
+    closeAllMail: () =>
+      ipcRenderer.invoke(
+        "close-all-mail"
+      ),
+
+    onAccountsUpdated: (callback) => {
       const handler = (
         event,
         accounts

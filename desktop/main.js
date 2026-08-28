@@ -1,42 +1,37 @@
 const {
   app,
   BrowserWindow,
-  BrowserView,
   ipcMain
 } = require("electron");
 
 const fs = require("fs");
 const path = require("path");
 
-const SCOUTOOL_URL =
-  "https://scoutool-mail.created.app/";
+const SCOUTOOL_URL = "https://scoutool-mail.created.app/";
 
-const MAIL_URL =
-  "https://mail.google.com/";
+const MAX_ACCOUNTS = 7;
 
-let mainWindow = null;
-let scoutView = null;
+let controlWindow = null;
+let scoutWindow = null;
 
-const mailViews = new Map();
+const mailWindows = new Map();
 
-function accountsPath() {
+function accountsFile() {
   return path.join(
     app.getPath("userData"),
-    "gmail-accounts.json"
+    "accounts.json"
   );
 }
 
 function loadAccounts() {
   try {
-    if (!fs.existsSync(accountsPath())) {
-      return [];
-    }
+    if (!fs.existsSync(accountsFile())) return [];
 
-    const data = JSON.parse(
-      fs.readFileSync(accountsPath(), "utf8")
+    const accounts = JSON.parse(
+      fs.readFileSync(accountsFile(), "utf8")
     );
 
-    return Array.isArray(data) ? data : [];
+    return Array.isArray(accounts) ? accounts : [];
   } catch {
     return [];
   }
@@ -44,336 +39,227 @@ function loadAccounts() {
 
 function saveAccounts(accounts) {
   fs.mkdirSync(
-    path.dirname(accountsPath()),
+    path.dirname(accountsFile()),
     { recursive: true }
   );
 
   fs.writeFileSync(
-    accountsPath(),
+    accountsFile(),
     JSON.stringify(accounts, null, 2),
     "utf8"
   );
 }
 
-function layoutViews() {
-  if (!mainWindow || !scoutView) {
-    return;
-  }
-
-  const bounds =
-    mainWindow.getContentBounds();
-
-  const headerHeight = 140;
-  const gap = 8;
-
-  const browserWidth =
-    Math.floor(
-      (bounds.width - gap) / 2
-    );
-
-  const browserHeight =
-    Math.max(
-      300,
-      bounds.height - headerHeight
-    );
-
-  scoutView.setBounds({
-    x: 0,
-    y: headerHeight,
-    width: browserWidth,
-    height: browserHeight
-  });
-
-  scoutView.setAutoResize({
-    width: true,
-    height: true
-  });
-
-  for (const view of mailViews.values()) {
-    view.setBounds({
-      x: browserWidth + gap,
-      y: headerHeight,
-      width:
-        bounds.width -
-        browserWidth -
-        gap,
-      height: browserHeight
-    });
-
-    view.setAutoResize({
-      width: true,
-      height: true
-    });
-  }
-}
-
-function sendAccountList() {
-  if (!mainWindow) {
-    return;
-  }
-
-  const accounts = loadAccounts();
-
-  mainWindow.webContents.send(
-    "accounts-updated",
-    accounts
-  );
-}
-
-function createScoutoolView() {
-  scoutView = new BrowserView({
+function createControlWindow() {
+  controlWindow = new BrowserWindow({
+    width: 700,
+    height: 600,
+    minWidth: 600,
+    minHeight: 500,
+    title: "Scout Mail",
     webPreferences: {
+      preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
       nodeIntegration: false
     }
   });
 
-  mainWindow.addBrowserView(
-    scoutView
+  controlWindow.loadFile(
+    path.join(__dirname, "renderer", "index.html")
   );
 
-  scoutView.webContents.loadURL(
-    SCOUTOOL_URL
-  );
-}
-
-function createMailView(account) {
-  if (!account) {
-    throw new Error(
-      "Account not found."
-    );
-  }
-
-  const existing =
-    mailViews.get(account.id);
-
-  if (existing) {
-    existing.webContents.loadURL(
-      MAIL_URL
-    );
-
-    return;
-  }
-
-  const view = new BrowserView({
-    webPreferences: {
-      partition:
-        `persist:${account.partition}`,
-      contextIsolation: true,
-      nodeIntegration: false
-    }
+  controlWindow.on("closed", () => {
+    controlWindow = null;
   });
 
-  mailViews.set(
-    account.id,
-    view
-  );
-
-  mainWindow.addBrowserView(
-    view
-  );
-
-  view.webContents.loadURL(
-    MAIL_URL
-  );
-
-  layoutViews();
-}
-
-function hideMailViews() {
-  for (const view of mailViews.values()) {
-    mainWindow.removeBrowserView(
-      view
-    );
-  }
-}
-
-function showMailView(accountId) {
-  const view =
-    mailViews.get(accountId);
-
-  if (!view) {
-    return false;
-  }
-
-  hideMailViews();
-
-  mainWindow.addBrowserView(
-    view
-  );
-
-  layoutViews();
-
-  return true;
-}
-
-function createWindow() {
-  mainWindow =
-    new BrowserWindow({
-      width: 1500,
-      height: 920,
-      minWidth: 1100,
-      minHeight: 700,
-      title: "Scout Mail",
-
-      webPreferences: {
-        preload: path.join(
-          __dirname,
-          "preload.js"
-        ),
-        contextIsolation: true,
-        nodeIntegration: false
-      }
-    });
-
-  mainWindow.loadFile(
-    path.join(
-      __dirname,
-      "renderer",
-      "index.html"
-    )
-  );
-
-  mainWindow.on(
-    "resize",
-    layoutViews
-  );
-
-  mainWindow.webContents.once(
+  controlWindow.webContents.once(
     "did-finish-load",
-    () => {
-      createScoutoolView();
-      layoutViews();
-      sendAccountList();
-
-      const accounts =
-        loadAccounts();
-
-      if (accounts.length > 0) {
-        createMailView(
-          accounts[0]
-        );
-
-        showMailView(
-          accounts[0].id
-        );
-      }
-    }
+    () => sendAccounts()
   );
 }
 
-app.whenReady().then(() => {
-  ipcMain.handle(
-    "get-accounts",
-    () => loadAccounts()
-  );
+function openScoutool() {
+  if (scoutWindow && !scoutWindow.isDestroyed()) {
+    scoutWindow.focus();
+    return;
+  }
 
-  ipcMain.handle(
-    "add-gmail-account",
-    (event, name) => {
-      const accounts =
-        loadAccounts();
-
-      const id =
-        `gmail-${Date.now()}-${Math.random()
-          .toString(36)
-          .slice(2, 8)}`;
-
-      const account = {
-        id,
-        name:
-          String(name || "").trim() ||
-          `Gmail ${accounts.length + 1}`,
-        provider: "gmail",
-        partition: id,
-        createdAt:
-          new Date().toISOString()
-      };
-
-      accounts.push(account);
-
-      saveAccounts(accounts);
-
-      createMailView(account);
-
-      showMailView(account.id);
-
-      sendAccountList();
-
-      return account;
+  scoutWindow = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    title: "Scout Mail - Scoutool",
+    webPreferences: {
+      contextIsolation: true,
+      nodeIntegration: false
     }
+  });
+
+  scoutWindow.loadURL(SCOUTOOL_URL);
+
+  scoutWindow.on("closed", () => {
+    scoutWindow = null;
+  });
+}
+
+function providerUrl(provider) {
+  switch (provider) {
+    case "outlook":
+      return "https://outlook.live.com/mail/";
+    case "gmail":
+    default:
+      return "https://mail.google.com/";
+  }
+}
+
+function openMailAccount(account) {
+  if (
+    mailWindows.has(account.id) &&
+    !mailWindows.get(account.id).isDestroyed()
+  ) {
+    mailWindows.get(account.id).focus();
+    return;
+  }
+
+  const win = new BrowserWindow({
+    width: 1200,
+    height: 850,
+    title: `Scout Mail - ${account.name}`,
+    webPreferences: {
+      partition: `persist:${account.partition}`,
+      contextIsolation: true,
+      nodeIntegration: false
+    }
+  });
+
+  win.loadURL(providerUrl(account.provider));
+
+  mailWindows.set(account.id, win);
+
+  win.on("closed", () => {
+    mailWindows.delete(account.id);
+  });
+}
+
+function sendAccounts() {
+  if (!controlWindow || controlWindow.isDestroyed()) {
+    return;
+  }
+
+  controlWindow.webContents.send(
+    "accounts-updated",
+    loadAccounts()
   );
+}
 
-  ipcMain.handle(
-    "select-account",
-    (event, accountId) => {
-      const accounts =
-        loadAccounts();
+ipcMain.handle(
+  "get-accounts",
+  () => loadAccounts()
+);
 
-      const account =
-        accounts.find(
-          (item) =>
-            item.id === accountId
-        );
+ipcMain.handle(
+  "add-account",
+  (event, data) => {
+    const accounts = loadAccounts();
 
-      if (!account) {
-        throw new Error(
-          "Account not found."
-        );
-      }
-
-      if (!mailViews.has(account.id)) {
-        createMailView(account);
-      }
-
-      return showMailView(
-        account.id
+    if (accounts.length >= MAX_ACCOUNTS) {
+      throw new Error(
+        `Maximum of ${MAX_ACCOUNTS} accounts reached.`
       );
     }
-  );
 
-  ipcMain.handle(
-    "reload-scoutool",
-    async () => {
-      if (!scoutView) {
-        return false;
-      }
+    const provider =
+      data.provider === "outlook"
+        ? "outlook"
+        : "gmail";
 
-      await scoutView.webContents.reload();
+    const id =
+      `${provider}-${Date.now()}-${Math.random()
+        .toString(36)
+        .slice(2, 8)}`;
 
-      return true;
-    }
-  );
+    const account = {
+      id,
+      name:
+        String(data.name || "").trim() ||
+        `${provider} ${accounts.length + 1}`,
+      provider,
+      partition: id,
+      createdAt: new Date().toISOString()
+    };
 
-  ipcMain.handle(
-    "reload-mail",
-    async () => {
-      for (const view of mailViews.values()) {
-        if (
-          view ===
-          mainWindow.getBrowserViews()
-            .find(
-              (candidate) =>
-                candidate === view
-            )
-        ) {
-          await view.webContents.reload();
-          return true;
-        }
-      }
+    accounts.push(account);
+    saveAccounts(accounts);
 
-      return false;
-    }
-  );
+    openMailAccount(account);
+    sendAccounts();
 
-  createWindow();
-});
-
-app.on(
-  "window-all-closed",
-  () => {
-    if (process.platform !== "darwin") {
-      app.quit();
-    }
+    return account;
   }
 );
+
+ipcMain.handle(
+  "open-account",
+  (event, id) => {
+    const account =
+      loadAccounts().find(
+        (item) => item.id === id
+      );
+
+    if (!account) {
+      throw new Error("Account not found.");
+    }
+
+    openMailAccount(account);
+    return true;
+  }
+);
+
+ipcMain.handle(
+  "open-all-accounts",
+  () => {
+    const accounts = loadAccounts();
+
+    accounts.forEach(openMailAccount);
+
+    return accounts.length;
+  }
+);
+
+ipcMain.handle(
+  "open-scoutool",
+  () => {
+    openScoutool();
+    return true;
+  }
+);
+
+ipcMain.handle(
+  "close-all-mail",
+  () => {
+    for (const win of mailWindows.values()) {
+      if (!win.isDestroyed()) {
+        win.close();
+      }
+    }
+
+    mailWindows.clear();
+
+    return true;
+  }
+);
+
+app.whenReady().then(() => {
+  createControlWindow();
+
+  app.on("activate", () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createControlWindow();
+    }
+  });
+});
+
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
+});

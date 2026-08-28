@@ -2,59 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Scout Mail</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<header class="topbar">
-
-  <div class="brand">
-    <div class="logo">S</div>
-
-    <div>
-      <h1>Scout Mail</h1>
-      <p>Scoutool + Mail Workspace</p>
-    </div>
+<header>
+  <div>
+    <h1>Scout Mail</h1>
+    <p>Desktop control center</p>
   </div>
-
-  <div class="actions">
-
-    <button id="addAccount">
-      + Add Gmail
-    </button>
-
-    <button id="reloadScoutool">
-      Reload Scoutool
-    </button>
-
-    <button id="reloadMail">
-      Reload Mail
-    </button>
-
-    <button
-      id="stop"
-      class="danger"
-    >
-      STOP
-    </button>
-
-  </div>
-
 </header>
 
-<div class="accounts-header">
+<section class="actions">
+  <button id="addAccount">+ Add Account</button>
+  <button id="openAll">Open All</button>
+  <button id="scoutool">Open Scoutool</button>
+  <button id="closeAll" class="danger">Close Mail Windows</button>
+</section>
 
-  <strong>Mail accounts</strong>
+<section class="panel">
+  <div class="panelHeader">
+    <h2>Mail Accounts</h2>
+    <span id="counter">0 / 7</span>
+  </div>
 
   <div id="accounts"></div>
-
-</div>
+</section>
 
 <script src="app.js"></script>
 

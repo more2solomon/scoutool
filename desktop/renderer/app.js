@@ -1,145 +1,150 @@
-const accounts =
-  document.getElementById(
-    "accounts"
-  );
+const accountsEl =
+  document.getElementById("accounts");
 
-function renderAccounts(list) {
-  accounts.innerHTML = "";
+const counterEl =
+  document.getElementById("counter");
 
-  list.forEach((account) => {
-    const button =
-      document.createElement(
-        "button"
-      );
+function render(accounts) {
+  accountsEl.innerHTML = "";
 
-    button.className =
-      "account";
+  counterEl.textContent =
+    `${accounts.length} / 7`;
 
-    button.textContent =
-      account.name;
+  if (!accounts.length) {
+    accountsEl.innerHTML =
+      `<div class="empty">
+        No mail accounts added.
+      </div>`;
 
-    button.addEventListener(
+    return;
+  }
+
+  accounts.forEach((account) => {
+    const row =
+      document.createElement("div");
+
+    row.className = "account";
+
+    const info =
+      document.createElement("div");
+
+    info.className = "accountInfo";
+
+    info.innerHTML = `
+      <strong>${escapeHtml(account.name)}</strong>
+      <span>${escapeHtml(
+        account.provider
+      )}</span>
+    `;
+
+    const open =
+      document.createElement("button");
+
+    open.textContent = "Open";
+
+    open.addEventListener(
       "click",
-      async () => {
-        await window.scoutMail
-          .selectAccount(
-            account.id
-          );
-
-        renderActive(
-          account.id
-        );
+      () => {
+        window.scoutMail
+          .openAccount(account.id);
       }
     );
 
-    button.dataset.accountId =
-      account.id;
+    row.appendChild(info);
+    row.appendChild(open);
 
-    accounts.appendChild(
-      button
-    );
+    accountsEl.appendChild(row);
   });
 }
 
-function renderActive(id) {
-  document
-    .querySelectorAll(
-      ".account"
-    )
-    .forEach((button) => {
-      button.classList.toggle(
-        "active",
-        button.dataset.accountId ===
-          id
-      );
-    });
-}
-
-async function loadAccounts() {
-  const list =
-    await window.scoutMail
-      .getAccounts();
-
-  renderAccounts(list);
-
-  if (list.length) {
-    renderActive(
-      list[0].id
-    );
-  }
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 document
-  .getElementById(
-    "addAccount"
-  )
+  .getElementById("addAccount")
   .addEventListener(
     "click",
     async () => {
       const name =
         prompt(
-          "Name this Gmail account:",
-          `Gmail Account`
+          "Account name:",
+          "Mail Account"
         );
 
-      if (!name) {
+      if (!name) return;
+
+      const provider =
+        prompt(
+          "Provider: gmail or outlook",
+          "gmail"
+        )
+          ?.trim()
+          .toLowerCase();
+
+      if (
+        provider !== "gmail" &&
+        provider !== "outlook"
+      ) {
+        alert(
+          "Use gmail or outlook."
+        );
+
         return;
       }
 
-      const account =
+      try {
         await window.scoutMail
-          .addGmailAccount(
-            name
-          );
-
-      await loadAccounts();
-
-      renderActive(
-        account.id
-      );
+          .addAccount({
+            name,
+            provider
+          });
+      } catch (error) {
+        alert(error.message);
+      }
     }
   );
 
 document
-  .getElementById(
-    "reloadScoutool"
-  )
-  .addEventListener(
-    "click",
-    () =>
-      window.scoutMail
-        .reloadScoutool()
-  );
-
-document
-  .getElementById(
-    "reloadMail"
-  )
-  .addEventListener(
-    "click",
-    () =>
-      window.scoutMail
-        .reloadMail()
-  );
-
-document
-  .getElementById(
-    "stop"
-  )
+  .getElementById("openAll")
   .addEventListener(
     "click",
     () => {
-      console.log(
-        "Stop requested."
-      );
+      window.scoutMail
+        .openAllAccounts();
+    }
+  );
+
+document
+  .getElementById("scoutool")
+  .addEventListener(
+    "click",
+    () => {
+      window.scoutMail
+        .openScoutool();
+    }
+  );
+
+document
+  .getElementById("closeAll")
+  .addEventListener(
+    "click",
+    () => {
+      window.scoutMail
+        .closeAllMail();
     }
   );
 
 window.scoutMail
   .onAccountsUpdated(
-    (list) => {
-      renderAccounts(list);
-    }
+    render
   );
 
-loadAccounts();
+window.scoutMail
+  .getAccounts()
+  .then(render);

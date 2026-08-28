@@ -106,3 +106,83 @@ button.danger {
   border-color: #117c72;
   color: #ffffff;
 }
+
+body {
+  margin: 0;
+  padding: 24px;
+  font-family: Arial, sans-serif;
+  background: #f4f7f6;
+  color: #173b37;
+}
+
+header {
+  margin-bottom: 20px;
+}
+
+h1 {
+  margin: 0;
+}
+
+header p {
+  color: #70807d;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+button {
+  border: 0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #117c72;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button.danger {
+  background: #a33b3b;
+}
+
+.panel {
+  background: white;
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.account {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 13px 0;
+  border-bottom: 1px solid #edf1f0;
+}
+
+.accountInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.accountInfo span {
+  font-size: 12px;
+  color: #70807d;
+  text-transform: capitalize;
+}
+
+.empty {
+  padding: 30px 0;
+  text-align: center;
+  color: #70807d;
+}
