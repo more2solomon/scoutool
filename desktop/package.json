@@ -5,9 +5,11 @@
   "main": "main.js",
   "private": true,
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "dist:win": "electron-builder --win --x64"
   },
   "devDependencies": {
-    "electron": "38.0.0"
+    "electron": "38.0.0",
+    "electron-builder": "26.0.12"
   }
 }

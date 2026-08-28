@@ -1,0 +1,20 @@
+appId: com.scoutmail.desktop
+productName: Scout Mail
+
+directories:
+  output: dist
+
+files:
+  - "**/*"
+  - "!dist/**"
+
+win:
+  target:
+    - nsis
+  artifactName: "Scout-Mail-Setup-${version}.${ext}"
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
