@@ -365,9 +365,9 @@ ipcMain.handle(
     const accounts =
       loadAccounts();
 
-    if (accounts.length >= 7) {
+    if (accounts.length >= 50) {
       throw new Error(
-        "Maximum of 7 mail accounts."
+        "Maximum of 50 linked mail accounts."
       );
     }
 

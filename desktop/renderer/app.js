@@ -8,7 +8,7 @@ function render(accounts) {
   accountsEl.innerHTML = "";
 
   counterEl.textContent =
-    `${accounts.length} / 7`;
+    `${accounts.length} / 50`;
 
   if (!accounts.length) {
     accountsEl.innerHTML =
