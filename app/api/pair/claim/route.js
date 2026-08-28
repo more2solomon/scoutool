@@ -7,9 +7,7 @@ export async function POST(request) {
   try {
     const body = await request.json();
 
-    const code = String(
-      body.code || ""
-    ).trim();
+    const code = String(body.code || "").trim();
 
     if (!/^\d{6}$/.test(code)) {
       return Response.json(
@@ -21,31 +19,22 @@ export async function POST(request) {
       );
     }
 
-    const pairing = await redis.get(
-      `pair:${code}`
-    );
+    const pairing = await redis.get(`pair:${code}`);
 
     if (!pairing) {
       return Response.json(
         {
           ok: false,
-          error: "Pairing code expired or invalid."
+          error: "Pairing code expired or is invalid."
         },
         { status: 400 }
       );
     }
 
-    const userId = crypto
-      .randomBytes(16)
-      .toString("hex");
-
-    const userToken = crypto
-      .randomBytes(32)
-      .toString("hex");
-
-    const deviceId = crypto
-      .randomBytes(16)
-      .toString("hex");
+    const userId = crypto.randomUUID();
+    const deviceId = crypto.randomUUID();
+    const userToken = crypto.randomBytes(32).toString("hex");
+    const desktopToken = pairing.desktopToken;
 
     await redis.set(
       `user:${userId}`,
@@ -71,16 +60,28 @@ export async function POST(request) {
         name:
           body.deviceName ||
           "Scout Mail Desktop",
-        connectedAt: Date.now()
+        connectedAt: Date.now(),
+        online: true
       }
     );
 
     await redis.set(
-      `desktop-token:${pairing.desktopToken}`,
+      `desktop-token:${desktopToken}`,
       {
         userId,
         deviceId
       }
+    );
+
+    await redis.set(
+      `pairing-result:${pairing.pairingId}`,
+      {
+        userId,
+        deviceId,
+        userToken,
+        desktopToken
+      },
+      { ex: 600 }
     );
 
     await redis.del(`pair:${code}`);
@@ -88,8 +89,8 @@ export async function POST(request) {
     return Response.json({
       ok: true,
       userId,
-      userToken,
-      deviceId
+      deviceId,
+      userToken
     });
   } catch (error) {
     return Response.json(

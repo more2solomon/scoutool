@@ -172,3 +172,11 @@ document
       }
     }
   );
+
+window.scoutMail.onDevicePaired(
+  (device) => {
+    alert(
+      `Phone connected.\n\nDevice ID: ${device.deviceId}`
+    );
+  }
+);

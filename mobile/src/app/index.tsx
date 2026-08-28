@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   RefreshControl,
   SafeAreaView,
@@ -39,6 +40,10 @@ export default function Home() {
   const [refreshing, setRefreshing] = useState(false);
   const [delay, setDelay] = useState("6");
   const [error, setError] = useState("");
+  const [pairCode, setPairCode] = useState("");
+  const [deviceName, setDeviceName] = useState("My Scout Mail PC");
+  const [pairing, setPairing] = useState(false);
+  const [paired, setPaired] = useState(false);
 
   async function load() {
     try {
@@ -110,6 +115,116 @@ export default function Home() {
           ? e.message
           : "State update failed"
       );
+    }
+  }
+
+  async function pairDesktop() {
+    if (!/^\\d{6}$/.test(pairCode.trim())) {
+      setError("Enter the 6-digit desktop pairing code.");
+      return;
+    }
+
+    try {
+      setPairing(true);
+      setError("");
+
+      const response = await fetch(
+        `${API}/api/pair/claim`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            code: pairCode.trim(),
+            deviceName,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Pairing failed."
+        );
+      }
+
+      await AsyncStorage.setItem(
+        "scoutmail.userToken",
+        data.userToken
+      );
+
+      await AsyncStorage.setItem(
+        "scoutmail.deviceId",
+        data.deviceId
+      );
+
+      setPaired(true);
+      setMessage("Desktop paired successfully.");
+    } catch (e) {
+      setError(
+        e instanceof Error
+          ? e.message
+          : "Pairing failed."
+      );
+    } finally {
+      setPairing(false);
+    }
+  }
+
+  async function pairDesktop() {
+    if (!/^\\d{6}$/.test(pairCode.trim())) {
+      setError("Enter the 6-digit desktop pairing code.");
+      return;
+    }
+
+    try {
+      setPairing(true);
+      setError("");
+
+      const response = await fetch(
+        `${API}/api/pair/claim`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            code: pairCode.trim(),
+            deviceName,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Pairing failed."
+        );
+      }
+
+      await AsyncStorage.setItem(
+        "scoutmail.userToken",
+        data.userToken
+      );
+
+      await AsyncStorage.setItem(
+        "scoutmail.deviceId",
+        data.deviceId
+      );
+
+      setPaired(true);
+      setMessage("Desktop paired successfully.");
+    } catch (e) {
+      setError(
+        e instanceof Error
+          ? e.message
+          : "Pairing failed."
+      );
+    } finally {
+      setPairing(false);
     }
   }
 
@@ -199,6 +314,52 @@ export default function Home() {
             label="Remaining"
             value={remaining}
           />
+        </View>
+
+        <View style={styles.panel}>
+          <Text style={styles.heading}>
+            Connect Desktop
+          </Text>
+
+          <Text style={styles.label}>
+            Desktop name
+          </Text>
+
+          <TextInput
+            style={styles.input}
+            value={deviceName}
+            onChangeText={setDeviceName}
+            placeholder="My Scout Mail PC"
+          />
+
+          <Text style={styles.label}>
+            Pairing code
+          </Text>
+
+          <TextInput
+            style={styles.input}
+            value={pairCode}
+            onChangeText={setPairCode}
+            keyboardType="numeric"
+            maxLength={6}
+            placeholder="123456"
+          />
+
+          <Pressable
+            style={styles.start}
+            onPress={pairDesktop}
+            disabled={pairing}
+          >
+            <Text style={styles.buttonText}>
+              {pairing ? "CONNECTING..." : "CONNECT DESKTOP"}
+            </Text>
+          </Pressable>
+
+          {paired ? (
+            <Text style={styles.success}>
+              Desktop connected.
+            </Text>
+          ) : null}
         </View>
 
         <View style={styles.panel}>

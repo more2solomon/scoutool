@@ -54,6 +54,22 @@ contextBridge.exposeInMainWorld(
         "sync-accounts"
       ),
 
+    onDevicePaired: (callback) => {
+      const handler = (event, device) =>
+        callback(device);
+
+      ipcRenderer.on(
+        "device-paired",
+        handler
+      );
+
+      return () =>
+        ipcRenderer.removeListener(
+          "device-paired",
+          handler
+        );
+    },
+
     onAccountsUpdated: (
       callback
     ) => {

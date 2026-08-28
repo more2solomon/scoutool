@@ -22,6 +22,8 @@ let scoutView = null;
 
 const mailViews = new Map();
 
+let pairingTimer = null;
+
 function accountsPath() {
   return path.join(
     app.getPath("userData"),
@@ -209,6 +211,53 @@ function openMailAccount(account) {
   );
 
   layoutViews();
+}
+
+
+function startPairingMonitor(pairingId) {
+  if (pairingTimer) {
+    clearInterval(pairingTimer);
+  }
+
+  pairingTimer = setInterval(async () => {
+    try {
+      const response = await fetch(
+        `${API_URL}/api/pair/status?pairingId=${encodeURIComponent(pairingId)}`
+      );
+
+      if (!response.ok) {
+        return;
+      }
+
+      const data = await response.json();
+
+      if (data.status !== "paired") {
+        return;
+      }
+
+      const device = {
+        userId: data.userId,
+        deviceId: data.deviceId,
+        desktopToken: data.desktopToken,
+        pairedAt: new Date().toISOString()
+      };
+
+      saveDevice(device);
+
+      clearInterval(pairingTimer);
+      pairingTimer = null;
+
+      mainWindow?.webContents.send(
+        "device-paired",
+        device
+      );
+    } catch (error) {
+      console.error(
+        "Pairing monitor error:",
+        error
+      );
+    }
+  }, 2000);
 }
 
 function sendAccounts() {
@@ -538,6 +587,8 @@ ipcMain.handle(
         "Unable to create pairing code."
       );
     }
+
+    startPairingMonitor(data.pairingId);
 
     return data;
   }
