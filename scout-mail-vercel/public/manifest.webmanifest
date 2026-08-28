@@ -1,9 +1,0 @@
-{
-  "name": "Scout Mail",
-  "short_name": "Scout Mail",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#eef5f3",
-  "theme_color": "#147c70",
-  "description": "Scoutool control panel and browser bridge dashboard"
-}
