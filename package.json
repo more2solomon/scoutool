@@ -1,0 +1,17 @@
+{
+  "name": "chums-impulse-dev",
+  "version": "2.0.0",
+  "devDependencies": {
+    "@types/google.maps": "^3.48.8",
+    "auto-changelog": "^2.4.0",
+    "typescript": "^5.2.2"
+  },
+  "scripts": {
+    "__dev": "shopify theme dev --environment impulse",
+    "open": "shopify theme open --environment impulse",
+    "pull": "shopify theme pull --environment impulse",
+    "start-dev": "npm run pull && npm run open && npm run __dev",
+    "dev": "npm run pull && npm run open && npm run __dev",
+    "version": "auto-changelog -p && git add CHANGELOG.md"
+  }
+}

@@ -1,0 +1,110 @@
+{% liquid
+  assign default_lat = section.settings.default_location_latitude
+  assign default_lon = section.settings.default_location_longitude
+  assign default_range = section.settings.default_range
+  assign api_key = section.settings.google_maps_api_key
+%}
+<div class="page-width page-content" id="store-locator-{{ section.id }}" data-section-id="{{ section.id }}">
+  <div id="store-map-{{ section.id }}" class="store-map mt-3">
+    <form class="store-map__search" id="store-map--search-form">
+      <img src="{{ 'booby.icon.png' | file_url }}" alt="Chums" id="map-icon" style="display:none;">
+      <input type="hidden" name="company" id="store-map--company" value="chums">
+      <input type="hidden" name="pos-lat" id="store-map--pos-lat" value="{{ default_lat }}">
+      <input type="hidden" name="pos-lng" id="store-map--pos-lng" value="{{ default_lon }}">
+      <div class="store-map__search-options">
+        <div class="store-map__search-options--col can-grow">
+          <label class="" for="store-map--search">ZIP or Address</label>
+          <input type="text" name="home-address" id="store-map--search" value="" class=""
+                 placeholder="ZIP or Address">
+        </div>
+        <div class="store-map__search-options--col">
+          <label class="" for="store-map--search-range">Search Radius</label>
+          <select name="range" id="store-map--search-range" class="">
+            <option value="10" {% if default_range == '10' %}selected="selected"{% endif %}>10 Miles</option>
+            <option value="25" {% if default_range == '25' %}selected="selected"{% endif %}>25 Miles</option>
+            <option value="50" {% if default_range == '50' %}selected="selected"{% endif %}>50 Miles</option>
+            <option value="100" {% if default_range == '100' %}selected="selected"{% endif %}>100 Miles</option>
+          </select>
+        </div>
+        <div class="store-map__search-options--col">
+          <button class="btn btn--secondary" type="submit">Search</button>
+        </div>
+      </div>
+    </form>
+
+    <div class="store-map__response">
+      <div class="store-map__response-list">
+        <div id="store-map--message"></div>
+        <div id="store-map--search-results"></div>
+      </div>
+
+      <div class="store-map__response-map-container">
+        <div id="store-map--google-map"></div><!-- end of div#google-map -->
+      </div>
+    </div>
+  </div>
+  {{ 'find-a-store.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'find-a-store.js' | asset_url }}"></script>
+  <script async defer
+          src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&callback=initMap"></script>
+</div>
+
+
+{% schema %}
+{
+  "name": "store-locator",
+  "settings": [
+    {
+      "id": "google_maps_api_key",
+      "type": "text",
+      "label": "Google Maps API Key",
+      "default": "AIzaSyAIhAbnZbipYL9YqUzsRn1Mqrc_Wt8VroQ"
+    },
+    {
+      "id": "default_location_latitude",
+      "label": "Default Location Latitude",
+      "type": "text",
+      "default": "37.16373108"
+    },
+    {
+      "id": "default_location_longitude",
+      "label": "Default Location Longitude",
+      "type": "text",
+      "default": "-113.2989828"
+    },
+    {
+      "id": "default_range",
+      "label": "Default Search Radius",
+      "type": "select",
+      "default": "25",
+      "options": [
+        {
+          "label": "10 Miles",
+          "value": "10"
+        },
+        {
+          "label": "25 Miles",
+          "value": "25"
+        },
+        {
+          "label": "50 Miles",
+          "value": "50"
+        },
+        {
+          "label": "100 Miles",
+          "value": "100"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "store-locator",
+      "category": "custom"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["footer", "header", "custom.popups"]
+  }
+}
+{% endschema %}

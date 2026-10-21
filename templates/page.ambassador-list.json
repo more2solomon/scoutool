@@ -1,0 +1,334 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "custom_css": [
+        ".ambassador-link {color: var(--chums-red);}"
+      ],
+      "settings": {}
+    },
+    "page_title_MiMkeC": {
+      "type": "page-title",
+      "name": "page-title",
+      "settings": {
+        "page_title_visible": false
+      }
+    },
+    "slideshow_nwBxwH": {
+      "type": "slideshow",
+      "blocks": {
+        "image_T7AYRy": {
+          "type": "image",
+          "settings": {
+            "top_subheading": "",
+            "title": "CHUMS AMBASSADORS",
+            "title_size": 80,
+            "subheading": "",
+            "link": "",
+            "link_text": "",
+            "link_2": "",
+            "link_text_2": "",
+            "color_accent": "rgba(0,0,0,0)",
+            "text_align": "vertical-center horizontal-center",
+            "image": "shopify://shop_images/HERO8.jpg",
+            "image_mobile": "shopify://shop_images/HERO8.jpg",
+            "parallax_direction": "left",
+            "overlay_opacity": 0
+          }
+        },
+        "image_AWKTVx": {
+          "type": "image",
+          "settings": {
+            "top_subheading": "",
+            "title": "CHUMS AMBASSADORS",
+            "title_size": 80,
+            "subheading": "",
+            "link": "",
+            "link_text": "",
+            "link_2": "",
+            "link_text_2": "",
+            "color_accent": "rgba(0,0,0,0)",
+            "text_align": "vertical-center horizontal-center",
+            "image": "shopify://shop_images/HERO4.jpg",
+            "image_mobile": "shopify://shop_images/HERO4.jpg",
+            "parallax_direction": "left",
+            "overlay_opacity": 0
+          }
+        },
+        "image_D6Ef7p": {
+          "type": "image",
+          "settings": {
+            "top_subheading": "",
+            "title": "CHUMS AMBASSADORS",
+            "title_size": 80,
+            "subheading": "",
+            "link": "",
+            "link_text": "",
+            "link_2": "",
+            "link_text_2": "",
+            "color_accent": "rgba(0,0,0,0)",
+            "text_align": "vertical-center horizontal-center",
+            "image": "shopify://shop_images/HERO1.jpg",
+            "image_mobile": "shopify://shop_images/HERO1.jpg",
+            "parallax_direction": "left",
+            "overlay_opacity": 0
+          }
+        },
+        "image_eyrFUD": {
+          "type": "image",
+          "settings": {
+            "top_subheading": "",
+            "title": "CHUMS AMBASSADORS",
+            "title_size": 80,
+            "subheading": "",
+            "link": "",
+            "link_text": "",
+            "link_2": "",
+            "link_text_2": "",
+            "color_accent": "rgba(0,0,0,0)",
+            "text_align": "vertical-center horizontal-center",
+            "image": "shopify://shop_images/HER012.jpg",
+            "image_mobile": "shopify://shop_images/HER012.jpg",
+            "parallax_direction": "left",
+            "overlay_opacity": 0
+          }
+        },
+        "image_ijeeR6": {
+          "type": "image",
+          "settings": {
+            "top_subheading": "",
+            "title": "CHUMS AMBASSADORS",
+            "title_size": 80,
+            "subheading": "",
+            "link": "",
+            "link_text": "",
+            "link_2": "",
+            "link_text_2": "",
+            "color_accent": "rgba(0,0,0,0)",
+            "text_align": "vertical-center horizontal-center",
+            "image": "shopify://shop_images/HERO5.5.jpg",
+            "image_mobile": "shopify://shop_images/HERO5.5.jpg",
+            "parallax_direction": "left",
+            "overlay_opacity": 0
+          }
+        }
+      },
+      "block_order": [
+        "image_T7AYRy",
+        "image_AWKTVx",
+        "image_D6Ef7p",
+        "image_eyrFUD",
+        "image_ijeeR6"
+      ],
+      "settings": {
+        "section_height": "450px",
+        "mobile_height": "auto",
+        "parallax": false,
+        "style": "bars",
+        "autoplay": true,
+        "autoplay_speed": 5,
+        "lazyload_images": true
+      }
+    },
+    "rich_text_9FfzNf": {
+      "type": "rich-text",
+      "blocks": {
+        "text_czXXwp": {
+          "type": "text",
+          "settings": {
+            "enlarge_text": true,
+            "text": "<p>Our ambassadors are the early risers, the go-getters, and the dirtbags dedicated to everything from chasing trout in far away lands to creating the perfect cup of camp coffee. We're thankful to have a community of like-minded people from all over that are passionate about the outdoors, dedicated to their crafts, and love Hanging with Your Chums!</p>"
+          }
+        }
+      },
+      "block_order": [
+        "text_czXXwp"
+      ],
+      "settings": {
+        "align_text": "center",
+        "narrow_column": true,
+        "divider": false
+      }
+    },
+    "text_columns_ddaGNf": {
+      "type": "text-columns",
+      "blocks": {
+        "text_block_JY3dBi": {
+          "type": "text_block",
+          "settings": {
+            "enable_image": true,
+            "image": "shopify://shop_images/EelandStribling__FlylordsShoot__2023_019.jpg",
+            "image_mask": "rounded",
+            "image_width": 650,
+            "title": "Eeland Stribling",
+            "text": "<p>Angler, Wildlife Biologist, Stand-Up Comedian</p>",
+            "button_label": "",
+            "button_link": "shopify://pages/eeland-stribling-ambassador-profile"
+          }
+        },
+        "text_block_ME6nEm": {
+          "type": "text_block",
+          "settings": {
+            "enable_image": true,
+            "image": "shopify://shop_images/SofiaDeWolfePhotography_JeanMarie_StompingGrounds_24_25_9375.jpg",
+            "image_mask": "rounded",
+            "image_width": 650,
+            "title": "Jean-Marie Bousquet",
+            "text": "<p>Angler, Adventurer, Sustainability Advocate</p>",
+            "button_label": "",
+            "button_link": "shopify://pages/jean-marie-bousquet-ambassador-profile"
+          }
+        },
+        "text_block_f4fAfw": {
+          "type": "text_block",
+          "settings": {
+            "enable_image": true,
+            "image": "shopify://shop_images/SoFly_ElkLake_May_2023__12_51_26_PM.jpg",
+            "image_mask": "rounded",
+            "image_width": 650,
+            "title": "The So Fly Crew",
+            "text": "<p>Anglers, SoFly Podcast Hosts, Explorers </p>",
+            "button_label": "",
+            "button_link": "shopify://pages/sofly-crew-ambassador-profile"
+          }
+        }
+      },
+      "block_order": [
+        "text_block_JY3dBi",
+        "text_block_ME6nEm",
+        "text_block_f4fAfw"
+      ],
+      "settings": {
+        "title": "",
+        "align_text": "center",
+        "divider": false
+      }
+    },
+    "text_columns_8mxBXK": {
+      "type": "text-columns",
+      "blocks": {
+        "text_block_cmncim": {
+          "type": "text_block",
+          "settings": {
+            "enable_image": true,
+            "image": "shopify://shop_images/Idaafly_Q1_2024_8.jpg",
+            "image_mask": "rounded",
+            "image_width": 650,
+            "title": "Joseph Evans",
+            "text": "<p>Angler, Fly Fishing Guide, Creator </p>",
+            "button_label": "",
+            "button_link": "shopify://pages/joseph-evans-ambassador-profile"
+          }
+        },
+        "text_block_dGx9f7": {
+          "type": "text_block",
+          "settings": {
+            "enable_image": true,
+            "image": "shopify://shop_images/ShyanneOrvis_FlyLords_2023_020.jpg",
+            "image_mask": "rounded",
+            "image_width": 650,
+            "title": "Shyanne Orvis",
+            "text": "<p>Angler, Fly Fishing Guide, Author </p>",
+            "button_label": "",
+            "button_link": "shopify://pages/shyanne-orvis-ambassador-profile"
+          }
+        },
+        "text_block_KHpcQa": {
+          "type": "text_block",
+          "settings": {
+            "enable_image": true,
+            "image": "shopify://shop_images/AmieEngerbretson_August_2024_03_7f595e0d-18d9-4b23-9e07-7d6a83d31106.jpg",
+            "image_mask": "rounded",
+            "image_width": 650,
+            "title": "Amie Engerbretson",
+            "text": "<p>Pro Skier, Film Producer, Creator </p>",
+            "button_label": "",
+            "button_link": "shopify://pages/amie-engerbretson-ambassador-profile"
+          }
+        }
+      },
+      "block_order": [
+        "text_block_cmncim",
+        "text_block_dGx9f7",
+        "text_block_KHpcQa"
+      ],
+      "settings": {
+        "title": "",
+        "align_text": "center",
+        "divider": false
+      }
+    },
+    "text_columns_VLVDHF": {
+      "type": "text-columns",
+      "blocks": {
+        "text_block_gVygM4": {
+          "type": "text_block",
+          "settings": {
+            "enable_image": true,
+            "image": "shopify://shop_images/TylerWoolcott_FlylordsShoot_July_2023_081.jpg",
+            "image_mask": "rounded",
+            "image_width": 650,
+            "title": "Tyler Woolcott",
+            "text": "<p>Angler, USCG Licensed Captain, Fishing Guide </p>",
+            "button_label": "",
+            "button_link": "shopify://pages/tyler-woolcott-ambassador-profile"
+          }
+        },
+        "text_block_VHUmEj": {
+          "type": "text_block",
+          "settings": {
+            "enable_image": true,
+            "image": "shopify://shop_images/TCL_S6EP8_10.jpg",
+            "image_mask": "rounded",
+            "image_width": 650,
+            "title": "Jonathan Moss",
+            "text": "<p>Angler, Fishing Guide, The Captain's Log TV Show Host</p>",
+            "button_label": "",
+            "button_link": "shopify://pages/jonathan-moss-ambassador-profile"
+          }
+        },
+        "text_block_ttrd4q": {
+          "type": "text_block",
+          "settings": {
+            "enable_image": false,
+            "image_mask": "none",
+            "image_width": 650,
+            "title": "",
+            "text": "",
+            "button_label": "",
+            "button_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "text_block_gVygM4",
+        "text_block_VHUmEj",
+        "text_block_ttrd4q"
+      ],
+      "settings": {
+        "title": "",
+        "align_text": "center",
+        "divider": false
+      }
+    }
+  },
+  "order": [
+    "main",
+    "page_title_MiMkeC",
+    "slideshow_nwBxwH",
+    "rich_text_9FfzNf",
+    "text_columns_ddaGNf",
+    "text_columns_8mxBXK",
+    "text_columns_VLVDHF"
+  ]
+}

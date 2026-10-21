@@ -1,0 +1,262 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "slideshow": {
+      "type": "slideshow",
+      "blocks": {
+        "slideshow-0": {
+          "type": "image",
+          "settings": {
+            "top_subheading": "",
+            "title": "",
+            "title_size": 80,
+            "subheading": "",
+            "link": "shopify://collections/2025-new-products-colors",
+            "link_text": "",
+            "link_2": "",
+            "link_text_2": "",
+            "color_accent": "#000000",
+            "text_align": "vertical-center horizontal-center",
+            "image": "shopify://shop_images/MatchSomeRays_DesktopHero_6e837be6-81bb-42c3-96ed-2f0bd944c38b.jpg",
+            "image_mobile": "shopify://shop_images/MatchSomeRays_MobileHero_7bb1ecff-66e6-4892-82f6-ed720c8bb8a4.jpg",
+            "parallax_direction": "top",
+            "overlay_opacity": 0
+          }
+        }
+      },
+      "block_order": [
+        "slideshow-0"
+      ],
+      "settings": {
+        "section_height": "natural",
+        "mobile_height": "auto",
+        "parallax": false,
+        "style": "bars",
+        "autoplay": false,
+        "autoplay_speed": 7,
+        "lazyload_images": false
+      }
+    },
+    "rich-text": {
+      "type": "rich-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "title": "Since 1983 Chums has been about the Guides, Dirtbags, River Rats and Weekend Warriors."
+          }
+        }
+      },
+      "block_order": [
+        "heading"
+      ],
+      "settings": {
+        "align_text": "center",
+        "narrow_column": true,
+        "divider": false
+      }
+    },
+    "featured-collection": {
+      "type": "featured-collection",
+      "settings": {
+        "title": "SHOP New Styles & Colors",
+        "home_featured_products": "2025-new-products-colors",
+        "per_row": 5,
+        "rows": 1,
+        "mobile_scrollable": false,
+        "view_all": false,
+        "divider": true
+      }
+    },
+    "text_columns_Rqz449": {
+      "type": "text-columns",
+      "blocks": {
+        "text_block_HMTPJg": {
+          "type": "text_block",
+          "settings": {
+            "enable_image": true,
+            "image": "shopify://shop_images/Homepage_Category_Images-Retainers.jpg",
+            "image_mask": "square",
+            "image_width": 650,
+            "title": "",
+            "text": "",
+            "button_label": "",
+            "button_link": "shopify://collections/chums"
+          }
+        },
+        "text_block_da7BwP": {
+          "type": "text_block",
+          "settings": {
+            "enable_image": true,
+            "image": "shopify://shop_images/Homepage_Category_Images-Wallets.jpg",
+            "image_mask": "square",
+            "image_width": 650,
+            "title": "",
+            "text": "",
+            "button_label": "",
+            "button_link": "shopify://collections/wallets"
+          }
+        },
+        "text_block_DYHA8h": {
+          "type": "text_block",
+          "settings": {
+            "enable_image": true,
+            "image": "shopify://shop_images/Homepage_Category_Images-Bags.jpg",
+            "image_mask": "square",
+            "image_width": 650,
+            "title": "",
+            "text": "",
+            "button_label": "",
+            "button_link": "shopify://collections/bags-1"
+          }
+        },
+        "text_block_VphpqT": {
+          "type": "text_block",
+          "settings": {
+            "enable_image": true,
+            "image": "shopify://shop_images/Homepage_Category_Images-Apparel.jpg",
+            "image_mask": "square",
+            "image_width": 650,
+            "title": "",
+            "text": "",
+            "button_label": "",
+            "button_link": "shopify://collections/apparel"
+          }
+        },
+        "text_block_zXxwPN": {
+          "type": "text_block",
+          "settings": {
+            "enable_image": true,
+            "image": "shopify://shop_images/Homepage_Category_Images-Accessories.jpg",
+            "image_mask": "none",
+            "image_width": 650,
+            "title": "",
+            "text": "",
+            "button_label": "",
+            "button_link": "shopify://collections/outdoor-accessories"
+          }
+        },
+        "text_block_ftwTqh": {
+          "type": "text_block",
+          "settings": {
+            "enable_image": true,
+            "image": "shopify://shop_images/Homepage_Category_Images-New.jpg",
+            "image_mask": "square",
+            "image_width": 650,
+            "title": "",
+            "text": "",
+            "button_label": "",
+            "button_link": "shopify://collections/2025-new-products-colors"
+          }
+        }
+      },
+      "block_order": [
+        "text_block_HMTPJg",
+        "text_block_da7BwP",
+        "text_block_DYHA8h",
+        "text_block_VphpqT",
+        "text_block_zXxwPN",
+        "text_block_ftwTqh"
+      ],
+      "name": "t:sections.text-columns.presets.text_columns_with_images.name",
+      "settings": {
+        "title": "shop by category",
+        "align_text": "center",
+        "divider": false
+      }
+    },
+    "featured_collection_aAB9dQ": {
+      "type": "featured-collection",
+      "settings": {
+        "title": "Customer Favorites",
+        "home_featured_products": "best-selling-eyewear-retainers",
+        "per_row": 4,
+        "rows": 1,
+        "mobile_scrollable": false,
+        "view_all": false,
+        "divider": false
+      }
+    },
+    "slideshow_3hRaVr": {
+      "type": "slideshow",
+      "blocks": {
+        "image_bxwMVV": {
+          "type": "image",
+          "settings": {
+            "top_subheading": "",
+            "title": "SHOP WALLETS",
+            "title_size": 80,
+            "subheading": "",
+            "link": "shopify://collections/wallets",
+            "link_text": "",
+            "link_2": "",
+            "link_text_2": "",
+            "color_accent": "rgba(0,0,0,0)",
+            "text_align": "vertical-bottom horizontal-center",
+            "image": "shopify://shop_images/SurfshortsWebArt.jpg",
+            "image_mobile": "shopify://shop_images/SurfshortsWebArt_Mobile2_1.jpg",
+            "parallax_direction": "top",
+            "overlay_opacity": 0
+          }
+        }
+      },
+      "block_order": [
+        "image_bxwMVV"
+      ],
+      "settings": {
+        "section_height": "natural",
+        "mobile_height": "auto",
+        "parallax": false,
+        "style": "bars",
+        "autoplay": false,
+        "autoplay_speed": 5,
+        "lazyload_images": true
+      }
+    },
+    "featured_collection_YjUiXQ": {
+      "type": "featured-collection",
+      "settings": {
+        "title": "",
+        "home_featured_products": "wallets",
+        "per_row": 4,
+        "rows": 1,
+        "mobile_scrollable": false,
+        "view_all": true,
+        "divider": false
+      }
+    },
+    "blog-posts": {
+      "type": "blog-posts",
+      "settings": {
+        "title": "The Eddy Line Blog",
+        "blog": "news",
+        "post_limit": 3,
+        "blog_show_tags": false,
+        "blog_show_date": true,
+        "blog_show_comments": false,
+        "blog_show_author": false,
+        "view_all": true,
+        "blog_image_size": "wide",
+        "divider": false
+      }
+    }
+  },
+  "order": [
+    "slideshow",
+    "rich-text",
+    "featured-collection",
+    "text_columns_Rqz449",
+    "featured_collection_aAB9dQ",
+    "slideshow_3hRaVr",
+    "featured_collection_YjUiXQ",
+    "blog-posts"
+  ]
+}

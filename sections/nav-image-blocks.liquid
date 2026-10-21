@@ -1,0 +1,307 @@
+{% style %}
+    .nav-image-blocks--{{ section.id }} {
+        display: grid;
+        grid-template-columns: repeat({{ section.settings.template_columns }}, 1fr);
+        grid-template-rows: repeat({{ section.settings.template_rows }}, 1fr);
+        column-gap: {{ section.settings.column_gap }}px;
+        row-gap: {{ section.settings.row_gap }}px;
+        justify-items: {{ section.settings.justify_items }};
+        align-items: {{ section.settings.align_items }};
+        justify-content: {{ section.settings.justify_content }};
+        align-content: {{ section.settings.align_content }};
+    }
+    {% for block in section.blocks %}
+        .nav-image-blocks--{{ section.id }}-{{ block.id }} {
+            grid-column-start: {{ block.settings.column_start }};
+            grid-column-end: span {{ block.settings.column_span }};
+            grid-row-start: {{ block.settings.row_start }};
+            grid-row-end: span {{ block.settings.row_span }};
+        }
+        .nav-image-blocks--{{ section.id }}-{{ block.id }} .nav-image {
+            width: 100%;
+            height: 100%;
+        }
+        .nav-image-blocks--{{ section.id }}-{{ block.id }} .nav-text {
+            top: 50%;
+            text-align: center;
+        }
+    {% endfor %}
+{% endstyle %}
+
+{%- if section.settings.divider -%}<div class="section--divider">{%- endif -%}
+    <div class="page-width" data-blocks="{{ section.blocks.size }}">
+        {%- if section.settings.title != blank -%}
+            <div class="section-header">
+                <h2 class="section-header__title">{{ section.settings.title | escape }}</h2>
+            </div>
+        {%- endif -%}
+
+        {% if section.blocks.size > 0 %}
+            <div class="nav-image-blocks nav-image-blocks--{{ section.id }}">
+                {% for block in section.blocks %}
+                  <!-- block.settings = {{ block.settings | json }} -->
+                    <div class="nav-image-blocks--{{ section.id }}-{{ block.id }}">
+                      {% if block.settings.link %}
+                        <a href="{{ block.settings.link }}" rel="nofollow">
+                      {% endif %}
+                          {% if block.settings.image %}
+                            {{ block.settings.image | image_url: width: 1500 | image_tag: class: 'nav-image', loading: 'lazy'}}
+                            {% else %}
+                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                          {% endif %}
+                      {% if block.settings.link %}
+                        </a>
+                      {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{%- if section.settings.divider -%}</div>{%- endif -%}
+
+{% schema %}
+{
+  "name": "Nav Image Blocks",
+  "class": "index-section",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Optional Title"
+    },
+    {
+      "type": "range",
+      "id": "template_columns",
+      "label": "Columns",
+      "default": 4,
+      "min": 1,
+      "max": 6
+    },
+    {
+      "type": "range",
+      "id": "template_rows",
+      "label": "Rows",
+      "default": 2,
+      "min": 1,
+      "max": 6
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Column Gap",
+      "default": 5,
+      "min": 0,
+      "max": 50,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "row_gap",
+      "label": "Row Gap",
+      "default": 5,
+      "min": 0,
+      "max": 50,
+      "unit": "px"
+    },
+    {
+      "type":"select",
+      "id": "justify_items",
+      "label": "Justify Items",
+      "options": [
+        {"value": "start", "label": "Start"},
+        {"value": "end", "label": "End"},
+        {"value": "center", "label": "Center"},
+        {"value": "stretch", "label": "Stretch"}
+      ],
+      "default": "stretch"
+    },
+    {
+      "type":"select",
+      "id": "align_items",
+      "label": "Align Items",
+      "options": [
+        {"value": "stretch", "label": "Stretch"},
+        {"value": "start", "label": "Start"},
+        {"value": "center", "label": "Center"},
+        {"value": "end", "label": "End"},
+        {"value": "baseline", "label": "Baseline"}
+      ],
+      "default": "stretch"
+    },
+    {
+      "type":"select",
+      "id": "justify_content",
+      "label": "Justify Content",
+      "options": [
+        {"value": "start", "label": "Start"},
+        {"value": "end", "label": "End"},
+        {"value": "center", "label": "Center"},
+        {"value": "stretch", "label": "Stretch"},
+        {"value": "space-around", "label": "Space Around"},
+        {"value": "space-between", "label": "Space Between"},
+        {"value": "space-evenly", "label": "Space Evenly"}
+      ],
+      "default": "stretch"
+    },
+    {
+      "type":"select",
+      "id": "align_content",
+      "label": "Align Content",
+      "options": [
+        {"value": "start", "label": "Start"},
+        {"value": "end", "label": "End"},
+        {"value": "center", "label": "Center"},
+        {"value": "stretch", "label": "Stretch"},
+        {"value": "space-around", "label": "Space Around"},
+        {"value": "space-between", "label": "Space Between"},
+        {"value": "space-evenly", "label": "Space Evenly"}
+      ],
+      "default": "stretch"
+    },
+    {
+      "type": "checkbox",
+      "id": "divider",
+      "label": "Show section divider",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "nav_image",
+      "name": "Nav Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "range",
+          "id": "column_start",
+          "label": "Column Start",
+          "default": 1,
+          "min": 1,
+          "max": 6
+        },
+        {
+          "type": "range",
+          "id": "column_span",
+          "label": "Column Span",
+          "default": 1,
+          "min": 1,
+          "max": 6
+        },
+        {
+          "type": "range",
+          "id": "row_start",
+          "label": "Row Start",
+          "default": 1,
+          "min": 1,
+          "max": 6
+        },
+        {
+          "type": "range",
+          "id": "row_span",
+          "label": "Row Span",
+          "default": 1,
+          "min": 1,
+          "max": 6
+        },
+        {
+          "type": "select",
+          "id": "justify_self",
+          "label": "Justify Self",
+          "options": [
+            {
+              "value": "start",
+              "label": "Start"
+            },
+            {
+              "value": "end",
+              "label": "End"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "stretch",
+              "label": "Stretch"
+            }
+          ],
+          "default": "stretch"
+        },
+        {
+          "type": "select",
+          "id": "align_self",
+          "label": "Align Self",
+          "options": [
+            {
+              "value": "start",
+              "label": "Start"
+            },
+            {
+              "value": "end",
+              "label": "End"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "stretch",
+              "label": "Stretch"
+            }
+          ],
+          "default": "stretch"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Nav Blocks",
+      "settings": {
+        "justify_content": "stretch",
+        "align_items": "stretch",
+        "align_content": "stretch",
+        "row_gap": 5,
+        "column_gap": 5,
+        "divider": false
+      },
+      "blocks": [
+        {
+          "type": "nav_image",
+          "settings": {
+            "column_start": 1
+          }
+        },
+        {
+          "type": "nav_image",
+          "settings": {
+            "column_start": 2
+          }
+        },
+        {
+          "type": "nav_image",
+          "settings": {
+            "column_start": 3
+          }
+        },
+        {
+          "type": "nav_image",
+          "settings": {
+            "column_start": 4
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,26 @@
+<header class="section-header {% if section.settings.page_title_visible == false %}visually-hidden{% endif %}">
+  <h1 class="section-header__title">{{ page.title }}</h1>
+</header>
+{% schema %}
+  {
+    "name": "Page Title",
+    "settings": [
+      {
+        "id": "page_title_visible",
+        "type": "checkbox",
+        "label": "Show Title",
+        "default": false,
+        "info": "When checked, the title will be visible, otherwise the title will be for screen readers only. Use this when the page content is disabled and a header is required for accessibility."
+      }
+    ],
+    "presets": [
+      {
+        "name": "Page Title",
+        "category": "custom"
+      }
+    ],
+    "disabled_on": {
+      "groups": ["footer", "header", "custom.popups"]
+    }
+  }
+{% endschema %}

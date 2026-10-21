@@ -1,0 +1,155 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {}
+    },
+    "background_image_text_WYY7C7": {
+      "type": "background-image-text",
+      "settings": {
+        "subtitle": "",
+        "title": "",
+        "text": "",
+        "button_label": "",
+        "button_link": "",
+        "image": "shopify://shop_images/Dory-Boat-R-04.jpg",
+        "layout": "right",
+        "height": 750,
+        "framed": false,
+        "parallax": false,
+        "parallax_direction": "top",
+        "lazyload_images": true
+      }
+    },
+    "rich_text_FzEDzL": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_dgPqLW": {
+          "type": "heading",
+          "settings": {
+            "title": "BORN ON THE RIVER"
+          }
+        },
+        "text_7XnLY6": {
+          "type": "text",
+          "settings": {
+            "enlarge_text": true,
+            "text": "<p>Founded by a dory boat captain on the Colorado River in 1983, Chums is about the guides, dirtbags, river rats, and weekend warriors. Our community is the early risers and go-getters dedicated to everything from chasing trout in faraway lands to brewing the perfect cup of camp coffee deep in the backcountry. We’ve been producing innovative outdoor products built for adventure for more than 40 years, and we’re looking forward to many more decades of fishing, paddling, camping, hiking, and hanging with our Chums.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading_dgPqLW",
+        "text_7XnLY6"
+      ],
+      "settings": {
+        "align_text": "center",
+        "narrow_column": true,
+        "divider": false
+      }
+    },
+    "text_and_image_g4aGRU": {
+      "type": "text-and-image",
+      "settings": {
+        "image": "shopify://shop_images/chums-office-location-map.jpg",
+        "image_mask": "none",
+        "image2_mask": "none",
+        "subtitle": "",
+        "title": "CHUMS TODAY",
+        "text": "<p>Now with <strong>3 offices and more than 75 employees</strong> (a few of whom have been with us for <strong>over 30 years</strong>), it’s safe to say that we’ve learned a thing or two about staying loyal to our roots and to our people since we opened for business in 1983. We may be a little biased, but we’re pretty sure that our team consists of some of the raddest, most talented people in the outdoor industry.</p><h3>Chums manufactures <br/><strong>15,000+ Units a Day </strong><br/>in our Hurricane, Utah facility.</h3>",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "primary",
+        "align_text": "left",
+        "image_width": "66",
+        "layout": "right",
+        "divider": false,
+        "top_padding": false,
+        "bottom_padding": false,
+        "lazyload_images": true
+      }
+    },
+    "featured_video_WzLDcx": {
+      "type": "featured-video",
+      "settings": {
+        "title": "",
+        "video_url": "https://www.youtube.com/watch?v=dQ1jx1-7728",
+        "divider": false
+      }
+    },
+    "background_image_text_iDmeqF": {
+      "type": "background-image-text",
+      "settings": {
+        "subtitle": "",
+        "title": "",
+        "text": "",
+        "button_label": "",
+        "button_link": "",
+        "image": "shopify://shop_images/chums-office-employees.jpg",
+        "layout": "left",
+        "height": 750,
+        "framed": false,
+        "parallax": false,
+        "parallax_direction": "top",
+        "lazyload_images": true
+      }
+    },
+    "rich_text_HqqRKM": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_tPTryW": {
+          "type": "heading",
+          "settings": {
+            "title": "Family Run Company"
+          }
+        },
+        "text_e8BRma": {
+          "type": "text",
+          "settings": {
+            "enlarge_text": true,
+            "text": "<p>Way back in 2002, the Ferries family purchased Chums. In the years that have followed, they have pushed innovation through product development, reinforced the brand’s commitment to American manufacturing, and instilled an unwavering passion for top-notch customer service, leading Chums to become the global brand that so many know and love today.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading_tPTryW",
+        "text_e8BRma"
+      ],
+      "settings": {
+        "align_text": "center",
+        "narrow_column": true,
+        "divider": false
+      }
+    },
+    "store_locator_BUpb8B": {
+      "type": "store-locator",
+      "name": "store-locator",
+      "settings": {
+        "google_maps_api_key": "AIzaSyAIhAbnZbipYL9YqUzsRn1Mqrc_Wt8VroQ",
+        "default_location_latitude": "37.16373108",
+        "default_location_longitude": "-113.2989828",
+        "default_range": "25"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "background_image_text_WYY7C7",
+    "rich_text_FzEDzL",
+    "text_and_image_g4aGRU",
+    "featured_video_WzLDcx",
+    "background_image_text_iDmeqF",
+    "rich_text_HqqRKM",
+    "store_locator_BUpb8B"
+  ]
+}

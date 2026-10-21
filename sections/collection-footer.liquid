@@ -1,0 +1,47 @@
+{% if section.settings.enable %}
+  {% style %}
+    .collection-footer--{{ section.id }} {
+      margin-bottom: 3rem;
+    }
+  {% endstyle %}
+  <div id="CollectionFooterSection" class="collection-footer collection-footer--{{ section.id }}"
+       data-section-id="{{ section.id }}" data-section-type="collection-footer">
+    <div class="page-width">
+      <div class="collection-footer">
+        {% if collection.metafields.custom.bottom_text != blank %}
+          <div class="collection-footer__text">
+            <div class="rte">
+              {{ collection.metafields.custom.bottom_text | metafield_tag }}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endif %}
+{% schema %}
+{
+  "name": "Collection Footer",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable",
+      "label": "Enable Footer",
+      "default": true
+    }
+  ],
+  "disabled_on": {
+    "groups": [
+      "footer",
+      "header",
+      "custom.popups"
+    ]
+  },
+  "presets": [
+    {
+      "name": "collection-footer",
+      "category": "custom"
+    }
+  ]
+}
+{% endschema %}

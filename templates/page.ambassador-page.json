@@ -1,0 +1,118 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "page_title_UNJ4Wr": {
+      "type": "page-title",
+      "name": "Page Title",
+      "settings": {
+        "page_title_visible": false
+      }
+    },
+    "advanced_content_t8bcn8": {
+      "type": "advanced-content",
+      "blocks": {
+        "image_wV8ERp": {
+          "type": "image",
+          "settings": {
+            "image": "{{ page.metafields.custom.ambassador_image.value }}",
+            "link": "",
+            "width": "50%",
+            "alignment": "center"
+          }
+        }
+      },
+      "block_order": [
+        "image_wV8ERp"
+      ],
+      "custom_css": [
+        ".custom-content {display: flex; justify-content: center;}"
+      ],
+      "settings": {
+        "full_width": false,
+        "space_around": false,
+        "lazyload_images": true
+      }
+    },
+    "rich_text_9FfzNf": {
+      "type": "rich-text",
+      "blocks": {
+        "text_czXXwp": {
+          "type": "text",
+          "settings": {
+            "enlarge_text": true,
+            "text": "<p>Our ambassadors are the early risers, the go-getters, and the dirtbags dedicated to everything from chasing trout in far away lands to creating the perfect cup of camp coffee. We're thankful to have a community of like-minded people from all over that are passionate about the outdoors, dedicated to their crafts, and love Hanging with Your Chums!</p>"
+          }
+        }
+      },
+      "block_order": [
+        "text_czXXwp"
+      ],
+      "disabled": true,
+      "settings": {
+        "align_text": "center",
+        "narrow_column": false,
+        "divider": false
+      }
+    },
+    "rich_text_df6NtV": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_WxLMkz": {
+          "type": "heading",
+          "settings": {
+            "title": "{{ page.metafields.custom.ambassador_name.value }}"
+          }
+        },
+        "text_rrt8g7": {
+          "type": "text",
+          "settings": {
+            "enlarge_text": true,
+            "text": "<p>{{ page.metafields.custom.ambassador_bio | metafield_tag }}</p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading_WxLMkz",
+        "text_rrt8g7"
+      ],
+      "settings": {
+        "align_text": "center",
+        "narrow_column": true,
+        "divider": false
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {}
+    },
+    "featured_collection_4XWqNz": {
+      "type": "featured-collection",
+      "settings": {
+        "title": "Favorite Gear",
+        "home_featured_products": "{{ page.metafields.custom.ambassador_gear.value }}",
+        "per_row": 3,
+        "rows": 1,
+        "mobile_scrollable": false,
+        "view_all": false,
+        "divider": false
+      }
+    }
+  },
+  "order": [
+    "page_title_UNJ4Wr",
+    "advanced_content_t8bcn8",
+    "rich_text_9FfzNf",
+    "rich_text_df6NtV",
+    "main",
+    "featured_collection_4XWqNz"
+  ]
+}
