@@ -1,0 +1,16 @@
+<div class="template-404 dynamic-page-width{% if settings.animation_on_reveal %} reveal-slide-in{% endif %}">
+    <h1 class="title reveal-item{% if settings.show_uppercase_heading %} uppercase{% endif %}">
+        {{ 'templates.404.title' | t }}
+    </h1>
+    <h2 class="subtitle reveal-item">
+        {{ 'templates.404.subtext' | t }}
+    </h2>
+    <a href="{{ routes.root_url }}" class="link reveal-item">
+        {{ 'general.continue_shopping' | t }}
+    </a>
+</div>
+
+{{ '404.css' | asset_url | stylesheet_tag }}
+<noscript>
+    {{ '404.css' | asset_url | stylesheet_tag }}
+</noscript>

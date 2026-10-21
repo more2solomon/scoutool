@@ -1,0 +1,31 @@
+{% comment %}
+    Renders "Sold Out" badge for product.
+
+    Accepts:
+    - product:      {Object}
+    - size:         {String}
+{% endcomment %}
+
+{%- liquid
+    assign position = settings.badge_soldout__position
+    assign text = settings.badge_soldout__text | escape
+    assign size = size | default: '1'
+    assign bg_color = settings.colors_badge_soldout_background_gradient | default: settings.colors_badge_soldout_background
+    assign text_color = settings.colors_badge_soldout_foreground
+    assign border_radius = settings.badges_border_radius_value | append: 'rem'
+    assign opacity = '0.85'
+
+    assign styles = 'color:' | append: text_color | append: ';background:' | append: bg_color
+    assign styles = styles | append: ';border-radius:' | append: border_radius
+    assign styles = styles | append: ';opacity:' | append: opacity
+-%}
+
+{%- unless product.available or text == blank -%}
+    <div
+        class="badge badge-size-{{ size }} badge-soldout {{ position }}"
+        style="{{ styles }}"
+        aria-hidden="true"
+    >
+        {{ text }}
+    </div>
+{%- endunless -%}

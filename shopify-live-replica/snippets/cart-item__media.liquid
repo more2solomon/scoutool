@@ -1,0 +1,50 @@
+{% comment %}
+    Render cart item media (image)
+
+    Accepts:
+    - item: {Object}
+{% endcomment %}
+
+{%- liquid
+    assign imageRatio = 'settings|product_card_image_ratio'
+    assign imageWidth = '105px'
+    assign imageSizesConfig = '320|210,320|calc(#imageWidth# * {m})' | replace: '#imageWidth#', imageWidth
+-%}
+
+{%- if item.image != blank -%}
+    {%- liquid
+        assign media_class = 'media'
+
+        if settings.use_media_transparent
+            assign media_class = media_class | append: ' media--transparent'
+        endif
+
+        unless request.design_mode
+            if settings.enable_preload_images
+                assign media_class = media_class | append: ' media--blur-image'
+            endif
+        endunless
+    -%}
+    {%- if settings.enable_preload_images -%}{%- render 'loading-overlay' -%}{%- endif -%}
+    <div
+        class="{{ media_class }}"
+        style="padding-bottom: {% render 'helper__media-padding-bottom' image: item.image image_ratio: imageRatio %};"
+    >
+        {% render 'grid-item--item-image',
+            image: item.image,
+            image_ratio: imageRatio,
+            image_sizes_config: imageSizesConfig
+        %}
+    </div>
+{%- else -%}
+    <div class="cart-item__media--placeholder">
+        {{
+            item.variant_id
+            | divided_by: 1000
+            | modulo: 4
+            | plus: 1
+            | prepend: 'product-'
+            | placeholder_svg_tag: 'placeholder-svg placeholder'
+        }}
+    </div>
+{%- endif -%}

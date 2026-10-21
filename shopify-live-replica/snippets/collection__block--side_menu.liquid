@@ -1,0 +1,101 @@
+{%- comment -%}
+    Render Side menu
+
+    Accepts:
+        - block:        {Object}
+        - blockOrder:   {Number}
+{%- endcomment -%}
+
+{%- unless block.settings.menu == blank -%}
+    <div
+        class="collection__block collection__block--side_menu reveal-slide-in"
+        style="order: {{ blockOrder }}"
+        {{ block.shopify_attributes }}
+    >
+        {%- unless block.settings.title == blank %}
+            <span class="heading reveal-item">
+                {{- block.settings.title -}}
+            </span>
+        {%- endunless %}
+        <ul class="sidebar-menu reveal-item">
+            {%- for link in block.settings.menu.links -%}
+                {%- if link.links != blank -%}
+                    <li>
+                        <details>
+                            <summary class="item-menu list-menu__item focus-inset">
+                                <a href="{{ link.url }}">
+                                    {{ link.title | escape }}
+                                </a>
+                                <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+                                    <use href="#icon-caret" />
+                                </svg>
+                            </summary>
+                            <div
+                                id="link-{{ link.title | escape }}"
+                                class="sidebar-menu__submenu motion-reduce"
+                                tabindex="-1"
+                            >
+                                <div class="sidebar-menu__inner-submenu">
+                                    <ul class="sidebar-menu__child-menu list-menu" role="list" tabindex="-1">
+                                        {%- for childlink in link.links -%}
+                                            <li>
+                                                {%- if childlink.links == blank -%}
+                                                    <a
+                                                        href="{{ childlink.url }}"
+                                                        class="item-menu list-menu__item focus-inset"
+                                                    >
+                                                        {{ childlink.title | escape }}
+                                                    </a>
+                                                {%- else -%}
+                                                    <details>
+                                                        <summary class="item-menu list-menu__item item-menu focus-inset">
+                                                            <a href="{{ childlink.url }}" class="menu-item-childlink">
+                                                                {{ childlink.title | escape }}
+                                                            </a>
+                                                            <svg
+                                                                aria-hidden="true"
+                                                                focusable="false"
+                                                                role="presentation"
+                                                                class="icon icon-caret"
+                                                            >
+                                                                <use href="#icon-caret" />
+                                                            </svg>
+                                                        </summary>
+                                                        <div class="sidebar-menu__inner-grandchild-menu motion-reduce">
+                                                            <ul
+                                                                class="sidebar-menu__grandchild-menu list-menu"
+                                                                role="list"
+                                                                tabindex="-1"
+                                                            >
+                                                                {%- for grandchildlink in childlink.links -%}
+                                                                    <li>
+                                                                        <a
+                                                                            href="{{ grandchildlink.url }}"
+                                                                            class="item-menu list-menu__item focus-inset"
+                                                                        >
+                                                                            {{ grandchildlink.title | escape }}
+                                                                        </a>
+                                                                    </li>
+                                                                {%- endfor -%}
+                                                            </ul>
+                                                        </div>
+                                                    </details>
+                                                {%- endif -%}
+                                            </li>
+                                        {%- endfor -%}
+                                    </ul>
+                                </div>
+                            </div>
+                        </details>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{{ link.url }}" class="item-menu list-menu__item focus-inset">
+                            {{ link.title | escape }}
+                        </a>
+                    </li>
+                {%- endif -%}
+            {%- endfor -%}
+        </ul>
+    </div>
+{%- endunless -%}

@@ -1,0 +1,87 @@
+{%- comment -%}
+    if we apply a special style to cents,
+    we will wrap them in a sup (superscript) element.
+
+    Accepts:
+     - price     {Number}
+     - css_class {String}
+{%- endcomment -%}
+
+{%- liquid
+    assign price = price | default: '1999'
+    assign formatted_price = price | money | strip_html
+
+    unless cart.taxes_included
+        if settings.show_tax_info_in_grid_item or settings.show_tax_info_on_product_page
+            assign tax_rating = settings.including_tax_rating | times: 1
+            assign tax_rating = tax_rating | divided_by: 100.0 | plus: 1 | round: 2
+            assign formatted_price = price | divided_by: tax_rating | money | strip_html | replace: ' ', ''
+        endif
+    endunless
+
+    # Get price without currency
+    assign price_without_currency = price | money_without_currency | replace: '.', '' | replace: ',', '.' | replace: ' ', ''
+
+    # Extract the currency symbol from shop.money_format
+    assign money_format_currency = shop.money_format
+    if money_format_currency contains 'amount'
+        assign money_format_currency = money_format_currency | replace: '{{amount}}', ''
+    endif
+
+    if money_format_currency contains 'amount_with_comma_separator'
+        assign money_format_currency = money_format_currency | replace: '{{amount_with_comma_separator}}', ''
+    endif
+
+    if money_format_currency contains 'amount_no_decimals_with_comma_separator'
+        assign money_format_currency = money_format_currency | replace: '{{amount_no_decimals_with_comma_separator}}', ''
+    endif
+
+    if money_format_currency contains 'amount_with_space_separator'
+        assign money_format_currency = money_format_currency | replace: '{{amount_with_space_separator}}', ''
+    endif
+
+    # Remove the currency symbol and other formatting elements from shop.money_format
+    assign money_format = shop.money_format | replace: '{{', '' | replace: '}}', '' | replace: money_format_currency, '' | strip
+
+    # Handle superscript decimals if enabled in settings
+    if settings.superscript_decimals
+        if money_format contains 'amount_with_comma_separator'
+            # Handle European format with comma as decimal separator
+            assign formatted_price = formatted_price | replace: ',', '<span class="visually-hidden">,</span><sup>'
+        elsif money_format contains 'amount'
+            # Handle standard format
+            assign formatted_price = formatted_price | replace: '.', '<span class="visually-hidden">.</span><sup>'
+        endif
+
+        # Insert the closing superscript tag if necessary
+        assign beginning = shop.money_format | split: '}}' | first
+        assign ending = shop.money_format | split: '}}' | last
+        if beginning == ending
+            assign formatted_price = formatted_price | append: '</sup>'
+        else
+            assign formatted_price = formatted_price | replace: ending, '</sup>' | replace: money_format_currency, ''
+        endif
+    endif
+
+    # add padding between currency
+    if settings.enable_currency_paddings
+        assign formatted_price = formatted_price | prepend: ' '
+        assign formatted_price = formatted_price | replace: money_format_currency, '' | prepend: money_format_currency
+    endif
+
+    # Handling variants price display
+    if variants
+        assign price_from = 'products.product.price.from_price_html' | t: price: formatted_price
+    endif
+-%}
+<span
+    class="{{ css_class }}"
+    data-amount="{{ price_without_currency }}"
+    data-currency="{{ money_format_currency | strip }}"
+>
+    {%- if variants -%}
+        {{- price_from -}}
+    {%- else -%}
+        {{- formatted_price -}}
+    {%- endif -%}
+</span>

@@ -1,0 +1,26 @@
+{%- comment -%}
+    Highlight words
+
+    Accepts:
+        - heading:      {String}
+        - words_count:  {Number} Highlighted words count
+{%- endcomment -%}
+
+{%- liquid
+    assign heading = heading
+    assign words = heading | split: ' '
+
+    if words.size > 1 and words_count > 0
+        for word in words
+            if forloop.first
+                echo '<span class="highlight-heading-words">'
+            endif
+            echo word | append: ' '
+            if forloop.index == words_count
+                echo '</span>'
+            endif
+        endfor
+    else
+        echo heading
+    endif
+-%}

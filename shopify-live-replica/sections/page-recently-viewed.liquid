@@ -1,0 +1,20 @@
+{%- if settings.recently_viewed_template contains 'page' %}
+    {%- render 'recently-viewed' -%}
+{% endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.page_recently_viewed.name",
+  "tag": "section",
+  "class": "spaced-section",
+  "settings": [],
+  "presets": [
+    {
+      "name": "t:sections.page_recently_viewed.presets.name"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["page"]
+  }
+}
+{% endschema %}

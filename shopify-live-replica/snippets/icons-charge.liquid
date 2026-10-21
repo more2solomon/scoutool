@@ -1,0 +1,77 @@
+{% comment %}
+    Render icon for Charge Theme
+
+    Accepts:
+    - name:      {String} Icon name
+    - css_class: {String} Additional CSS classes for svg
+
+    Usage:
+    {% render 'icons-charge', name: 'email', css_class: 'my-class' %}
+{% endcomment %}
+
+{%- assign css_class = css_class | default: '' -%}
+
+{%- capture icon -%}
+    {%- case name -%}
+
+    {%- when 'account' -%}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g stroke="currentColor" stroke-width="2"><g transform="scale(1.4) translate(2,2)"><circle cx="8.13598" cy="4.46811" r="4"></circle><path d="M15.523,16.7797 C15.0486,12.9055 11.8552,9.919 8,9.919 C4.14474,9.919 0.95143,12.9055 0.47717,16.7797"></path></g></g></g></svg>
+
+    {%- when 'cart' -%}
+<svg  width="26" height="24">
+    <use href="#icon-cart" />
+</svg>
+
+    {%- when 'menu' -%}
+<svg width="24" height="22" viewBox="0 0 24 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <line x1="1.5" y1="1.5" x2="22.5" y2="1.5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    <line x1="1.5" y1="10.5" x2="22.5" y2="10.5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    <line x1="1.5" y1="19.5" x2="15.5" y2="19.5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+</svg>
+
+    {%- when 'x' -%}
+<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <line x1="2" y1="16.8491" x2="16.8492" y2="1.9999" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    <line x1="1.5" y1="-1.5" x2="22.5" y2="-1.5" transform="matrix(-0.707107 -0.707107 -0.707107 0.707107 16.9707 18.9705)" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+</svg>
+    {%- when 'summary' -%}
+<svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <line x1="6" y1="2" x2="17" y2="2" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+    <line x1="6" y1="8" x2="17" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+    <circle cx="1.5" cy="2" r="1.5" fill="currentColor"/>
+    <circle cx="1.5" cy="8" r="1.5" fill="currentColor"/>
+    <circle cx="1.5" cy="14" r="1.5" fill="currentColor"/>
+    <line x1="6" y1="14" x2="17" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+</svg>
+
+    {%- when 'view-grid' -%}
+<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="4" height="4" rx="1" fill="currentColor"/>
+    <rect y="7" width="4" height="4" rx="1" fill="currentColor"/>
+    <rect y="14" width="4" height="4" rx="1" fill="currentColor"/>
+    <rect x="7" width="4" height="4" rx="1" fill="currentColor"/>
+    <rect x="7" y="7" width="4" height="4" rx="1" fill="currentColor"/>
+    <rect x="7" y="14" width="4" height="4" rx="1" fill="currentColor"/>
+    <rect x="14" width="4" height="4" rx="1" fill="currentColor"/>
+    <rect x="14" y="7" width="4" height="4" rx="1" fill="currentColor"/>
+    <rect x="14" y="14" width="4" height="4" rx="1" fill="currentColor"/>
+</svg>
+
+    {%- when 'view-list' -%}
+<svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="3.92308" height="3.92308" rx="1" fill="currentColor"/>
+    <rect x="7" y="1" width="13" height="2" fill="currentColor"/>
+    <rect x="7" y="8" width="13" height="2" fill="currentColor"/>
+    <rect x="7" y="15" width="13" height="2" fill="currentColor"/>
+    <rect y="7" width="3.92308" height="3.92308" rx="1" fill="currentColor"/>
+    <rect y="14" width="3.92308" height="3.92308" rx="1" fill="currentColor"/>
+</svg>
+
+
+    {%- endcase -%}
+{%- endcapture -%}
+{{
+    icon
+    | replace: '<svg ', '<svg class="#class#" aria-hidden="true" focusable="false" role="presentation" '
+    | replace: '#class#', css_class
+}}

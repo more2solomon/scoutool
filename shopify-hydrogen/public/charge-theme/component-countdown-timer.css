@@ -1,0 +1,60 @@
+#timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timer-wrapper {
+  padding: 1rem 0;
+}
+
+.timer-wrapper .period {
+  position: relative;
+  display:flex;
+  align-items: flex-end;
+  flex-direction: column;
+  padding: 0 .75rem .5rem;
+  border: 1px solid var(--color-foreground-20);
+  margin: 0 .75rem;
+  min-width: 4rem;
+  border-radius: .25rem;
+}
+
+.timer-wrapper .period > span:first-child {
+  font-size: 2rem;  
+}
+
+.timer-wrapper .period > span.label {
+  font-size: .75rem;
+}
+
+.timer-wrapper div:not(:last-child)::after {
+  content: ':';
+  position: absolute;
+  right: -1.15rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+}
+
+@media all and (min-width: 750px) { 
+  .countdown .timer-wrapper .period > span.label {
+    font-size: 1.5rem;
+    letter-spacing: -1px;
+  }
+}
+
+@media all and (min-width: 1024px) {
+  .countdown .timer-wrapper .period {
+    min-width: 7rem;
+  }
+  
+  .popup-banner__content:has(.media) .timer-wrapper .period {
+    min-width: 4rem;
+  }
+
+  .countdown .timer-wrapper .period > span.label {
+    font-size: 1.8rem;
+    letter-spacing: -3px;
+  }
+}

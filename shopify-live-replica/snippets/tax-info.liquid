@@ -1,0 +1,61 @@
+{%- comment -%}
+    Render Tax information
+
+    Accepts:
+    - product: {Object}
+{%- endcomment -%}
+
+<div class="product__title--tax tax--including">
+    {%- liquid
+        assign money_format_currency = shop.money_format
+        assign target = product.selected_or_first_available_variant
+        assign price = target.price | default: '1999'
+        # Extract the currency symbol from shop.money_format
+        assign money_format_currency = shop.money_format
+        if money_format_currency contains 'amount'
+            assign money_format_currency = money_format_currency | replace: '{{amount}}', ''
+        endif
+
+        if money_format_currency contains 'amount_with_comma_separator'
+            assign money_format_currency = money_format_currency | replace: '{{amount_with_comma_separator}}', ''
+        endif
+
+        if money_format_currency contains 'amount_no_decimals_with_comma_separator'
+            assign money_format_currency = money_format_currency | replace: '{{ amount_no_decimals_with_comma_separator }}', ''
+        endif
+    -%}
+    {%- if cart.taxes_included -%}
+        {% comment %}
+            if price includes sales tax we show tax info: Price excluding tax
+        {% endcomment %}
+        {%- liquid
+            assign price_without_currency = price | money_without_currency
+            if price_without_currency contains '.' and price_without_currency contains ','
+                assign price_without_currency = price | money_without_currency | replace: '.', '' | replace: ',', '.'
+            else
+                assign price_without_currency = price | money_without_currency
+            endif
+            assign tax_rating = settings.excluding_tax_rating | plus: 100 | divided_by: 100.0
+            assign price_excluding_tax = price_without_currency | divided_by: tax_rating | round: 2
+            if settings.enable_currency_paddings
+                assign price_excluding_tax = price_excluding_tax | prepend: ' '
+                assign price_excluding_tax = price_excluding_tax | replace: money_format_currency, '' | prepend: money_format_currency
+            else
+                assign price_excluding_tax = price_excluding_tax | prepend: money_format_currency
+            endif
+        -%}
+        {{ 'sections.cart.taxes_excluded_html' | t: price: price_excluding_tax }}
+    {%- else -%}
+        {% comment %}
+            if price excludes sales tax we show tax info: Price including tax
+        {% endcomment %}
+        {%- liquid
+            assign price = price | money | strip_html
+            if settings.enable_currency_paddings
+                assign price = price | prepend: ' '
+                assign price = price | replace: money_format_currency, '' | prepend: money_format_currency
+            endif
+        -%}
+        {{ 'sections.cart.taxes_included_html' | t: price: price }}
+    {%- endif -%}
+</div>

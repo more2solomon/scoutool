@@ -1,0 +1,36 @@
+{%- comment -%}
+    Render product quantity selector for: Product page / Grid item (simple products)
+
+    Accepts:
+     - product: {Object}
+     - form_id: {String}
+{%- endcomment -%}
+<div class="product-form__input product-form__quantity">
+    <label class="form__label" for="Quantity-{{ product.id }}">
+        {{ 'products.product.quantity.label' | t }}
+    </label>
+    <quantity-input class="quantity">
+        <button class="quantity__button button--small no-js-hidden" name="minus" type="button">
+            <span class="visually-hidden">
+                {{- 'products.product.quantity.decrease' | t: product: product.title | escape -}}
+            </span>
+            {% render 'icons-solid', name: 'minus' %}
+        </button>
+        <input
+            class="quantity__input"
+            type="number"
+            name="quantity"
+            id="Quantity-{{ product.id }}"
+            min="1"
+            value="1"
+            form="{{ form_id }}"
+            aria-label="Quantity-{{ product.id }}"
+        >
+        <button class="quantity__button button--small no-js-hidden" name="plus" type="button">
+            <span class="visually-hidden">
+                {{- 'products.product.quantity.increase' | t: product: product.title | escape -}}
+            </span>
+            {% render 'icons-solid', name: 'plus' %}
+        </button>
+    </quantity-input>
+</div>

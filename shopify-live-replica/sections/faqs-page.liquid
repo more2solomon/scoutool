@@ -1,0 +1,103 @@
+{% style %}
+    faqs-accordion {
+        display: block;
+        min-height: 20rem;
+    }
+    .faqs-page .empty_message {
+        font-weight: 600;
+        padding: 1.5rem;
+    }
+{% endstyle %}
+
+<div class="dynamic-page-width faqs-page{% if section.settings.animation_on_reveal %} reveal-slide-in{% endif -%}">
+    <input
+        type="text"
+        id="faqs_search"
+        onkeyup="filterFaqsByName()"
+        placeholder="{{ 'templates.faqs_page.input_search' | t }}"
+        title="{{ 'templates.faqs_page.input_title' | t }}"
+    >
+    <p class="empty_message" hidden>{{ 'templates.faqs_page.input_empty_result' | t }}</p>
+    {%- if section.settings.faqs_subtitle -%}
+        {% assign subtitle = section.settings.faqs_subtitle %}
+        <h2 class="title reveal-item{% if settings.show_uppercase_heading %} uppercase{% endif %}">
+            {% render 'helper__decorate-heading', heading: subtitle %}
+        </h2>
+    {%- endif -%}
+
+    {% assign faqs = page.metafields.custom.faqs.value %}
+    {{ 'component-faqs.css' | asset_url | stylesheet_tag }}
+    <faqs-accordion data-open-multiple="{% if section.settings.can_open_multiple %}true{% else %}false{%  endif %}">
+        {%- if faqs != null and faqs != blank -%}
+            {%- for faq in faqs -%}
+                <details>
+                    <summary class="heading faq-title reveal-item">{{ faq.first | capitalize }}</summary>
+                    <div class="faq-content reveal-item">
+                        <div class="faq-content--inner">
+                            {{ faq.last | capitalize }}
+                        </div>
+                    </div>
+                </details>
+            {%- endfor -%}
+        {%- else -%}
+            {{ 'templates.faqs_page.empty' | t }}
+        {%- endif -%}
+    </faqs-accordion>
+</div>
+
+{%- if faqs != null and faqs != blank -%}
+    <script src="{{ 'faqs-accordion.js' | asset_url }}" defer="defer"></script>
+
+    <script type="text/javascript" defer="defer">
+        function filterFaqsByName() {
+            var input = document.getElementById("faqs_search"),
+                inputValue = input.value.toUpperCase(),
+                faqsTitles = document.querySelectorAll("faqs-accordion .faq-title"),
+                visibleFaqs = 0;
+
+            if (!faqsTitles.length) return;
+
+            faqsTitles.forEach(title => {
+                const text = (title.textContent || title.innerText).toUpperCase();
+
+                if (text.indexOf(inputValue) === -1) {
+                    title.closest('details').style.display = 'none';
+                } else {
+                    title.closest('details').style.display = '';
+                    visibleFaqs++;
+                }
+            });
+
+            document.querySelector('.empty_message').hidden = (visibleFaqs > 0);
+        }
+    </script>
+{%- endif -%}
+
+{% schema %}
+{
+    "name": "t:sections.faqs-page.name",
+    "tag": "section",
+    "class": "spaced-section",
+    "settings": [
+        {
+            "type": "text",
+            "id": "faqs_subtitle",
+            "label": "t:sections.faqs-page.settings.faqs_subtitle.label",
+            "info": "t:sections.faqs-page.settings.faqs_subtitle.info"
+        },
+        {
+            "type": "checkbox",
+            "id": "can_open_multiple",
+            "label": "t:sections.frequently-asked-questions.settings.can_open_multiple.label",
+            "info": "t:sections.frequently-asked-questions.settings.can_open_multiple.info",
+            "default": true
+        },
+        {
+            "type": "checkbox",
+            "id": "animation_on_reveal",
+            "label": "t:sections.all.settings.animation_on_reveal.label",
+            "default": true
+        }
+    ]
+}
+{% endschema %}

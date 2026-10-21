@@ -1,0 +1,88 @@
+{%- comment -%}
+    Render Page Template with Image
+{%- endcomment -%}
+
+{{ 'section-page-with-image.css' | asset_url | stylesheet_tag }}
+<noscript>{{ 'section-page-with-image.css' | asset_url | stylesheet_tag }}</noscript>
+{%- liquid
+    assign pageImageTitle = section.blocks | where: 'type', 'heading' | first
+    assign pageImageSubtitle = section.blocks | where: 'type', 'text' | first
+-%}
+
+{% style %}
+    #shopify-section-{{ section.id }} {
+      margin-bottom: 2rem;
+    }
+    {% if section.settings.full_width == false %}
+    #shopify-section-{{ section.id }} {
+      margin-top: 2rem;
+      padding-left: .75rem;
+      padding-right: .75rem;
+    }{% endif %}
+{% endstyle %}
+
+{%- capture page_image_html -%}
+<div class="{% if section.settings.image != blank %}page__media{% else %}page__media--placeholder placeholder{% endif %}"
+{% if section.settings.image != blank %} style="padding-bottom: {{ 100 | divided_by: section.settings.image.aspect_ratio }}%;"{% endif %}
+>
+<a href="{{ section.settings.link | default: '#/' }}" aria-label="{{ page.handle }}">
+  {%- if section.settings.image != blank -%}
+      {% if section.settings.full_width %}
+        {% render 'render-image'
+          image: section.settings.image
+          sizes: '100vw'
+          widths: '640,720,900,1080,1920,#iw#'
+        %}
+      {%- else -%}
+        {% render 'render-image'
+          image: section.settings.image
+          sizes: '(max-width: 767px) calc(100vw - 1.25rem), (max-width: 1200px) calc(100vw - 1.5rem), 1176px'
+          widths: '640,720,900,1176,#iw#'
+        %}
+      {%- endif -%}
+  {%- else -%}
+      {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+  {%- endif -%}
+</a>
+</div>
+{%- endcapture -%}
+
+{% if page_image_html %}
+    <div class="page__media-container {% if section.settings.full_width %}image_full--width{% else %}image_content--width{% endif %}">
+        {{ page_image_html }}
+    </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "t:sections.page-with-image.name",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "default": false,
+      "label": "t:sections.page-with-image.settings.full_width.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.page-with-image.settings.image.label",
+      "info": "t:sections.page-with-image.settings.image.info"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "t:sections.page-with-image.settings.link.label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.page-with-image.presets.name"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["page"]
+  }
+}
+{% endschema %}

@@ -1,0 +1,27 @@
+{% comment %}
+    Renders "New" badge for product.
+
+    Accepts:
+    - size: {String} small | large
+{% endcomment %}
+
+{%- liquid
+    assign text = settings.badge_new__text | escape
+    assign bg_color = settings.colors_badge_new__background_gradient | default: settings.colors_badge_new__background_color
+    assign text_color = settings.colors_badge_new__foreground_color
+    assign position = settings.badge_new__position
+    assign border_radius = settings.badges_border_radius_value | append: 'rem'
+
+    assign styles = 'color:' | append: text_color | append: ';background:' | append: bg_color
+    assign styles = styles | append: ';border-radius:' | append: border_radius
+-%}
+
+{% unless text == blank or position == 'none' %}
+    <div
+        class="badge badge-size-{{ size }} badge-new {{ position }}"
+        aria-hidden="true"
+        style="{{ styles }}"
+    >
+        {{ text }}
+    </div>
+{% endunless %}

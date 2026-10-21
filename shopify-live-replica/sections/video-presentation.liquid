@@ -1,0 +1,268 @@
+{%- liquid
+    assign __class__ = 'video-presentation-wrapper'
+    if section.settings.full_width
+        assign __class__ = __class__ | append: ' full--width'
+    else
+        assign __class__ = __class__ | append: ' dynamic-page-width'
+    endif
+    if section.settings.animation_on_reveal
+        assign __class__ = __class__ | append: ' reveal-slide-in'
+    endif
+
+    assign titlePosition = settings.section_heading_position
+-%}
+
+{% style %}
+    #shopify-section-{{ section.id }} .video-presentation-wrapper {
+      background-color: {{ section.settings.section_bg_color }};
+      padding-bottom: 1rem;
+    }
+    .video-presentation :is(.heading-wrapper) {
+        margin-bottom: 2rem;
+    }
+    .video-presentation-cards-list {
+        display: flex;
+    }
+    @media screen and (min-width: 768px) {
+        .video-presentation-cards-list {
+            justify-content: center;
+        }
+    }
+    #shopify-section-{{ section.id }} .presentation-card .card-product .product-show-button svg {
+        width: 1.25rem;
+        height: 1.25rem;
+        stroke: {{section.settings.product_show_icon_color}};
+    }
+{% endstyle %}
+
+<div class="{{__class__}}">
+    <div class="heading-wrapper">
+        {% unless section.settings.title == blank %}
+            <{{ section.settings.heading_size }} class="heading reveal-item{% if settings.show_uppercase_heading %} uppercase{% endif %}">
+                {% render 'helper__decorate-heading', heading: section.settings.title %}
+            </{{ section.settings.heading_size }}>
+        {% endunless %}
+        {% unless section.settings.description == blank %}
+            <p class="h5 subtitle reveal-item">{{ section.settings.description }}</p>
+        {% endunless %}
+    </div>
+    {% if section.settings.swipe_on_mobile %}
+        <slider-component data-loop="false">
+    {% else %}
+        <div>
+    {% endif %}
+    {%- liquid
+        assign card_list_class = 'video-presentation-cards-list'
+        if section.settings.swipe_on_mobile
+            assign card_list_class = card_list_class | append: ' slider slider--tablet'
+        endif
+    -%}
+    <ul
+        class="{{ card_list_class }}"
+        id="video-presentation-{{ section.id }}"
+        role="list"
+        data-item-size="{{ section.blocks.size }}"
+    >
+        {% for block in section.blocks %}
+            {% render 'video-presentation-card', block: block %}
+        {% endfor %}
+    </ul>
+    {%- if section.settings.swipe_on_mobile %}
+        {%- if section.blocks.size > 1 -%}
+            {% render 'slider-buttons', items: section.blocks, section_settings: section.settings %}
+        {% endif %}
+        </slider-component>
+    {% else %}
+        </div>
+    {% endif -%}
+</div>
+
+{{ 'video-presentation.css' | asset_url | stylesheet_tag }}
+<noscript>{{ 'video-presentation.css' | asset_url | stylesheet_tag }}</noscript>
+
+<script
+    type="text/javascript"
+    defer="defer"
+>
+    
+    function toggleCardDetails(el , product = null) {
+        // open card
+        if (el && typeof el === "string" && el.indexOf('_') > 0) {
+            const card = document.getElementById(`details-${el}`);
+            card && card.classList.add("active");
+        }
+        // close card    
+        if (el && el instanceof Element && el.classList.contains('modal__close-button')) {
+            const card = el.closest('.active');
+            card && card.classList.remove("active");
+        }
+        
+        if (product) {
+            const cardList = el.closest('.product-card-list');
+            cardList.querySelectorAll('.card-product-details').forEach(card => {
+                if(card.dataset.productId == product)
+                    card.classList.add('active');
+                else card.classList.remove('active');                
+            });
+            
+            const activeElement = el.closest('.active')?.dataset?.productId;                
+            if (activeElement) {
+                el.closest('.active').classList.remove('active');
+            }
+        }
+    }
+</script>
+
+{% schema %}
+    {
+    "name": "t:sections.video-presentation.name",
+    "tag": "section",
+    "class": "spaced-section video-presentation",
+    "max_blocks": 5,
+    "settings": [
+        {
+            "type": "checkbox",
+            "id": "full_width",
+            "default": false,
+            "label": "t:sections.image-banner.settings.full_width.label"
+        },
+        {
+            "type": "text",
+            "id": "title",
+            "label": "t:sections.video-presentation.settings.title.label",
+            "default": "Video Presentation"
+        },
+        {
+            "type": "select",
+            "id": "heading_size",
+            "options": [
+                {
+                    "value": "h1",
+                    "label": "t:sections.featured-product.settings.heading_size.options.h1"
+                },
+                {
+                    "value": "h2",
+                    "label": "t:sections.featured-product.settings.heading_size.options.h2"
+                },
+                {
+                    "value": "h3",
+                    "label": "t:sections.featured-product.settings.heading_size.options.h3"
+                }
+            ],
+            "default": "h2",
+            "label": "t:sections.featured-product.settings.heading_size.label"
+        },
+        {
+            "type": "inline_richtext",
+            "id": "description",
+            "label": "t:sections.video-presentation.settings.description.label",
+            "default": "Provide additional description here"
+        },
+        {
+            "type": "checkbox",
+            "id": "swipe_on_mobile",
+            "label": "t:sections.multicolumn.settings.swipe_on_mobile.label",
+            "default": true
+        },
+        {
+            "type": "checkbox",
+            "id": "animation_on_reveal",
+            "label": "t:sections.all.settings.animation_on_reveal.label",
+            "default": false
+        },
+        {
+            "type": "range",
+            "min": 0,
+            "max": 20,
+            "step": 2,
+            "default": 0,
+            "id": "card_border_radius",
+            "label": "t:sections.video-presentation.settings.card_border_radius.label"
+        },
+        {
+            "type": "header",
+            "content": "t:sections.video-presentation.settings.header_3.content"
+        },
+        {
+            "type": "color",
+            "id": "section_bg_color",
+            "label": "t:sections.video-presentation.settings.section_bg_color.label"
+        },
+        {
+            "type": "color",
+            "id": "dropdown_bg_color",
+            "label": "t:sections.video-presentation.settings.dropdown_bg_color.label",
+            "default": "#fff"
+        },
+        {
+            "type": "color",
+            "id": "product_title_color",
+            "label": "t:sections.video-presentation.settings.product_title_color.label",
+            "default": "#000"
+        },
+        {
+            "type": "color",
+            "id": "product_show_icon_color",
+            "label": "t:sections.video-presentation.settings.product_show_icon_color.label",
+            "default": "#7f7f7f"
+        }
+    ],
+    "blocks": [
+        {
+        "type": "video-presentation-card",
+        "name": "t:sections.video-presentation.blocks.video-presentation-card.name",
+        "settings": [
+            {
+                "type": "video",
+                "id": "video",
+                "label": "t:sections.video-presentation.blocks.video-presentation-card.settings.video.label"
+            },
+            {
+                "type": "video_url",
+                "id": "video_url",
+                "accept": ["youtube", "vimeo"],
+                "default": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+                "label": "t:sections.video-presentation.blocks.video-presentation-card.settings.video_url.label",
+                "info": "t:sections.video-presentation.blocks.video-presentation-card.settings.video_url.info"
+            },
+            {
+                "type": "checkbox",
+                "id": "autoplay",
+                "label": "t:sections.video-presentation.blocks.video-presentation-card.settings.autoplay.label",
+                "default": true
+            },
+            {
+                "type": "header",
+                "content": "t:sections.video-presentation.blocks.video-presentation-card.settings.header_2.content"
+            },
+            {
+                "type": "product_list",
+                "id": "source",
+                "limit": 5,
+                "label": "t:sections.video-presentation.blocks.video-presentation-card.settings.source.label"
+            }
+        ]
+    }
+    ],
+    "presets": [
+        {
+            "name": "t:sections.video-presentation.name",
+            "blocks": [
+                {
+                    "type": "video-presentation-card"
+                },
+                {
+                    "type": "video-presentation-card"
+                },
+                {
+                    "type": "video-presentation-card"
+                },
+                {
+                    "type": "video-presentation-card"
+                }
+            ]
+
+        }
+    ]
+}
+{% endschema %}

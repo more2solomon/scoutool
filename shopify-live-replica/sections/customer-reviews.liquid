@@ -1,0 +1,429 @@
+{{ 'section-customer-reviews.css' | asset_url | stylesheet_tag }}
+<noscript>{{ 'section-customer-reviews.css' | asset_url | stylesheet_tag }}</noscript>
+{%- liquid
+  assign main_class = 'customer-reviews-container dynamic-page-width'
+    if section.settings.animation_on_reveal
+        assign mainClass = mainClass | append: ' reveal-slide-in'
+    endif
+
+    assign padding_bottom = ''
+    unless section.settings.cover_image == blank
+        assign padding_bottom = 100 | divided_by: section.settings.cover_image.aspect_ratio
+        assign padding_bottom = padding_bottom | append: '%'
+    endunless
+
+    assign blur_media_class = ''
+    unless request.design_mode
+        if settings.enable_preload_images and section.settings.cover_image != blank
+            assign blur_media_class = media_class | append: ' media--blur-image'
+        endif
+    endunless    
+-%}
+
+{% style %}
+    {% if section.settings.full_width %}
+        #shopify-section-{{ section.id }}.spaced-section--full-width {
+            width: 100%;
+            background: {{ section.settings.section_gradient | default: section.settings.section_background }};
+        }
+    {% endif %}
+
+    #shopify-section-{{ section.id }} .customer-reviews-container {
+        position: relative;
+        display:flex;
+        flex-direction: column;      
+        gap: 1rem;
+        padding-top: 1rem;
+    }{% if section.settings.enable_cover_image %}
+
+    .customer-reviews-container .title-container {
+        position: absolute;
+        top: 3rem;
+        max-width: calc(40% - 2px);
+        z-index: 1;
+    }{% else %}
+
+    .customer-reviews-container .title-container {
+        display: flex;
+        align-items: center;
+        text-align: center;
+    }{% endif %}
+
+    #shopify-section-{{ section.id }} .subtitle {
+        margin-bottom: 1.5rem;
+        color: {{ section.settings.cover_subtitle_color }};
+    }
+
+    #shopify-section-{{ section.id }} .heading-text {
+        color: {{ section.settings.cover_text_color }};
+        font-size: 48px;
+        line-height:1.24;
+        margin-bottom: 1.5rem;
+    }{% if section.settings.inner_padding %}
+
+    #shopify-section-{{ section.id }} .reviews-image-block img {
+        padding: 0.75rem;
+    }
+
+    #shopify-section-{{ section.id }} .reviews-image-block .media {
+        background: transparent;
+    }{% endif %}{% unless section.settings.cover_image == blank %}
+
+    @media screen and (min-width: 768px) {
+        #shopify-section-{{ section.id }} .review-content {
+            width: 60%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }{% endunless %}{% if section.settings.swipe_on_mobile %}    
+    @media screen and (max-width: 989px) {
+        #shopify-section-{{ section.id }} .review-list {
+            gap: 0;
+        }
+
+        #shopify-section-{{ section.id }} .review-item { 
+            min-width: 100%;
+        }
+    }{% endif %}
+
+    @media screen and (min-width: 768px) {
+        #shopify-section-{{ section.id }} .customer-reviews-container {
+            flex-direction: {{ section.settings.image_position }}; 
+        }
+
+        .customer-reviews-container .reviews-image-block {            
+            max-width:40%; 
+        }
+
+        #shopify-section-{{ section.id }} .review-list[data-blocks-size="1"] {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #shopify-section-{{ section.id }} .review-list[data-blocks-size="1"] .review-item {
+            width: 340px;
+        }
+    
+        #shopify-section-{{ section.id }} .review-list[data-blocks-size="3"] .review-list {
+            justify-content: center;
+            align-items:center;
+        }
+
+        #shopify-section-{{ section.id }} .review-item { 
+                width: calc(50% - 0.5rem);
+        }              
+
+        #shopify-section-{{ section.id }} .review-list[data-blocks-size="3"] .review-item {
+            width: calc(100%/3 - 1rem);
+        }
+    }
+
+    @media screen and (min-width: 1200px) {
+        #shopify-section-{{ section.id }} .review-list[data-blocks-size="2"] .review-item {
+            width: 340px;
+        }
+
+        .customer-reviews-container .review-list[data-blocks-size="2"] {
+            flex-wrap: nowrap;
+        }
+    }
+{% endstyle %}
+
+<div class="{{ main_class }}">
+    {%- unless section.settings.title == blank -%}
+    <div class="title-container">
+        <p class="reveal-item heading-text{% if settings.show_uppercase_heading %} uppercase{% endif %}{% unless settings.bold_first_heading_word %} _bold{% endunless %}">
+                    {{ section.settings.title }} 
+        </p>
+        {%- unless section.settings.subtitle == blank -%}
+        <p class="subtitle reveal-item">{{ section.settings.subtitle }}</p>
+        {%- endunless -%}                    
+    </div>
+    {%- endunless -%}
+    {% if section.settings.enable_cover_image %}
+        <div class="reviews-image-block reveal-item">            
+            {%- unless blur_media_class == blank %}{%- render 'loading-overlay' -%}{% endunless -%}
+            {%- liquid 
+                assign media_class = 'media'
+                if section.settings.cover_image == blank 
+                    assign media_class = 'placeholder'
+                endif
+                unless blur_media_class == blank
+                    assign media_class = media_class | append: ' ' | append: blur_media_class
+                endunless
+            -%}
+            <div class="{{ media_class }}" style="padding-bottom:{% if padding_bottom != blank %}{{ padding_bottom }}{% endif %}">
+                    {% if section.settings.cover_image != blank %}  
+                        {% assign widths = '480,720,#iw#' | replace: '#iw#', section.settings.cover_image.width %}                      
+                        {% render 'render-image'
+                            image: section.settings.cover_image
+                            sizes: '(max-width: 767px) calc(100vw - 2rem), (max-width: 1279px) calc(100vw - 6rem), 1176px'
+                            widths: widths
+                        %}
+                    {% else %}
+                        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                    {% endif -%}
+            </div>
+        </div>    
+    {% endif -%}
+
+     <{% if section.settings.swipe_on_mobile %}slider-component{% else %}div{% endif %} class="review-content" data-loop="false">
+        <ul class="review-list{% if section.settings.swipe_on_mobile %} slider slider--tablet slider--no-controls grid--peek{% endif %}" data-blocks-size="{{ section.blocks.size }}">
+            {% for block in section.blocks %}
+                {%- liquid 
+                    assign image = block.settings.review_image
+                    assign name = block.settings.review_name
+                    assign review_content = block.settings.review_content
+                    assign rating = block.settings.review_rating 
+                    assign rating = rating | plus: 0
+                    assign rating_ceil = rating | ceil
+                -%}
+                {% if review_content != blank or name != blank %}
+                    <li class="review-item slider-slide reveal-item" style="background:{{ block.settings.card_background_color }}" {{ block.shopify_attributes }}>
+                        {% if image %}
+                            {%- unless blur_media_class == blank %}{%- render 'loading-overlay' -%}{% endunless -%}
+                            <div class="media{% unless blur_media_class == blank %}{{ blur_media_class }}{% endunless %} review-img">
+                                {% assign widths = '480,640,#iw#' | replace: '#iw#', image.width %}
+                                {% render 'render-image',
+                                    image: image
+                                    widths: widths
+                                    sizes: '100vw'
+                                %}
+                            </div>
+                        {% else %}
+                            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                        {% endif -%}
+                        <div class="main-content" style="color:{{ block.settings.card_text_color}}">
+                            <p class="rating">
+                                {% for i in (1..5) %}
+                                    {% if i <= rating %}
+                                        <span class="star full">
+                                            {% render 'icons-review', name: 'star' %}
+                                        </span>
+                                    {% elsif i > rating and i <= rating_ceil %}
+                                        <span class="star half">
+                                            {% render 'icons-review', name: 'star' %}
+                                                <span class="half-fill">
+                                                    {% render 'icons-review', name: 'star' %}
+                                                </span>
+                                        </span>
+                                    {% else %}
+                                        <span class="star">
+                                            {% render 'icons-review', name: 'star' %}
+                                        </span>
+                                    {% endif %}
+                                {% endfor %}
+                            </p>
+                        {%- if review_content -%}
+                            {{ review_content }}
+                        {%- endif -%}
+                        {%- if name -%}
+                            {{ name }}
+                        {%- endif -%}
+                        </div>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        {%- if section.settings.swipe_on_mobile -%}
+            {%- render 'slider-buttons', items: section.blocks -%}
+        {%- endif -%}
+    </{% if section.settings.swipe_on_mobile %}slider-component{% else %}div{% endif %}>
+</div>
+
+{% schema %}
+    {
+    "name": "t:sections.customer-reviews.name",
+    "tag": "section",
+    "class": "spaced-section spaced-section--full-width",
+    "settings": [
+        {
+            "type": "checkbox",
+            "id": "full_width",
+            "default": true,
+            "label": "t:sections.image-with-text.settings.full_width.label"
+        },
+        {
+            "type": "checkbox",
+            "id": "swipe_on_mobile",
+            "default": false,
+            "label": "t:sections.featured-collection.settings.swipe_on_mobile.label"
+        },     
+        {
+            "type": "checkbox",
+            "id": "animation_on_reveal",
+            "label": "t:sections.all.settings.animation_on_reveal.label",
+            "default": false
+        },
+        {
+            "type": "header",
+            "content": "t:sections.customer-reviews.settings.header.content"
+        },
+        {
+            "type": "checkbox",
+            "id": "enable_cover_image",
+            "default": true,
+            "label": "t:sections.customer-reviews.settings.enable_cover_image.label"
+        },
+        {
+            "type": "image_picker",
+            "id": "cover_image",
+            "label": "t:sections.featured-collection.settings.cover_image.label"
+        },
+        {
+            "type": "select",
+            "id": "image_position",
+            "label": "t:sections.customer-reviews.settings.image_position.label",
+            "options": [
+                {
+                    "value": "row",
+                    "label": "t:sections.customer-reviews.settings.image_position.options.left"
+                },
+                {
+                    "value": "row-reverse",
+                    "label": "t:sections.customer-reviews.settings.image_position.options.right"
+                }   
+            ],
+            "default": "row",
+            "info": "t:sections.customer-reviews.settings.image_position.info"
+        },
+        {
+            "type": "checkbox",
+            "id": "inner_padding",
+            "label": "t:sections.customer-reviews.settings.inner_padding.label",
+            "default": false
+        },
+        {
+            "type": "header",
+            "content": "t:sections.customer-reviews.settings.header_0.content"
+        },
+        {
+            "type": "inline_richtext",
+            "id": "title",
+            "label": "t:sections.customer-reviews.settings.title.label",
+            "default": "Customer reviews"
+        },
+        {
+            "type": "inline_richtext",
+            "id": "subtitle",
+            "label": "t:sections.customer-reviews.settings.subtitle.label"
+        },
+        {
+            "type": "header",
+            "content": "t:sections.customer-reviews.settings.header_2.content"
+        },
+        {
+            "type": "color",
+            "id": "section_background",
+            "label": "t:sections.customer-reviews.settings.section_background.label",
+            "default": "#000"
+        },
+        {
+            "type": "color_background",
+            "id": "section_gradient",
+            "label": "t:sections.customer-reviews.settings.section_gradient.label"
+        },
+        {
+            "type": "color",
+            "id": "cover_text_color",
+            "label": "t:sections.featured-collection.settings.cover_text_color.label",
+            "default": "#fff"
+        },
+        {
+            "type": "color",
+            "id": "cover_subtitle_color",
+            "label": "t:sections.customer-reviews.settings.cover_subtitle_color.label",
+            "default": "#fff"
+        },
+        {
+            "type": "color",
+            "id": "cover_button_text_color",
+            "label": "t:sections.featured-collection.settings.cover_button_text_color.label",
+            "default": "#fff"
+        },
+        {
+            "type": "color",
+            "id": "cover_button_background",
+            "label": "t:sections.featured-collection.settings.cover_button_background.label",
+            "default": "#9d1414"
+        },
+        {
+            "type": "color_background",
+            "id": "cover_button_background_gradient",
+            "label": "t:sections.featured-collection.settings.cover_button_background_gradient.label"
+        }
+    ],
+    "blocks": [
+        {
+            "type": "review",
+            "name": "t:sections.customer-reviews.blocks.review.name",
+            "limit": 4,
+            "settings": [
+                {
+                    "type": "image_picker",
+                    "id": "review_image",
+                    "label": "t:sections.customer-reviews.blocks.review.settings.review_image.label"
+                },
+                {
+                    "type": "richtext",
+                    "id": "review_name",
+                    "label": "t:sections.customer-reviews.blocks.review.settings.review_name.label",
+                    "default": "<p><strong>Customer name</strong></p>"
+                },
+                {
+                    "type": "richtext",
+                    "id": "review_content",
+                    "label": "t:sections.customer-reviews.blocks.review.settings.review_content.label",
+                    "default": "<p>Provide customer review here</p>"
+                },
+                {
+                    "type": "range",
+                    "id": "review_rating",
+                    "min": 0,
+                    "max": 5,
+                    "default": 5,
+                    "step": 0.5,
+                    "label": "t:sections.customer-reviews.blocks.review.settings.review_rating.label"
+                },
+                {
+                    "type": "header",
+                    "content": "t:sections.customer-reviews.blocks.review.settings.header_3.content"
+                },
+                {
+                    "type": "color",
+                    "id": "card_background_color",
+                    "label": "t:sections.customer-reviews.blocks.review.settings.card_background_color.label",
+                    "default": "#25262A"
+                },
+                {
+                    "type": "color",
+                    "id": "card_text_color",
+                    "label": "t:sections.customer-reviews.blocks.review.settings.card_text_color.label",
+                    "default": "#fff"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+        "name": "t:sections.customer-reviews.name",
+        "blocks": [
+            {
+                "type": "review"
+            },
+            {
+                "type": "review"
+            },
+            {
+                "type": "review"
+            },
+            {
+                "type": "review"
+            }
+        ]
+        }
+    ]
+}
+{% endschema %}

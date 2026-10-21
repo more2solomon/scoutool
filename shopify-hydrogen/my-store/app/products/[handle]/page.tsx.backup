@@ -1,0 +1,129 @@
+import type {Metadata} from "next";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import AddToCart from "@/components/AddToCart";
+import {getProduct, money} from "@/lib/shopify";
+import {notFound} from "next/navigation";
+
+export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{handle: string}>;
+}): Promise<Metadata> {
+  const {handle} = await params;
+  const product = await getProduct(handle);
+  if (!product) return {};
+
+  const title = product.seo?.title || product.title;
+  const description =
+    product.seo?.description ||
+    product.description ||
+    `Shop ${product.title} from Velvet Journal Co.`;
+
+  return {
+    title,
+    description,
+    alternates: {canonical: `/products/${product.handle}`},
+    openGraph: {
+      type: "website",
+      title,
+      description,
+      images: product.featuredImage
+        ? [{url: product.featuredImage.url, alt: product.featuredImage.altText || product.title}]
+        : undefined,
+    },
+  };
+}
+
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise<{handle: string}>;
+}) {
+  const {handle} = await params;
+  const product = await getProduct(handle);
+
+  if (!product) notFound();
+
+  const price = product.priceRange.minVariantPrice;
+  const variant =
+    product.variants.nodes.find((v) => v.availableForSale) ||
+    product.variants.nodes[0];
+
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://www.velvetjournalco.store";
+
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    description: product.description,
+    image: product.images?.nodes.map((image) => image.url) ||
+      (product.featuredImage ? [product.featuredImage.url] : []),
+    brand: {
+      "@type": "Brand",
+      name: product.vendor || "Velvet Journal Co",
+    },
+    offers: {
+      "@type": "Offer",
+      url: `${siteUrl}/products/${product.handle}`,
+      priceCurrency: price.currencyCode,
+      price: price.amount,
+      availability: variant?.availableForSale
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+    },
+  };
+
+  return (
+    <>
+      <Header />
+
+      <div className="breadcrumb charge-shell">
+        <a href="/">Home</a> › <a href="/collections/all">Products</a> › <span>{product.title}</span>
+      </div>
+
+      <main className="charge-shell product-page">
+        <div className="product-page-image">
+          {product.featuredImage && (
+            <img
+              src={product.featuredImage.url}
+              alt={product.featuredImage.altText || product.title}
+            />
+          )}
+        </div>
+
+        <div className="product-page-copy">
+          <span className="vendor">{product.vendor || "Velvet Journal Co"}</span>
+          <h1>{product.title}</h1>
+          <div className="product-page-price">
+            {money(price.amount, price.currencyCode)}
+          </div>
+
+          {product.descriptionHtml ? (
+            <div
+              className="rich-text"
+              dangerouslySetInnerHTML={{__html: product.descriptionHtml}}
+            />
+          ) : (
+            <p>{product.description}</p>
+          )}
+
+          <AddToCart merchandiseId={variant?.id} label="Add to cart" />
+          <p className="checkout-note">
+            Checkout and billing are securely handled by Shopify.
+          </p>
+        </div>
+      </main>
+
+      <Footer />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{__html: JSON.stringify(productSchema)}}
+      />
+    </>
+  );
+}

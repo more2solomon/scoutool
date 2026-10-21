@@ -1,0 +1,195 @@
+bought-together {
+    border: 1px solid var(--color-foreground-10);
+    box-shadow: 1px 1px 5px var(--color-foreground-8);
+    display: block;
+}
+
+bought-together > .summary {
+    align-items: center;
+    background-color: var(--color-foreground-4);
+    border: 1px solid var(--color-foreground-10);
+    border-width: 1px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    font-weight: 700;
+    justify-content: space-between;
+    gap: .5rem;
+    padding: .5rem 1rem;
+}
+
+bought-together > .summary .price--final {
+    font-size: calc(1rem + 2px);
+    font-weight: 700;
+}
+
+bought-together .items-grid {
+    align-items: flex-start;
+    display: flex;
+    gap: 3rem;
+    overflow: auto;
+    padding: 2px;
+    overflow-y: hidden;
+    scrollbar-width: none;
+}
+
+bought-together .items-grid::-webkit-scrollbar {
+    display: block;
+    height: 4px;
+    width: 4px;
+}
+
+bought-together .items-grid::-webkit-scrollbar-thumb {
+    background: var(--color-foreground-20);
+    border-radius: 2px;
+}
+
+bought-together .items-grid::-webkit-scrollbar-track {
+    background: var(--color-foreground-4);
+    border-radius: 2px;
+}
+
+bought-together .grid-item:not([hidden]) {
+    display: flex;
+    position: relative;
+    width: max(135px, calc(25% - 9rem / 4));
+}
+
+bought-together .grid-item:first-child {
+    margin-left: auto;
+}
+
+bought-together .grid-item:last-child {
+    margin-right: auto;
+}
+
+bought-together .item-checkbox {
+    cursor: pointer;
+    height: 1.25rem;
+    width: 1.25rem;
+    position: absolute;
+    top: .5rem;
+    z-index: 11;
+}
+
+bought-together .item-checkbox svg {
+/*    background-color: var(--color-background);*/
+    color: var(--color-base-accent_1);
+    border: 1px solid currentColor;
+    /* color: #42CA49; */
+    height: 100%;
+    opacity: 1;
+    width: 100%;
+}
+
+bought-together .item-checkbox path {
+    transform: scale(0);
+    transform-origin: center;
+    transition-property: transform;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
+
+bought-together [type='checkbox']:checked ~ .item-checkbox path {
+    transform: scale(1.25);
+}
+
+bought-together [type='checkbox'][disabled] ~ .item-checkbox svg {
+    color: var(--color-foreground-10);
+    cursor: not-allowed;
+}
+
+bought-together [type='checkbox']:focus:focus-visible ~ .item-checkbox svg {
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+}
+
+bought-together .grid-item::after {
+    position: relative;
+    align-items: center;
+    background-color: var(--color-foreground-4);
+    border-radius: 2rem;
+    content: '+';
+    display: flex;
+    font-size: 1.5rem;
+    justify-content: center;
+    height: 2rem;
+    margin: 4rem -2.5rem 0 0;
+    opacity: .5;
+    width: 2rem;
+    transition-property: opacity;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+}
+
+bought-together .grid-item:has([type='checkbox']:checked)::after {
+    opacity: 1;
+}
+
+bought-together .grid-item:last-child::after {
+    display: none;
+}
+
+bought-together .grid-item .item-link {
+    width: 100%;
+    opacity: .5;
+    transition-property: opacity;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+}
+
+bought-together [type='checkbox']:checked ~ .item-link {
+    opacity: 1;
+}
+
+bought-together .grid-item .item-title {
+    margin: .5rem 0;
+}
+
+bought-together .badge.top-right {
+    position: initial;
+}
+
+@media all and (max-width: 989px) {
+    bought-together > .summary product-form {
+        margin-left: auto;
+    }
+}
+
+@media all and (min-width: 990px) {
+    bought-together {
+        display: flex;
+    }
+
+    bought-together > .items {
+        padding: 1rem 2rem 2rem;
+        width: 80%;
+    }
+
+    bought-together .grid-item {
+        width: max(160px, calc(25% - 9rem / 4));
+    }
+
+    bought-together > .summary {
+        align-items: flex-start;
+        border-width: 0 0 0 1px;
+        flex-direction: column;
+        gap: 0;
+        justify-content: flex-end;
+        padding: 2rem;
+        width: 20%;
+    }
+
+    bought-together > .summary .price--final {
+        font-size: 1.75rem;
+    }
+
+    bought-together > .summary product-form {
+        margin-top: 2rem;
+        width: 100%;
+    }
+
+    bought-together > .summary .product-form__submit {
+        min-width: 100%;
+    }
+}

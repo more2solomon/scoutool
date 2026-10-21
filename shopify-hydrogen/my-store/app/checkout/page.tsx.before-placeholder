@@ -1,0 +1,112 @@
+"use client";
+
+import {Suspense} from "react";
+
+import {FormEvent, useEffect, useState} from "react";
+import {useSearchParams} from "next/navigation";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import {CATALOG} from "@/data/catalog";
+
+function CheckoutContent() {
+  const search = useSearchParams();
+  const handle = search.get("product") || "";
+  const product = CATALOG[handle as keyof typeof CATALOG];
+  const [loading,setLoading] = useState(false);
+
+  async function submit(event:FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!product) return;
+    setLoading(true);
+
+    const form = new FormData(event.currentTarget);
+    const payload = {
+      product: handle,
+      email: form.get("email"),
+      firstName: form.get("firstName"),
+      lastName: form.get("lastName"),
+      address: form.get("address"),
+      city: form.get("city"),
+      state: form.get("state"),
+      postalCode: form.get("postalCode"),
+      country: form.get("country"),
+    };
+
+    const response = await fetch("/api/paystack/initialize",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(payload),
+    });
+    const result = await response.json();
+
+    if (!response.ok || !result.authorization_url) {
+      alert(result.error || "Unable to start payment");
+      setLoading(false);
+      return;
+    }
+
+    window.location.href = result.authorization_url;
+  }
+
+  if (!product) {
+    return (
+      <>
+        <Header/>
+        <main className="charge-shell simple-page">
+          <h1>Choose a product first</h1>
+          <a className="charge-button inline-button" href="/collections/all">Shop products</a>
+        </main>
+        <Footer/>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Header/>
+      <main className="charge-shell checkout-page">
+        <section>
+          <h1>Checkout</h1>
+          <p>Delivery details are collected by Velvet Journal Co. Payment is securely processed by Paystack.</p>
+
+          <form className="checkout-form" onSubmit={submit}>
+            <label>Email*<input required type="email" name="email"/></label>
+            <div className="checkout-two">
+              <label>First name*<input required name="firstName"/></label>
+              <label>Last name*<input required name="lastName"/></label>
+            </div>
+            <label>Address*<input required name="address"/></label>
+            <div className="checkout-three">
+              <label>City*<input required name="city"/></label>
+              <label>State/Region*<input required name="state"/></label>
+              <label>Postal code*<input required name="postalCode"/></label>
+            </div>
+            <label>Country/Region*<input required name="country"/></label>
+
+            <button className="charge-button pay-button" disabled={loading}>
+              {loading ? "Opening payment…" : `Pay $${product.price.toFixed(2)}`}
+            </button>
+          </form>
+        </section>
+
+        <aside className="checkout-summary">
+          <h2>Order summary</h2>
+          <div className="checkout-summary-line">
+            <span>{product.title}</span>
+            <strong>${product.price.toFixed(2)}</strong>
+          </div>
+        </aside>
+      </main>
+      <Footer/>
+    </>
+  );
+}
+
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<main style={{padding:40}}>Loading…</main>}>
+      <CheckoutContent />
+    </Suspense>
+  );
+}

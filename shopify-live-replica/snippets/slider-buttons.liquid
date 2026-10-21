@@ -1,0 +1,63 @@
+{%- comment -%}
+    Render Slideshow buttons as: Buttons / Scrollbar.
+
+    Accepts:
+    - section_settings: {Object}
+    - items:            {Array}
+    - section_id:       {String}
+{%- endcomment -%}
+{%- liquid
+    assign sectionId = section_id | default: 'null'
+    assign ui_type = section_settings.slideshow_ui_type | default: 'buttons'
+-%}
+{%- if ui_type == 'scrollbar' %}
+    {% liquid
+        assign items = section_settings.products_to_show | default: items
+        if items == null and section_settings.cols
+            assign items = section_settings.cols
+        elsif items == null and section_settings.post_limit
+            assign items = section_settings.post_limit
+        endif
+
+        assign size = items.size
+        if size == null
+            assign size = items.count
+        endif
+        assign size = size | minus: 1
+    %}
+    {% if size != blank and size > 2 %}
+        <div
+            id="shopify-section-{{ section.id }}"
+            class="slider-pagination slider-pagination--floating slider-bullets slider-scrollbar"
+        >
+            {% for i in (1..size) -%}
+                <span>&nbsp;</span>
+            {%- endfor %}
+        </div>
+    {% endif %}
+{% else %}
+    {% unless sectionId != 'null' %}<div class="slider-buttons__container">{% endunless %}
+    <div class="slider-buttons no-js-hidden">
+        <button
+            type="button"
+            class="slider-button slider-button--prev button--tertiary"
+            name="previous"
+            aria-label="{{ 'accessibility.previous_slide' | t }}"
+        >
+            <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+                <use href="#icon-caret" />
+            </svg>
+        </button>
+        <button
+            type="button"
+            class="slider-button slider-button--next button--tertiary"
+            name="next"
+            aria-label="{{ 'accessibility.next_slide' | t }}"
+        >
+            <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+                <use href="#icon-caret" />
+            </svg>
+        </button>
+    </div>
+    {% unless sectionId != 'null' %}</div>{% endunless %}
+{% endif -%}

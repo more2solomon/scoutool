@@ -17,13 +17,21 @@ export default function Home() {
   const [delay, setDelay] = useState(6);
   const [baseUrl, setBaseUrl] = useState(DEFAULT_URL);
   const [busy, setBusy] = useState(false);
+  const [gmailConnected, setGmailConnected] = useState(false);
+  const [gmailEmail, setGmailEmail] = useState("");
+  const [draftBusy, setDraftBusy] = useState(false);
+  const [draftStatus, setDraftStatus] = useState("Ready");
+  const [draftCount, setDraftCount] = useState(0);
+  const [draftTotal, setDraftTotal] = useState(0);
+  const [draftStart, setDraftStart] = useState(1);
+  const [draftEnd, setDraftEnd] = useState(100);
   const [message, setMessage] = useState("");
 
   async function refresh() {
     try {
       const [queueResponse, stateResponse] = await Promise.all([
         fetch("/api/bridge/queue", { cache: "no-store" }),
-        fetch("/api/bridge/state", { cache: "no-store" })
+        fetch("/api/bridge/state", { cache: "no-store" }),
       ]);
 
       if (!queueResponse.ok || !stateResponse.ok) {
@@ -48,6 +56,77 @@ export default function Home() {
     } catch (error) {
       setBridgeOnline(false);
       setMessage(error.message);
+    }
+  }
+
+  async function refreshGmailStatus() {
+    try {
+      const response = await fetch("/api/auth/google/status", {
+        cache: "no-store",
+      });
+      const data = await response.json();
+      setGmailConnected(Boolean(data.connected));
+      setGmailEmail(data.email || "");
+    } catch {
+      setGmailConnected(false);
+      setGmailEmail("");
+    }
+  }
+
+  async function createGmailDrafts() {
+    const rangeStart = Math.max(1, Number(draftStart) || 1);
+    const rangeEnd = Math.max(rangeStart, Number(draftEnd) || rangeStart);
+    const seen = new Set();
+    const records = queue
+      .filter((item) => {
+        const email = String(item.email || "").trim().toLowerCase();
+
+        if (!email || seen.has(email)) return false;
+
+        seen.add(email);
+        return true;
+      })
+      .slice(rangeStart - 1, rangeEnd);
+
+    if (!records.length) {
+      setDraftStatus("No valid records");
+      setMessage("There are no valid queue items to draft.");
+      return;
+    }
+
+    setDraftBusy(true);
+    setDraftStatus("Creating unsent drafts in batches of 5");
+    setDraftCount(0);
+    setDraftTotal(records.length);
+
+    try {
+      let created = 0;
+
+      for (let index = 0; index < records.length; index += 5) {
+        const batch = records.slice(index, index + 5);
+        const response = await fetch("/api/gmail/drafts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ records: batch }),
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || `Draft batch ${Math.floor(index / 5) + 1} failed.`);
+        }
+
+        created += data.count || 0;
+        setDraftCount(created);
+      }
+
+      setDraftTotal(records.length);
+      setDraftStatus("Drafts created");
+      setMessage(`Created ${created} unsent Gmail drafts in batches of 5.`);
+    } catch (error) {
+      setDraftStatus("Draft creation failed");
+      setMessage(error.message);
+    } finally {
+      setDraftBusy(false);
     }
   }
 
@@ -80,10 +159,22 @@ export default function Home() {
 
   useEffect(() => {
     refresh();
+    refreshGmailStatus();
+
+    const gmailResult = new URLSearchParams(window.location.search).get("gmail");
+
+    if (gmailResult === "connected") {
+      setMessage("Gmail connected successfully. Drafts are ready.");
+      window.history.replaceState({}, "", "/");
+    }
 
     const timer = setInterval(refresh, 3000);
+    const gmailTimer = setInterval(refreshGmailStatus, 10000);
 
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      clearInterval(gmailTimer);
+    };
   }, []);
 
   const remaining = Math.max(
@@ -96,7 +187,7 @@ export default function Home() {
       <header className="header">
         <div>
           <h1>Scout Mail</h1>
-          <p>Live Scoutool queue dashboard</p>
+          <p>Gmail draft automation dashboard</p>
         </div>
 
         <div className={`bridge ${bridgeOnline ? "online" : "offline"}`}>
@@ -130,6 +221,15 @@ export default function Home() {
             <span>seconds</span>
           </div>
         </label>
+
+        <div className="gmailStatus">
+          <span>
+            Gmail: <strong>{gmailConnected ? gmailEmail : "Not connected"}</strong>
+          </span>
+          <a href="/api/auth/google/start">
+            {gmailConnected ? "Reconnect Gmail" : "Connect Gmail"}
+          </a>
+        </div>
       </section>
 
       <section className="stats">
@@ -151,6 +251,38 @@ export default function Home() {
         <div className="card">
           <span>Remaining</span>
           <strong>{remaining}</strong>
+        </div>
+      </section>
+
+      <section className="panel gmailPanel">
+        <div className="sectionHeader">
+          <div>
+            <h2>Gmail Draft Automation</h2>
+            <p className="subtle">
+              {gmailConnected
+                ? `Connected as ${gmailEmail}`
+                : "Connect Gmail to create unsent drafts from the queue."}
+            </p>
+          </div>
+          <span className={`connectionBadge ${gmailConnected ? "connected" : "disconnected"}`}>
+            <span className="dot" />
+            {gmailConnected ? "Connected" : "Disconnected"}
+          </span>
+        </div>
+
+        <div className="draftProgressHeader">
+          <span>{draftStatus}</span>
+          <strong>{draftCount}/{draftTotal || 0}</strong>
+        </div>
+        <div className="progressTrack" aria-label="Gmail draft progress">
+          <div
+            className={`progressBar ${draftBusy ? "indeterminate" : ""}`}
+            style={{
+              width: draftTotal
+                ? `${Math.min(100, (draftCount / draftTotal) * 100)}%`
+                : "0%",
+            }}
+          />
         </div>
       </section>
 
@@ -182,6 +314,25 @@ export default function Home() {
         >
           REFRESH
         </button>
+
+        <button
+          className="drafts"
+          disabled={draftBusy || !gmailConnected || !queue.length}
+          onClick={createGmailDrafts}
+        >
+          {draftBusy ? "CREATING DRAFTS..." : `CREATE DRAFTS ${draftStart}-${draftEnd}`}
+        </button>
+      </section>
+
+      <section className="panel draftRangePanel">
+        <label>
+          Draft records from
+          <input type="number" min="1" value={draftStart} onChange={(event) => setDraftStart(Number(event.target.value) || 1)} />
+        </label>
+        <label>
+          through
+          <input type="number" min={draftStart} value={draftEnd} onChange={(event) => setDraftEnd(Number(event.target.value) || draftStart)} />
+        </label>
       </section>
 
       <section className="panel">
@@ -197,7 +348,7 @@ export default function Home() {
           </div>
         ) : (
           <div className="queue">
-            {queue.slice(0, 100).map((item, index) => (
+            {queue.map((item, index) => (
               <div className="row" key={`${item.email}-${index}`}>
                 <span>#{index + 1}</span>
 

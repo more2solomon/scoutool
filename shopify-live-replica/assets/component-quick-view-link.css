@@ -1,0 +1,71 @@
+/* grid mode */
+[data-mode="grid"] quick-view {
+    position: absolute;
+    bottom: 0.75rem;
+    right: 0.75rem;
+    background-color: transparent;
+    padding: 0px;
+    margin-bottom: -2rem;
+    z-index: 10;
+}
+[data-mode="grid"] :has(compare-add-button) quick-view {
+    bottom: 5rem;
+}
+@media (min-width: 990px) {
+    [data-mode="grid"] :has(compare-add-button) quick-view {
+        bottom: 3rem;
+    }
+}
+[data-mode="grid"]  quick-view button {
+    min-width: 0;
+    border: 0;
+    padding: 0;
+}
+[data-mode="grid"]  quick-view button,
+[data-mode="grid"]  quick-view svg {
+    height: 1.75rem;
+    width: 1.75rem;
+}
+[data-mode="grid"]  quick-view svg {
+    border: 1px solid var(--color-foreground-10);
+    padding: .25rem;
+}
+:is(quick-view button),
+:is(quick-view svg) {
+    background: var(--color-grid-item-background);
+}
+@media only screen and (min-width: 990px) {
+    [data-mode="grid"]  quick-view {
+        visibility: hidden;
+        opacity: 0;
+    }
+
+    [data-mode="grid"] :hover quick-view {
+        visibility: visible;
+        opacity: 1;
+        margin-bottom: initial;
+        transition: all .35s ease;
+    }
+
+    :is(quick-view) .button:hover > svg,
+    :is(quick-view) .button:focus > svg {
+        --tw-scale-x: 1;
+        --tw-scale-y: 1;
+    }
+}
+/* list mode */
+:is([data-mode="list"]) quick-view button {
+            background: var(--color-grid-item-background);
+            margin-top: 0.5rem;
+            width: 100%;
+            font-size: 0.875rem;
+            line-height: 1.25rem}
+@media (min-width: 768px) {
+    :is([data-mode="list"]) quick-view button {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+}
+:is([data-mode="list"]) quick-view svg {
+            background: var(--color-grid-item-background);
+        }

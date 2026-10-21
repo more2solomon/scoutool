@@ -1,0 +1,62 @@
+faqs-accordion .faq-title {
+    cursor: pointer;
+    font-weight: 700;
+    padding: .5rem 2rem;
+    margin-bottom: 0px;
+    text-transform: capitalize;
+}
+
+faqs-accordion .faq-title::before {
+    color: var(--color-base-accent-1);
+    content: '+';
+    display: inline-block;
+    margin: 0 .5rem 0 -2rem;
+    text-align: center;
+    width: 1.5rem;
+}
+
+faqs-accordion .faq-content--inner {
+    padding: .5rem 2rem
+}
+
+.faq-title:empty,
+.faq-content:empty {
+    display: none;
+}
+
+faqs-accordion .faq-title.open::before {
+    content: '-';
+}
+
+faqs-accordion details:first-child ~ details .faq-title {
+    border-top: 1px solid var(--color-foreground-10);
+}
+
+faqs-accordion .action {
+    padding: .5rem 0rem;
+    margin: 1rem 2rem;
+}
+
+faqs-accordion .link_to_faq_page {
+    color: var(--color-base-accent-1);
+}
+
+faqs-accordion .link_to_faq_page:hover,
+faqs-accordion .link_to_faq_page:focus {
+    text-decoration: underline;
+}
+
+/* styles for frequently-asked-questions section */
+
+.frequently-asked-questions faqs-accordion .faq-content--inner {
+    padding: 0 2rem;
+    word-break: break-word;
+}
+
+.frequently-asked-questions faqs-accordion .faq-content--inner > * {
+    padding-bottom: .75rem;
+}
+
+.frequently-asked-questions faqs-accordion .action {
+    margin: 2rem 0;
+}

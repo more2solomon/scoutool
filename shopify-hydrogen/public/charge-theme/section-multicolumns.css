@@ -1,0 +1,78 @@
+.multicolumn-card__image-cover {
+    position: relative;
+}
+
+.multicolumn-card__image-cover::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    display: block;
+    content: '';
+    width: 0;
+    height: 0;
+    background: rgba(255,255,255,.2);
+    border-radius: 100%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+}
+
+.multicolumn-card__image-cover:hover::before {
+    animation: circleEffect .75s;
+}
+
+.multicolumn-list__item {
+    --column-edge-size: 1rem;
+}
+
+.multicolumn-list__item:is(.cut-border-corner__top-left) {
+        clip-path: polygon(
+            0 var(--column-edge-size),
+            var(--column-edge-size) 0,
+            100% 0,
+            100% 100%,
+            100% 100%,
+            0 100%
+        );        
+    }
+
+.multicolumn-list__item:is(.cut-border-corner__top-right) {
+        clip-path: polygon(
+          0 0,
+          calc(100% - var(--column-edge-size)) 0,
+          100% var(--column-edge-size),
+          100% 100%,
+          0 100%
+        );        
+    }
+
+.multicolumn-list__item:is(.cut-border-corner__bottom-left) {
+        clip-path: polygon(
+          0 0,
+          100% 0,
+          100% 100%,
+          var(--column-edge-size) 100%,
+          0 calc(100% - var(--column-edge-size))
+        );        
+    }
+
+.multicolumn-list__item:is(.cut-border-corner__bottom-right) {
+        clip-path: polygon(
+            0 0,
+            0 0,
+            100% 0,
+            100% calc(100% - var(--column-edge-size)),
+            calc(100% - var(--column-edge-size)) 100%,
+            0 100%
+        );        
+    }
+
+@keyframes circleEffect {
+    0% {opacity: 1;}
+    40% {opacity: 1;}
+    100% {
+        width: 200%;
+        height: 200%;
+        opacity: 0;
+    }
+}

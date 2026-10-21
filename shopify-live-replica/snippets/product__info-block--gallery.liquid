@@ -1,0 +1,567 @@
+{% comment %}
+    Render product media gallery block based on block settings
+
+    Accepts:
+     - block:      {Object}
+     - blockOrder: {Number}
+     - sectionId:  {String}
+     - product:    {Object}
+{% endcomment %}
+
+{%- liquid
+    assign thumbWidth = block.settings.thumbnail_width
+    assign showThumbs = false
+    if product.media.size > 1
+        assign showThumbs = true
+    endif
+
+    capture imageSizes
+        render 'product__main-image--sizes'
+    endcapture
+
+    assign imageSizes = imageSizes | split: '|'
+    for value in imageSizes
+        case forloop.index
+            when 1
+                assign imageWidth = value | plus: 0
+            when 2
+                assign imageWidthOptions = value | strip
+            when 3
+                assign imageSizesAttribute = value | strip
+        endcase
+    endfor
+
+    assign controlImageSize = block.settings.control_image_size
+    assign badge_size = block.settings.badge_size
+    assign productTags = product.tags | downcase
+
+    assign newProduct = false
+    assign preOrderProduct = false
+    assign customBadge = false
+    for variant in product.variants
+        if variant.metafields.custom.new != blank and product.selected_or_first_available_variant.id == variant.id
+            assign newProduct = true
+        endif
+
+        if variant.metafields.custom.preorder != blank and product.selected_or_first_available_variant.id == variant.id
+            assign preOrderProduct = true
+        endif
+
+        if variant.metafields.custom.custom != blank and product.selected_or_first_available_variant.id == variant.id
+            assign customBadge = true
+        endif
+    endfor
+    assign possibleBadgesValue = 'products.badges.new|products.badges.new_arrival|products.badges.preorder|products.badges.pre_order' | split: '|'
+-%}
+
+<div
+    class="product__info-block product__info-block--gallery{% unless product.media.size > 0 %} image--placeholder{% endunless %}{% if blockOrder == 2 %} mobile-margin_top{% endif %}"
+    style="order: {{ blockOrder }};"
+    {{ block.shopify_attributes }}
+>
+    {%- if product.media.size > 0 -%}
+        {% style %}
+            .slider-pagination > :nth-child(n + 2) {
+                visibility: hidden;
+            }
+
+            .product__media {
+                display: block;
+            }
+
+            #gallery-{{ sectionId }} {
+                --thumb--width: {{ thumbWidth }}px;
+                --thumb--gap: .5rem;
+                display: flex;
+                flex-direction: column;
+                padding: 0;
+            }
+
+            .product__media .slider {
+                display: flex;
+                overflow-x: hidden;
+            }
+
+            .product__media .slider-component__inner {
+                position: relative;
+                border: 1px solid var(--color-foreground-10);
+            }
+
+            #gallery-{{ sectionId }} .slider-buttons.sides {
+                position: static;
+            }
+
+            #gallery-{{ sectionId }} .sides .slider-button--stucked {
+                padding: 1rem 0;
+            }
+
+            #gallery-{{ sectionId }} .slider-buttons.sides .slider-button {
+                position: absolute;
+                top: 50%;
+                left: 0;
+                --tw-translate-y: -50%;
+                transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+                border-width: 0px;
+                margin: 0;
+            }
+
+            #gallery-{{ sectionId }} .slider-button--prev .icon {
+                --tw-rotate: 90deg;
+            }
+
+            #gallery-{{ sectionId }} .slider-button--next .icon {
+                --tw-rotate: -90deg;
+            }
+
+            #gallery-{{ sectionId }} .slider-buttons.sides .slider-button--prev {
+                border-radius: 0 4px 4px 0;
+            }
+
+            #gallery-{{ sectionId }} .slider-buttons.sides .slider-button--next {
+                left: auto;
+                right: .0;
+                border-radius: 4px 0 0 4px;
+            }
+
+            .product__media .slider__slide {
+                flex-shrink: 0;
+                position: relative;
+                width: 100%;
+            }
+
+            .product__media .image--wrapper {
+                position: relative;
+            }
+
+            .product__media .image--wrapper img {
+                position: absolute;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+
+            .product__media .slider .image--wrapper img {
+                object-fit: contain;
+            }
+
+            .product__media .slider-pagination {
+                flex-direction: row;
+                justify-content: center;
+                padding: 1rem 0;
+            }
+
+            .product__media .slider-pagination .image--wrapper {
+                display: none;
+            }
+
+            .product__media .badge-container,
+            .product__info-block--gallery modal-opener button {
+                position: absolute;
+            }
+
+            .product__media .deferred-media img {
+                object-fit: contain;
+            }{% if showThumbs %}
+
+            @media all and (min-width: 768px) {
+                #gallery-{{ sectionId }} {
+                    --thumb--gap: .75rem;
+                    display: block;
+                    position: relative;
+                }
+
+                #gallery-{{ sectionId }}:has([data-thumbs-mode="slider_left"]) {
+                    padding: 0 0 0 calc(var(--thumb--width) + var(--thumb--gap));
+                }
+
+                .product__media .slider-thumbs--wrapper[data-thumbs-mode="slider_left"] {
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    left: 0;
+                    display: block;
+                }
+
+                #gallery-{{ sectionId }} slider-vertical[data-thumbs-mode="slider_below"] {
+                    display: flex;
+                }
+
+                .product__media .slider-thumbs--wrapper[data-thumbs-mode="grid_below"] > button {
+                    display: none !important;
+                }
+
+                .product__media [data-thumbs-mode="slider_left"] .slider-pagination {
+                    display: flex;
+                    gap: var(--thumb--gap);
+                    flex-direction: column;
+                    justify-content: start;
+                    order: -1;
+                    padding: 0;
+                    width: auto;
+                    height: 100%
+                }
+
+                .product__media [data-thumbs-mode="grid_below"] .slider-pagination {
+                    justify-content: flex-start;
+                    flex-wrap: wrap;
+                }
+
+                #gallery-{{ sectionId }} .slider-pagination > * {
+                    background: none;
+                    height: auto;
+                    padding: 0;
+                    width: var(--thumb--width);
+                }
+
+                .product__media [data-thumbs-mode="slider_below"] .slider-pagination {
+                    justify-content: flex-start;
+                }
+
+                .product__media .slider-pagination .image--wrapper {
+                    display: block;
+                }
+
+                .product__media [data-thumbs-mode="slider_below"] .slider-pagination .image--wrapper {
+                    display: flex;
+                    width: var(--thumb--width);
+                }
+
+                slider-vertical .slider-pagination > * {
+                    border: 1px solid var(--color-foreground-10);
+                    transition-property: border-color;
+                }
+            }{% endif %}
+
+            @media all and (min-width: 990px) {
+                .product__info-block--gallery .slider-component__inner .slider-buttons {
+                    opacity: 0;
+                    transition: opacity .25s;
+                }
+            }
+        {% endstyle %}
+
+        <slider-component
+            id="gallery-{{ sectionId }}"
+            class="slideshow product__media slideshow__thumbs-vertical"
+            data-slides-per-view="1"
+            data-navigation-position="sides"
+            data-loop="true"
+            data-multiple-items="false"
+        >
+            <div class="slider-component__inner">
+                {% if block.settings.show_badges %}
+                    <div id="gallery-{{ sectionId }}-badges" data-updatable="true">
+                        <div class="badge-container">
+                            {%- render 'badge-onsale',
+                                product: product.selected_or_first_available_variant,
+                                size: badge_size
+                            -%}
+                            {%- render 'badge-soldout',
+                                product: product.selected_or_first_available_variant,
+                                size: badge_size
+                            -%}
+
+                            <!-- if metafields using to define the product badges -->
+                            {% if newProduct %}
+                                {% render 'badge-new',
+                                    product: product.selected_or_first_available_variant,
+                                    size: badge_size
+                                %}
+                            {% endif %}
+
+                            {% if preOrderProduct %}
+                                {% render 'badge-preorder',
+                                    product: product.selected_or_first_available_variant,
+                                    size: badge_size
+                                %}
+                            {% endif %}
+
+                            {% if customBadge %}
+                                {%- render 'badge-custom',
+                                    product: product.selected_or_first_available_variant,
+                                    size: badge_size
+                                -%}
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+                <ul class="slider slider--desktop" id="Slider-{{ sectionId }}" role="list">
+                    {%- for media in product.media -%}
+                        {%- liquid
+                            assign loading_strategy = 'lazy'
+
+                            if padding_bottom == null and media.preview_image.aspect_ratio != null
+                                assign padding_bottom = controlImageSize | divided_by: media.preview_image.aspect_ratio
+                            endif
+                        -%}
+
+                        <li id="media-{{ media.id }}" class="slider__slide" data-media-id="{{ media.id }}">
+                            {% case media.media_type %}
+                                {% when 'model' %}
+                                    <product-model class="deferred-media media">
+                                        {% render 'slide',
+                                            padding_bottom: padding_bottom,
+                                            image: media.preview_image,
+                                            section_id: sectionId,
+                                            loading_strategy: loading_strategy,
+                                            image_width: imageWidth,
+                                            width_breaks: imageWidthOptions,
+                                            sizes_attr: imageSizesAttribute,
+                                            is_preload: forloop.first
+                                        %}
+                                        <button
+                                            id="Deferred-Poster-Gallery-{{ media.id }}"
+                                            class="deferred-media__poster-button button--small button--tertiary"
+                                            type="button"
+                                            title="{{ 'products.product.media.play_model' | t }}"
+                                            tabindex="-1"
+                                        >
+                                            <span class="deferred-media__poster-button motion-reduce">
+                                                {%- render 'icon-3d-model' -%}
+                                            </span>
+                                        </button>
+                                        <template>
+                                            {{ media | media_tag: image_size: '2048x', toggleable: true }}
+                                        </template>
+                                    </product-model>
+                                    <button
+                                        class="button product__xr-button button--tertiary"
+                                        type="button"
+                                        aria-label="{{ 'products.product.xr_button_label' | t }}"
+                                        data-shopify-xr
+                                        data-shopify-model3d-id="{{ media.id }}"
+                                        data-shopify-title="title"
+                                        data-shopify-xr-hidden
+                                    >
+                                        {% comment %}{% render 'icon-3d-model' %}{% endcomment %}
+                                        {{ 'products.product.xr_button' | t }}
+                                    </button>
+                                {% when 'external_video' %}
+                                    <deferred-media class="deferred-media media" data-media-id="{{ media.id }}">
+                                        {% render 'slide',
+                                            padding_bottom: padding_bottom,
+                                            image: media.preview_image,
+                                            section_id: sectionId,
+                                            loading_strategy: loading_strategy,
+                                            image_width: imageWidth,
+                                            width_breaks: imageWidthOptions,
+                                            sizes_attr: imageSizesAttribute,
+                                            is_preload: forloop.first
+                                        %}
+                                        <button
+                                            id="Deferred-Poster-Gallery-{{ media.id }}"
+                                            class="deferred-media__poster-button button--small button--tertiary"
+                                            type="button"
+                                            title="{{ 'products.product.media.play_video' | t }}"
+                                            tabindex="-1"
+                                        >
+                                            <span class="deferred-media__poster-button motion-reduce">
+                                                {%- render 'icons-ion', name: 'play', css_class: 'icon-play' -%}
+                                            </span>
+                                        </button>
+                                        <template>
+                                            {%- assign video_class = 'js-' | append: media.host -%}
+                                            {%- if media.host == 'youtube' -%}
+                                                {{
+                                                    media
+                                                    | external_video_url:
+                                                        autoplay: true,
+                                                        loop: false,
+                                                        playlist: media.external_id
+                                                    | external_video_tag: class: video_class, loading: 'lazy'
+                                                }}
+                                            {%- else -%}
+                                                {{
+                                                    media
+                                                    | external_video_url: autoplay: true, loop: false
+                                                    | external_video_tag: class: video_class, loading: 'lazy'
+                                                }}
+                                            {%- endif -%}
+                                        </template>
+                                    </deferred-media>
+
+                                {% when 'video' %}
+                                    <deferred-media class="deferred-media media" data-media-id="{{ media.id }}">
+                                        {% render 'slide',
+                                            padding_bottom: padding_bottom,
+                                            image: media.preview_image,
+                                            section_id: sectionId,
+                                            loading_strategy: loading_strategy,
+                                            image_width: imageWidth,
+                                            width_breaks: imageWidthOptions,
+                                            sizes_attr: imageSizesAttribute,
+                                            is_preload: forloop.first
+                                        %}
+                                        <button
+                                            id="Deferred-Poster-Modal-{{ media.id }}"
+                                            class="deferred-media__poster-button button--small button--tertiary"
+                                            type="button"
+                                            title="{{ 'products.product.media.play_video' | t }}"
+                                            tabindex="-1"
+                                        >
+                                            <span class="deferred-media__poster-button motion-reduce">
+                                                {%- render 'icons-ion', name: 'play', css_class: 'icon-play' -%}
+                                            </span>
+                                        </button>
+                                        <template>
+                                            {{
+                                                media
+                                                | media_tag:
+                                                    image_size: '2048x',
+                                                    autoplay: true,
+                                                    loop: false,
+                                                    controls: true,
+                                                    preload: 'none',
+                                                    autoplay: true
+                                            }}
+                                        </template>
+                                    </deferred-media>
+                                {% else %}
+                                    {% liquid
+                                        if forloop.first
+                                            assign loading_strategy = 'auto'
+                                            assign fetchpriority = 'high'
+                                        endif
+                                    %}
+                                    <modal-opener
+                                        data-modal="#ProductModal-{{ sectionId }}"
+                                        data-media-id="{{ media.id }}"
+                                    >
+                                        {% render 'slide',
+                                            padding_bottom: padding_bottom,
+                                            image: media.preview_image,
+                                            section_id: sectionId,
+                                            loading_strategy: loading_strategy,
+                                            fetchpriority: fetchpriority,
+                                            image_width: imageWidth,
+                                            width_breaks: imageWidthOptions,
+                                            sizes_attr: imageSizesAttribute,
+                                            is_preload: false
+                                        %}
+                                        <button aria-haspopup="dialog" data-media-id="{{ media.id }}" tabindex="-1">
+                                            <span class="visually-hidden">
+                                                {%- if media.position == 'featured' %}
+                                                    {{ 'products.product.media.open_featured_media' | t }}
+                                                {%- else -%}
+                                                    {{ 'products.product.media.open_media' | t: index: media.position }}
+                                                {%- endif -%}
+                                            </span>
+                                        </button>
+                                    </modal-opener>
+                            {% endcase %}
+                        </li>
+                    {%- endfor -%}
+                </ul>
+
+                {% if product.media.size > 1 %}
+                    <div class="slider-buttons no-js-hidden sides">
+                        <button
+                            type="button"
+                            class="slider-button slider-button--prev button--tertiary slider-button--stucked"
+                            name="previous"
+                            aria-label="{{ 'accessibility.previous_slide' | t }}"
+                        >
+                            <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+                                <use href="#icon-caret" />
+                            </svg>
+                        </button>
+                        <button
+                            type="button"
+                            class="slider-button slider-button--next button--tertiary slider-button--stucked"
+                            name="next"
+                            aria-label="{{ 'accessibility.next_slide' | t }}"
+                        >
+                            <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+                                <use href="#icon-caret" />
+                            </svg>
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if product.media.size > 1 %}
+                <slider-vertical
+                    class="slider-thumbs--wrapper"
+                    data-thumbs-mode="{{ block.settings.gallery_thumbs_mode }}"
+                >
+                    <button
+                        type="button"
+                        class="button--tertiary"
+                        name="up"
+                        aria-label="{{ 'accessibility.previous_slide' | t }}"
+                        tabindex="-1"
+                    >
+                        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+                            <use href="#icon-caret" />
+                        </svg>
+                    </button>
+                    <button
+                        type="button"
+                        class="button--tertiary"
+                        name="down"
+                        aria-label="{{ 'accessibility.next_slide' | t }}"
+                        tabindex="-1"
+                    >
+                        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+                            <use href="#icon-caret" />
+                        </svg>
+                    </button>
+                    <div
+                        class="slider-pagination slider-bullets no-js-hidden slider-vertical--panel"
+                        data-thumbs-position="{{ block.settings.gallery_thumbs_mode }}"
+                    >
+                        {% for media in product.media %}
+                            <a
+                                href="#media-{{ media.id }}"
+                                onclick="this.closest('.product__media').activateSlide(this); return false;"
+                                title="{{ media.alt }}"
+                            >
+                                {%- liquid
+                                    if padding_bottom == null
+                                        assign padding_bottom = controlImageSize | divided_by: media.preview_image.aspect_ratio
+                                    endif
+                                    assign loading = 'lazy'
+                                -%}
+                                <div
+                                    class="image--wrapper"
+                                    {% if padding_bottom != blank %}
+                                        style="padding-bottom: {{ padding_bottom }}%"
+                                    {% endif %}
+                                >
+                                    {{
+                                        media.preview_image
+                                        | image_url: width: thumbWidth
+                                        | image_tag: data-image-id: media.preview_image.id, loading: loading
+                                    }}
+                                    {% unless media.media_type == 'image' %}
+                                        <div class="thumb-type thumb-type--{{ media.media_type }}">
+                                            {% case media.media_type %}
+                                                {% when 'model' %}
+                                                    {%- render 'icon-3d-model' -%}
+                                                {% when 'external_video' %}
+                                                    {%- render 'icons-ion', name: 'play' -%}
+                                            {% endcase %}
+                                        </div>
+                                    {% endunless %}
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                    {%- unless block.settings.gallery_thumbs_mode == 'grid_below' -%}
+                        <script src="{{ 'slider-vertical.js' | asset_url }}" defer="defer"></script>
+                    {%- endunless -%}
+                </slider-vertical>
+            {% endif %}
+        </slider-component>
+    {% else %}
+        {%- if settings.use_gallery_placeholder %}
+            {%- liquid
+                # show gallery placeholder image
+                assign placeholder_name = '#name#'
+                assign placeholder_name = placeholder_name | replace: '#name#', settings.placeholder_image | strip
+            -%}
+            {{ placeholder_name | placeholder_svg_tag: 'placeholder' }}
+        {% endif -%}
+    {%- endif -%}
+</div>

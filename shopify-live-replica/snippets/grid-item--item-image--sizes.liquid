@@ -1,0 +1,75 @@
+{%- comment -%}
+    Renders vertical bar (|) separated product grid item image [WIDTH]|[WIDTH_OPTIONS]|[SIZES_VALUE]
+
+    Accepts:
+     - columns         {Number}
+     - has_side_column {Boolean}
+     - mode            {String}
+{%- endcomment -%}
+
+{%- liquid
+    assign columnsInt = columns | plus: 0
+    if mode == 'list'
+        echo '540'
+        echo '|'
+        echo '320,480,540'
+        echo '|'
+        echo '(max-width: 360px) calc(184px * {m})'
+    else
+        if has_side_column
+            case columnsInt
+                when 2
+                    echo '608'
+                    echo '|'
+                    echo '320,446,480,608'
+                    echo '|'
+                    echo '(max-width: 360px) calc(184px * {m}), (max-width: 639px) calc(300px * {m}), (max-width: 767px) calc(364px * {m}), (max-width: 989px) calc(469px * {m}), calc(446px * {m})'
+                when 3
+                    echo '608'
+                    echo '|'
+                    echo '320,480,608'
+                    echo '|'
+                    echo '(max-width: 360px) calc(184px * {m}), (max-width: 639px) calc(300px * {m}), (max-width: 767px) calc(237px * {m}), (max-width: 989px) calc(304px * {m})'
+                when 4
+                    echo '630'
+                    echo '|'
+                    echo '320,480,630'
+                    echo '|'
+                    echo '(max-width: 360px) calc(184px * {m}), (max-width: 639px) calc(300px * {m}), (max-width: 767px) calc(237px * {m})'
+                when 5, 6
+                    echo '600'
+                    echo '|'
+                    echo '320,480,600'
+                    echo '|'
+                    echo '(max-width: 360px) calc(184px * {m}), (max-width: 639px) calc(300px * {m}), (max-width: 767px) calc(237px * {m}), (max-width: 989px) calc(221px * {m})'
+            endcase
+        else
+            case columnsInt
+                when 2
+                    echo '608'
+                    echo '|'
+                    echo '320,480,574,608'
+                    echo '|'
+                    echo '(max-width: 360px) calc(184px * {m}), (max-width: 639px) calc(300px * {m}), (max-width: 767px) calc(364px * {m}), (max-width: 989px) calc(469px * {m}), calc(574px * {m})'
+                when 3
+                    echo '608'
+                    echo '|'
+                    echo '320,374,480,608'
+                    echo '|'
+                    echo '(max-width: 360px) calc(184px * {m}), (max-width: 639px) calc(300px * {m}), (max-width: 767px) calc(237px * {m}), (max-width: 989px) calc(304px * {m}), calc(374px * {m})'
+                when 4
+                    echo '630'
+                    echo '|'
+                    echo '320,480,630'
+                    echo '|'
+                    echo '(max-width: 360px) calc(184px * {m}), (max-width: 639px) calc(300px * {m}), (max-width: 767px) calc(237px * {m})'
+                when 5, 6
+                    echo '600'
+                    echo '|'
+                    echo '320,480,600'
+                    echo '|'
+                    echo '(max-width: 360px) calc(184px * {m}), (max-width: 639px) calc(300px * {m}), (max-width: 767px) calc(237px * {m}), (max-width: 989px) calc(221px * {m})'
+            endcase
+        endif
+    endif
+-%}

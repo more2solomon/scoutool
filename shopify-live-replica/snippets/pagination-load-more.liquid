@@ -1,0 +1,44 @@
+{% comment %}
+    Render Infinity Scroll action
+
+    Accepts:
+    - pagination:   {Object}
+    - type:         {String}
+    - class:        {String}
+{% endcomment %}
+
+{% style %}
+    pagination-load-more .loading-overlay {
+        position: fixed;
+    }
+    pagination-load-more .loading-overlay__spinner {
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--color-foreground);
+    }{% if type == 'load_more_button' %}
+    pagination-load-more {
+        display: flex;
+        justify-content: center;
+        margin: 2.5rem auto;
+    }
+    .pagination-load-more {
+        font-weight: 400;
+    }{% endif %}
+{% endstyle %}
+<pagination-load-more data-pagination-type="{{ type }}">
+    <a
+        class="pagination-load-more{% if type == 'load_more_button' %} button button--primary{% endif %}"
+        href="{{ paginate.next.url}}"
+    >
+        <span
+            {% unless type == 'load_more_button' %}
+                class="sr-only"
+            {% endunless %}
+        >
+            {{- 'products.product.load_more' | t -}}
+        </span>
+    </a>
+</pagination-load-more>
+
+<script src="{{ 'pagination-load-more.js' | asset_url }}" async></script>

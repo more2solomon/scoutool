@@ -1,0 +1,20 @@
+@media all and (min-width: 990px) {
+  .menu-drawer {
+    --menu-drawer-position: calc(2px - var(--max-width));
+    transform: translateX(var(--menu-drawer-position));
+  }
+
+  header-drawer .menu-drawer__inner-container {
+    left: var(--menu-drawer-position);
+    right: 0;
+  }
+
+  header-drawer [open] .menu-drawer__inner-container {
+    left: 0;
+    transition: left 0.35s ease-in-out;
+  }
+
+  .menu-drawer__menu .menu-drawer__submenu {
+    --transform_x: calc(var(--max-width) - .5rem);
+  }
+}

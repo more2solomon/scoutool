@@ -1,0 +1,272 @@
+{%- comment -%}
+    Render Compare products table
+
+    Accept:
+    - products:                 {Object}
+    - use_sticky_header:        {Bool}
+    - show_product_add_to_cart: {Bool}
+    - show_product_description: {Bool}
+    - show_product_vendor:      {Bool}
+    - show_product_sku:         {Bool}
+    - show_product_rating:      {Bool}
+    - product_description_size: {Numb}
+    - custom_option_heading:    {String}
+    - product_custom_liquid:    {Liquid}
+    - show_cart_icon            {Boolean}
+{%- endcomment -%}
+{%- assign notAvailable = 'sections.compare.popup.not_available' | t -%}
+
+<table class="compare-table">
+    <tbody>
+        <tr class="row_visible{% if use_sticky_header %} sticky_header{% endif %} reveal-item">
+            <td class="item"></td>
+            {%- for product in products -%}
+                <td class="item_visible" data-product-id="{{ product.id}}" data-index="{{ forloop.index }}">
+                    <compare-remove-item>
+                        <a
+                            href="#/"
+                            class="link remove-item"
+                            data-product-id="{{ product.id }}"
+                            title="{{ 'sections.compare.popup.link_remove_item' | t }}"
+                        >
+                            <svg
+                                aria-hidden="true"
+                                focusable="false"
+                                width="8"
+                                height="8"
+                                role="presentation"
+                                class="icon-x"
+                            >
+                                <use href="#icon-x" />
+                            </svg>
+                            {% comment %}<span class="label" hidden>{{ 'sections.compare.popup.link_remove_item' | t }}</span>{% endcomment %}
+                        </a>
+                    </compare-remove-item>
+                    {%- liquid
+                        assign featuredImage = product.featured_media.preview_image
+                        assign image_ratio = settings.product_card_image_ratio
+                        assign imageWidth = '320px'
+                        assign sizesConfig = '320|165,320|calc(#imageWidth# * {m})' | replace_all: '#imageWidth#', imageWidth
+                    -%}
+
+                    {% comment %} Render Product Featured Image {% endcomment %}
+
+                    <a href="{{ product.url }}" class="item-link" aria-label="{{ product.title }}">
+                        <div class="grid-item item-image{% if forloop.length == 1 %} single--product{% endif %}">
+                            {%- liquid
+                                assign media_class = 'media'
+                                if settings.use_media_transparent
+                                    assign media_class = media_class | append: ' media--transparent'
+                                endif
+
+                                unless request.design_mode
+                                    if section.id contains '_compare_table'
+                                        if settings.enable_preload_images and featuredImage
+                                            assign media_class = media_class | append: ' media--blur-image'
+                                        endif
+                                    endif
+                                endunless
+                            -%}
+                            {% if section.id contains '_compare_table' %}
+                                {%- if settings.enable_preload_images -%}
+                                    {%- render 'loading-overlay' -%}
+                                {%- endif -%}
+                            {%- endif -%}
+                            <div
+                                class="{{ media_class }}"
+                                style="padding-bottom: {% render 'helper__media-padding-bottom' image: featuredImage image_ratio: image_ratio %};"
+                            >
+                                {%- if featuredImage %}
+                                    {% render 'grid-item--item-image',
+                                        image: featuredImage,
+                                        image_sizes_config: sizesConfig,
+                                        image_ratio: image_ratio,
+                                        image_preload: false
+                                    %}
+                                {% else %}
+                                    <span class="_center">{{ notAvailable }}</span>
+                                {% endif -%}
+                            </div>
+                        </div>
+                    </a>
+                    <div class="column">
+                        {% comment %} Render Product Title {% endcomment %}
+                        <span class="item-title{% unless settings.current_presets == 'metalware' %} font-semibold{% endunless %}">
+                            {{- product.title | default: notAvailable -}}
+                        </span>
+                        {% comment %} Render Product Vendor {% endcomment %}
+                        {%- if show_product_vendor -%}
+                            <span class="vendor">{{ product.vendor | default: notAvailable }}</span>
+                        {%- endif -%}
+                    </div>
+                </td>
+            {%- endfor -%}
+        </tr>
+
+        {% comment %} Render Product SKU {% endcomment %}
+        {%- if show_product_sku -%}
+            <tr class="row reveal-item">
+                <td class="item">
+                    <span class="h6 heading">{{ 'sections.compare.popup.product_sku' | t }}</span>
+                </td>
+                {%- for product in products -%}
+                    {%- assign sku = product.selected_or_first_available_variant.sku | default: notAvailable -%}
+                    <td class="item">
+                        <span class="value">{{ sku }}</span>
+                    </td>
+                {%- endfor -%}
+            </tr>
+        {%- endif -%}
+
+        {% comment %} Render Product price {% endcomment %}
+        <tr class="row reveal-item">
+            <td class="item">
+                <span class="h6 heading">{{ 'sections.compare.popup.product_price' | t }}</span>
+            </td>
+            {%- for product in products -%}
+                <td class="item">
+                    {% render 'helper__decorate-product-price', product: product %}
+                </td>
+            {%- endfor -%}
+        </tr>
+
+        {% comment %} Render Product rating {% endcomment %}
+        {%- if show_product_rating -%}
+            <tr class="row reveal-item">
+                <td class="item">
+                    <span class="h6 heading">{{ 'sections.compare.popup.product_rating' | t }}</span>
+                </td>
+                {%- for product in products -%}
+                    <td class="item">
+                        {%- assign review_badge = product.metafields.judgeme.badge -%}
+                        {%- if review_badge == null %}
+                            {{ 'sections.compare.no_reviews' | t }}
+                        {% else %}
+                            <span class="jdgm-widget jdgm-preview-badge">
+                                {{- product.metafields.judgeme.badge -}}
+                            </span>
+                        {% endif -%}
+                    </td>
+                {%- endfor -%}
+            </tr>
+        {%- endif -%}
+
+        {% comment %} Render Product Description {% endcomment %}
+        {%- if show_product_description -%}
+            <tr class="row reveal-item">
+                <td class="item">
+                    <span class="h6 heading">{{ 'sections.compare.popup.product_description' | t }}</span>
+                </td>
+                {%- for product in products -%}
+                    <td class="rte item">
+                        {%- if product.description != blank and product_description_size != '0' %}
+                            {{- product.description | truncatewords: product_description_size -}}
+                        {% else %}
+                            {{- notAvailable -}}
+                        {% endif -%}
+                    </td>
+                {%- endfor -%}
+            </tr>
+        {%- endif -%}
+        {% comment %} Render Custom Option using Custom Liquid {% endcomment %}
+        {%- if section.settings.custom_liquid != blank -%}
+            <tr class="row reveal-item">
+                <td class="item">
+                    <span class="h6 heading">{{- section.settings.custom_heading -}}</span>
+                    {%- for product in products -%}
+                        <td class="rte item">
+                            {{ section.settings.custom_liquid }}
+                        </td>
+                    {%- endfor -%}
+                </td>
+            </tr>
+        {%- endif -%}
+        {% comment %} Render Add To Cart button {% endcomment %}
+        {%- if show_product_add_to_cart -%}
+            <tr class="row action reveal-item">
+                <td class="item"></td>
+                {%- for product in products -%}
+                    {%- assign product_form_id = forloop.index | append: '-' | append: section.id -%}
+                    <td class="item item-actions-wrapper">
+                        {%- if product.has_only_default_variant -%}
+                            <span class="item-added-to-cart__message">
+                                {{ 'sections.compare.popup.item_added_to_cart' | t }}
+                            </span>
+                        {%- endif -%}
+                        {%- liquid
+                            if product.has_only_default_variant
+                                assign buttonName = 'add'
+                                if product.selected_or_first_available_variant.available
+                                    assign buttonText = 'products.product.add_to_cart' | t
+                                    assign isButtonDisabled = false
+                                else
+                                    assign buttonText = 'products.product.sold_out' | t
+                                    assign isButtonDisabled = true
+                                endif
+                            else
+                                assign buttonName = 'view'
+                                assign buttonText = 'products.product.view_full_details' | t
+                                assign isButtonDisabled = false
+                            endif
+
+                            if isPreorder and product.selected_or_first_available_variant.available and product.selected_or_first_available_variant.inventory_quantity <= 0
+                                assign buttonName = 'pre-order'
+                                assign buttonText = 'products.product.pre_sale' | t
+                                assign isButtonDisabled = false
+                            endif
+                        -%}
+                        {%- capture html_button %}
+    {%- liquid 
+        assign button_class = 'button button--primary button--small'
+        if settings.show_button_ring_on_hover
+            assign button_class = button_class | append: ' border--outline'
+        endif
+        if settings.cut_button_corners
+            assign button_class = button_class | append: ' border--with-cut-corners'
+        endif
+    -%}
+    <button type="submit" name="{{ buttonName }}"
+        class="{{ button_class }}"
+        form="{{ product_form_id }}"
+        aria-label="{{ buttonText }}"
+        title="{{ buttonText }}"{% if isButtonDisabled %} disabled{% endif %}>
+        <span class="text">{{ buttonText }}</span>
+        {%- if show_cart_icon and buttonName == 'add' %}
+            {% render 'icons-charge' name: 'cart' css_class: "icon-cart" %}
+        {% endif -%}
+    </button>
+{% endcapture -%}
+
+                        {%- if show_to_cart_button != false and product.id != blank -%}
+                            {% if product.has_only_default_variant %}
+                                <product-form class="product-form">
+                                    {% form 'product',
+                                        product,
+                                        id: product_form_id,
+                                        class: 'form',
+                                        novalidate: 'novalidate',
+                                        data-type: 'add-to-cart-form'
+                                    %}
+                                        <input
+                                            type="hidden"
+                                            name="id"
+                                            value="{{ product.selected_or_first_available_variant.id }}"
+                                        >
+                                        {{ html_button }}
+                                    {% endform %}
+                                </product-form>
+                            {% else %}
+                                <form
+                                    id="{{ product_form_id }}"
+                                    action="{{ product.url | within: current_collection }}#has-options"
+                                >
+                                    {{ html_button }}
+                                </form>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                {%- endfor -%}
+            </tr>
+        {%- endif -%}
+    </tbody>
+</table>

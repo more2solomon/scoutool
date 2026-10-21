@@ -1,0 +1,47 @@
+{%- comment -%}
+    Render Predictive search results TABs
+
+    Accepts:
+     - resources: {Object} Collections/Products/Articles/Pages
+     - section_id: {String}
+{%- endcomment -%}
+
+<div class="search-tabs-wrapper" role="tablist">
+    {%- unless resources.products.size == 0 -%}
+        <input type="radio" class="visually-hidden" id="tab-products" name="tabs-template--{{ section_id }}" checked>
+        <h6 id="tab-label-products" class="tab-title outline-bottom" role="tab" aria-controls="tab-products--content">
+            <label id="tab-label-products-title" for="tab-products" class="tab-label__active">
+                <span>{{ 'templates.search.results.products' | t }}</span>
+            </label>
+        </h6>
+    {%- endunless -%}
+    {%- unless resources.collections.size == 0 -%}
+        <input type="radio" class="visually-hidden" id="tab-collections" name="tabs-template--{{ section_id }}">
+        <h6
+            id="tab-label-collections"
+            class="tab-title outline-bottom"
+            role="tab"
+            aria-controls="tab-collections--content"
+        >
+            <label id="tab-label-collections-title" for="tab-collections">
+                <span>{{ 'templates.search.results.collections' | t }}</span>
+            </label>
+        </h6>
+    {%- endunless -%}
+    {%- unless resources.articles.size == 0 -%}
+        <input type="radio" class="visually-hidden" id="tab-articles" name="tabs-template--{{ section_id }}">
+        <h6 id="tab-label-articles" class="tab-title outline-bottom" role="tab" aria-controls="tab-articles--content">
+            <label id="tab-label-articles-title" for="tab-articles">
+                <span>{{ 'templates.search.results.articles' | t }}</span>
+            </label>
+        </h6>
+    {%- endunless -%}
+    {%- unless resources.pages.size == 0 -%}
+        <input type="radio" class="visually-hidden" id="tab-pages" name="tabs-template--{{ section_id }}">
+        <h6 id="tab-label-pages" class="tab-title outline-bottom" role="tab" aria-controls="tab-pages--content">
+            <label id="tab-label-pages-title" for="tab-pages">
+                <span>{{ 'templates.search.results.pages' | t }}</span>
+            </label>
+        </h6>
+    {%- endunless -%}
+</div>

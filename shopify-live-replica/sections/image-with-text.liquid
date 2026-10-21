@@ -1,0 +1,468 @@
+{% unless section.settings.two_column_layout %}
+    {{ 'component-image-with-text.css' | asset_url | stylesheet_tag }}
+{% endunless %}
+
+{%- liquid
+    assign sectionId = '#shopify-section-' | append: section.id
+
+    unless section.settings.image == blank
+        case section.settings.image_height
+            when 'adapt'
+                assign padding_bottom = 100 | divided_by: section.settings.image.aspect_ratio
+                assign padding_bottom = padding_bottom | append: '%'
+            when 'small'
+                assign padding_bottom = '20rem'
+            when 'medium'
+                assign padding_bottom = '30rem'
+            when 'large'
+                assign padding_bottom = '40rem'
+        endcase
+    endunless
+
+    assign css_class_width = 'dynamic-page-width'
+    if section.settings.full_width
+        assign css_class_width = 'image-with-text--full-width'
+    endif
+
+    assign css_class = css_class_width
+    if section.settings.animation_on_reveal
+        assign css_class = css_class | append: ' reveal-slide-in'
+    endif
+
+    assign headingSize = section.blocks | where: 'type', 'heading' | first
+    if headingSize == null
+        assign headingSize = 'initial'
+    endif
+
+    assign spotlights = section.blocks | where: 'type', 'spotlight'
+    assign source = section.settings.spotlight_products
+-%}
+
+{%- render 'image-with-text__two-columns-styles', heading_size: headingSize -%}
+
+{%- unless source == null or spotlights.size == 0 -%}
+    {{ 'component-spotlights.css' | asset_url | stylesheet_tag }}
+{%- endunless -%}
+
+{%- capture image_hhtml -%}
+{%- liquid
+  assign media_styles = 'padding-bottom:'
+  assign media_styles = media_styles | append: padding_bottom
+  assign media_styles = media_styles | append: ';'
+  assign media_class = ''
+
+  unless request.design_mode
+    if settings.enable_preload_images and section.settings.image != blank
+      assign media_class = media_class | append: 'media--blur-image '
+    endif
+  endunless
+-%}
+{%- if settings.enable_preload_images and section.settings.image != blank -%}
+{%- render 'loading-overlay' -%}
+{%- endif -%}
+<div class="{% unless media_class == blank %}{{ media_class }}{% endunless %}{% if section.settings.image != blank %}media{% else %}image-with-text__media--placeholder placeholder{% endif %}"
+  {% if section.settings.image != blank %} style="{{ media_styles }}"{% endif %}
+>
+  {%- if section.settings.image != blank -%}
+    {% if section.settings.full_width %}
+      {% render 'render-image'
+        image: section.settings.image
+        sizes: '100vw'
+        widths: '640,720,900,1080,1920,#iw#'
+      %}
+    {%- else -%}
+      {% render 'render-image'
+        image: section.settings.image
+        sizes: '(max-width: 767px) calc(100vw - 2rem), (max-width: 1279px) calc(100vw - 6rem), 1176px'
+        widths: '360,640,940,1176,#iw#'
+      %}
+    {%- endif -%}
+  {%- else -%}
+    {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+  {%- endif -%}
+{% comment %}Spotlight{% endcomment %}
+  {%- unless source == null or spotlights.size == 0 -%}
+      {% render 'spotlights'
+        section_settings: section.settings
+        block_spotlight: spotlights
+        products: source
+      %}
+  {%- endunless -%}
+</div>
+{%- endcapture -%}
+
+{% if section.settings.two_column_layout %}
+    {%- liquid
+        if section.settings.text_align == 'right'
+            assign css_class = css_class | append: ' row__reverse'
+        endif
+    -%}
+    <div class="modern {{ css_class }}">
+        <div class="content__desc">
+            <div class="description">
+                {% render 'image_with_text', blocks: section.blocks %}
+            </div>
+        </div>
+        <div class="content__img">
+            {{ image_hhtml }}
+        </div>
+    </div>
+
+{% else %}
+    {%- unless section.settings.section_border_radius == 0 %}
+        {% style %}
+            .image-with-text .image-with-text__content {
+              border-bottom-right-radius: {{ section.settings.section_border_radius }}rem;
+              border-bottom-left-radius: {{ section.settings.section_border_radius }}rem;
+            }
+            .image-with-text :is(.image-with-text__media--placeholder, img) {
+              border-top-right-radius: {{ section.settings.section_border_radius }}rem;
+              border-top-left-radius: {{ section.settings.section_border_radius }}rem;
+            }
+        {% endstyle %}
+    {% endunless -%}
+    <div class="image-with-text {{ css_class }}">
+        <div class="image-with-text__inner">
+            {% unless section.settings.layout == 'text_first' %}
+                {{ image_hhtml }}
+            {% endunless %}
+
+            <div class="image-with-text__content" style="text-align: {{ section.settings.text_align }};">
+                {% render 'image_with_text', blocks: section.blocks %}
+            </div>
+
+            {% if section.settings.layout == 'text_first' %}
+                {{ image_hhtml }}
+            {% endif %}
+        </div>
+    </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "t:sections.image-with-text.name",
+  "class": "spaced-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "default": false,
+      "label": "t:sections.image-with-text.settings.full_width.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "two_column_layout",
+      "label": "t:sections.image-with-text.settings.two_column_layout.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.image-with-text.settings.image.label"
+    },
+    {
+      "type": "select",
+      "id": "image_height",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "t:sections.image-with-text.settings.image_height.options__1"
+        },
+        {
+          "value": "small",
+          "label": "t:sections.image-with-text.settings.image_height.options__2"
+        },
+        {
+          "value": "medium",
+          "label": "t:sections.image-with-text.settings.image_height.options__3"
+        },
+        {
+          "value": "large",
+          "label": "t:sections.image-with-text.settings.image_height.options__4"
+        }
+      ],
+      "default": "medium",
+      "label": "t:sections.image-with-text.settings.image_height.label",
+      "info": "t:sections.image-with-text.settings.image_height.info"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "options": [
+        {
+          "value": "image_first",
+          "label": "t:sections.image-with-text.settings.layout.options__1.label"
+        },
+        {
+          "value": "text_first",
+          "label": "t:sections.image-with-text.settings.layout.options__2.label"
+        }
+      ],
+      "default": "image_first",
+      "label": "t:sections.image-with-text.settings.layout.label",
+      "info": "t:sections.image-with-text.settings.layout.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_image_transform_scale",
+      "label": "t:sections.image-with-text.settings.enable_image_transform_scale.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "animation_on_reveal",
+      "label": "t:sections.all.settings.animation_on_reveal.label",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.image-with-text.settings.text_align.option__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.image-with-text.settings.text_align.option__2.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.image-with-text.settings.text_align.option__3.label"
+        }
+      ],
+      "default": "left",
+      "label": "t:sections.image-with-text.settings.text_align.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.image-with-text.settings.header__1.content"
+    },
+    {
+      "type": "range",
+      "id": "section_border_radius",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "default": 0,
+      "unit": "rem",
+      "label": "t:sections.image-with-text.settings.section_border_radius.label"
+    },
+    {
+      "type": "color",
+      "id": "cover_text_color",
+      "label": "t:sections.image-with-text.settings.cover_text_color.label",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "cover_background",
+      "label": "t:sections.image-with-text.settings.cover_background.label",
+      "default": "#101824"
+    },
+    {
+      "type": "color_background",
+      "id": "cover_background_gradient",
+      "label": "t:sections.image-with-text.settings.cover_background_gradient.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.image-with-text.settings.header_1.content"
+    },
+    {
+      "type": "product_list",
+      "id": "spotlight_products",
+      "label": "t:sections.image-with-text.settings.spotlight_products.label",
+      "limit": 3
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_image",
+      "label": "t:sections.image-with-text.settings.show_product_image.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "t:sections.image-with-text.settings.show_vendor.label",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "t:sections.image-with-text.settings.show_price.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "t:sections.image-with-text.settings.show_description.label",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "display_card_in_row",
+      "label": "t:sections.image-with-text.settings.display_card_in_row.label",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:sections.image-with-text.settings.header.content"
+    },
+    {
+      "type": "color",
+      "id": "spot_background",
+      "label": "t:sections.image-with-text.settings.spot_background.label",
+      "default": "#E13124"
+    },
+    {
+      "type": "color",
+      "id": "spot_subtitle_color",
+      "label": "t:sections.image-with-text.settings.spot_subtitle_color.label",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 1.5,
+      "step": 0.1,
+      "default": 0.3,
+      "unit": "rem",
+      "label": "t:sections.multicolumn.blocks.column.settings.border_radius.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "t:sections.image-with-text.blocks.heading.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "default": "Image with text",
+          "label": "t:sections.image-with-text.blocks.heading.settings.heading.label"
+        },
+        {
+          "type": "range",
+          "id": "heading_font_size",
+          "min": 30,
+          "max": 54,
+          "step": 2,
+          "default": 48,
+          "unit": "px",
+          "label": "t:sections.image-with-text.blocks.heading.settings.heading_font_size.label"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "t:sections.image-with-text.blocks.text.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+          "label": "t:sections.image-with-text.blocks.text.settings.text.label"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "t:sections.image-with-text.blocks.button.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "t:sections.image-with-text.blocks.button.settings.button_label.label",
+          "info": "t:sections.image-with-text.blocks.button.settings.button_label.info"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "t:sections.image-with-text.blocks.button.settings.button_link.label"
+        }
+      ]
+    },
+    {
+      "type": "spotlight",
+      "name": "t:sections.image-with-text.blocks.spotlight.name",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "header",
+          "content": "t:sections.image-with-text.blocks.spotlight.settings.header_1.content"
+        },
+        {
+          "type": "range",
+          "id": "spot_position_left",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 45,
+          "unit": "%",
+          "label": "t:sections.image-with-text.blocks.spotlight.settings.spot_position_left"
+        },
+        {
+          "type": "range",
+          "id": "spot_position_top",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 50,
+          "unit": "%",
+          "label": "t:sections.image-with-text.blocks.spotlight.settings.spot_position_top"
+        },
+        {
+          "type": "header",
+          "content": "t:sections.image-with-text.blocks.spotlight.settings.header_2.content"
+        },
+        {
+          "type": "text",
+          "id": "spot_heading",
+          "label": "t:sections.image-with-text.blocks.spotlight.settings.spot_heading.label"
+        },
+        {
+          "type": "text",
+          "id": "spot_subheading",
+          "label": "t:sections.image-with-text.blocks.spotlight.settings.spot_subheading.label"
+        },
+        {
+          "type": "select",
+          "id": "text_position",
+          "label": "t:sections.image-with-text.blocks.spotlight.settings.text_position.label",
+          "options": [
+            {
+              "value": "left",
+              "label": "t:sections.image-with-text.blocks.spotlight.settings.text_position.options.left"
+            },
+            {
+              "value": "right",
+              "label": "t:sections.image-with-text.blocks.spotlight.settings.text_position.options.right"
+            }
+          ],
+          "default": "right"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.image-with-text.presets.name",
+      "blocks": [
+        {
+          "type": "heading"
+        },
+        {
+          "type": "text"
+        },
+        {
+          "type": "button"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,161 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "icons_bar": {
+      "type": "icons-bar",
+      "blocks": {
+        "icon-bar-1": {
+          "type": "icon",
+          "settings": {
+            "icon": "truck",
+            "text": "<p><b>ITEM BAR TITLE</b></p><p>Share shipping, delivery, policy information.</p>"
+          }
+        },
+        "icon-bar-2": {
+          "type": "icon",
+          "settings": {
+            "icon": "clock",
+            "text": "<p><b>ITEM BAR TITLE</b></p><p>Share shipping, delivery, policy information.</p>"
+          }
+        },
+        "icon-bar-3": {
+          "type": "icon",
+          "settings": {
+            "icon": "calendar",
+            "text": "<p><b>ITEM BAR TITLE</b></p><p>Share shipping, delivery, policy information.</p>"
+          }
+        },
+        "icon-bar-4": {
+          "type": "icon",
+          "settings": {
+            "icon": "clipboard-check",
+            "text": "<p><b>ITEM BAR TITLE</b></p><p>Share shipping, delivery, policy information.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "icon-bar-1",
+        "icon-bar-2",
+        "icon-bar-3",
+        "icon-bar-4"
+      ],
+      "settings": {}
+    },
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {
+            "text_before": "{{ product.vendor }}"
+          }
+        },
+        "gallery": {
+          "type": "gallery",
+          "settings": {}
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {}
+        },
+        "quantity_selector": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {}
+        },
+        "pickup": {
+          "type": "pickup",
+          "settings": {}
+        },
+        "manage_stock": {
+          "type": "manage_stock",
+          "disabled": true,
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "title",
+        "manage_stock",
+        "gallery",
+        "description",
+        "price",
+        "variant_picker",
+        "quantity_selector",
+        "buy_buttons",
+        "pickup"
+      ],
+      "settings": {}
+    },
+    "product-tabs": {
+      "type": "product-tabs",
+      "blocks": {
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "details": {
+          "type": "details",
+          "settings": {}
+        },
+        "reviews": {
+          "type": "reviews",
+          "settings": {
+            "heading": "Customer Reviews"
+          }
+        },
+        "similar": {
+          "type": "similar",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "description",
+        "details",
+        "reviews",
+        "similar"
+      ],
+      "settings": {
+        "tabs_layout": "expanded"
+      }
+    },
+    "product-recommendations": {
+      "type": "product-recommendations",
+      "settings": {}
+    },
+    "product-bought-together": {
+      "type": "product-bought-together",
+      "settings": {}
+    },
+    "product-complementary": {
+      "type": "product-complementary",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "product-bought-together",
+    "product-tabs",
+    "product-recommendations",
+    "product-complementary",
+    "icons_bar"
+  ]
+}

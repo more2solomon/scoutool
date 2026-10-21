@@ -1,0 +1,93 @@
+{%- for media in medias -%}
+    {%- if media.media_type == 'image' -%}
+        {% liquid
+            assign mediaWidth = 1440
+            if media.preview_image.width < mediaWidth
+                assign mediaWidth = media.preview_image.width
+            endif
+        %}
+        {{
+            media.preview_image
+            | image_url: width: mediaWidth
+            | image_tag:
+                loading: 'lazy',
+                data-media-id: media.id,
+                onload: 'this.closest("product-modal")?.hideLoading?.();return this;'
+        }}
+    {%- else -%}
+        {% capture mediaHtml %}
+      <button id="Deferred-Poster-Modal-{{ media.id }}" class="deferred-media__poster button--small button--tertiary" type="button">
+        {% liquid
+          if media.media_type == 'model'
+            assign button_text = 'products.product.media.play_model' | t
+          else
+            assign button_text = 'products.product.media.play_video' | t
+          endif
+        -%}
+        <span class="deferred-media__poster-button motion-reduce" title="{{ button_text }}">
+          <span class="visually-hidden">{{ button_text }}</span>
+          {%- if media.media_type == 'model' -%}
+            {%- render 'icon-3d-model' -%}
+          {%- else -%}
+            {%- render 'icons-ion' name: 'play' css_class: 'icon-play' -%}
+          {%- endif -%}
+        </span>
+        {% liquid
+          assign mediaWidth = 1440
+          if media.preview_image.width < mediaWidth
+            assign mediaWidth = media.preview_image.width
+          endif
+        %}
+        {{ media.preview_image |
+            image_url:
+              width: mediaWidth |
+            image_tag:
+              loading: 'lazy'
+        }}
+      </button>
+      <template>
+        {%- case media.media_type -%}
+        {%- when 'external_video' -%}
+          {%- assign video_class = 'js-' | append: media.host -%}
+          {%- if media.host == 'youtube' -%}
+            {{ media | external_video_url: autoplay: true, loop: false, playlist: media.external_id | external_video_tag: class: video_class, loading: "lazy" }}
+          {%- else -%}
+            {{ media | external_video_url: autoplay: true, loop: false | external_video_tag: class: video_class, loading: "lazy" }}
+          {%- endif -%}
+        {%- when 'video' -%}
+          {{ media | media_tag: image_size: "2048x", autoplay: true, loop: false, controls: true, preload: "none", autoplay: true }}
+        {%- when 'model' -%}
+          {{ media | media_tag: image_size: "2048x", toggleable: true }}
+        {%- endcase -%}
+      </template>
+    {% endcapture %}
+
+        {%- if media.media_type == 'model' -%}
+            <div class="product-media-modal__model" data-media-id="{{ media.id }}">
+                <product-model class="deferred-media media" style="padding-top: min(calc(100vh - 12rem), 100%)">
+                    {{ mediaHtml }}
+                </product-model>
+                <button
+                    class="button product__xr-button button--tertiary"
+                    type="button"
+                    aria-label="{{ 'products.product.xr_button_label' | t }}"
+                    data-shopify-xr
+                    data-shopify-model3d-id="{{ media.id }}"
+                    data-shopify-title="title"
+                    data-shopify-xr-hidden
+                >
+                    {% render 'icon-3d-model' %}
+                    {{ 'products.product.xr_button' | t }}
+                </button>
+            </div>
+        {%- else -%}
+            <deferred-media
+                class="deferred-media media"
+                style="padding-top: min(calc(100vh - 12rem), {{ 1 | divided_by: media.aspect_ratio | times: 100 }}%)"
+                data-media-id="{{ media.id }}"
+            >
+                {{ mediaHtml }}
+            </deferred-media>
+        {%- endif -%}
+    {%- endif -%}
+{%- endfor -%}

@@ -1,0 +1,36 @@
+{%- comment -%}
+    Render Complementary products
+
+    Accepts:
+     - block:      {Object}
+     - blockOrder: {Number}
+     - sectionId:  {String}
+     - product:    {Object}
+{%- endcomment -%}
+
+{%- liquid
+    assign show_add_to_cart = false
+    if block.settings.show_to_cart_button
+        assign show_add_to_cart = true
+    endif
+
+    assign __class__ = 'product__info-block product__info-block--complementary reveal-item'
+    if block.settings.use_as_collapsible
+        assign __class__ = __class__ | append: ' collapsed'
+    endif
+-%}
+
+<div class="{{ __class__ }}" style="order: {{ blockOrder }}" {{ block.shopify_attributes }}>
+    {%- render 'block-complementary-products',
+        heading: block.settings.heading,
+        sectionId: sectionId,
+        productId: product.id,
+        is_slider: block.settings.use_as_slider,
+        show_add_to_cart: show_add_to_cart,
+        items_per_page: block.settings.products_per_page,
+        is_collapsed: block.settings.use_as_collapsible,
+        is_border_top: block.settings.show_border_top,
+        is_border_bottom: block.settings.show_border_bottom,
+        is_icon: block.settings.icon
+    -%}
+</div>

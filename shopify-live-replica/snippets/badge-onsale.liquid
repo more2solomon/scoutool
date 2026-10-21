@@ -1,0 +1,44 @@
+{% comment %}
+    Renders "Sale" badge for product.
+
+    Accepts:
+    - product: {Object}
+    - size: {String} small | large
+{% endcomment %}
+
+{%- liquid
+    assign position = settings.badge_onsale__position
+    assign text = settings.badge_onsale__text | escape
+    assign size = size | default: 'xs'
+    assign bg_color = settings.colors_badge_sale_background_gradient | default: settings.colors_badge_sale_background
+    assign text_color = settings.colors_badge_sale_foreground
+    assign border_radius = settings.badges_border_radius_value | append: 'rem'
+
+    assign styles = 'color:' | append: text_color | append: ';background:' | append: bg_color
+    assign styles = styles | append: ';border-radius:' | append: border_radius
+-%}
+
+{%- if product.compare_at_price > product.price -%}
+    {%- liquid
+        assign discount_percent = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round
+        assign discount_amount = product.compare_at_price | minus: product.price | money
+        assign discount_amount_int = product.compare_at_price | minus: product.price | divided_by: 100 | times: 100 | money_without_trailing_zeros
+    -%}
+    <div
+        class="badge badge-size-{{ size }} badge-onsale {{ position }}"
+        style="{{ styles }}"
+        aria-hidden="true"
+    >
+        {%- if settings.show_sale_badge_discount -%}
+            <span class="badge-onsale__icon">{% render 'icon-discount' %}</span>
+        {%- endif -%}
+        <span class="badge-onsale__label">
+            {% unless text == blank %}
+                <p>{{ text }}</p>
+            {% endunless -%}
+            {%- if settings.show_sale_badge_discount %}
+                {{ discount_percent | prepend: ' -' | append: '%' -}}
+            {%- endif %}
+        </span>
+    </div>
+{%- endif -%}

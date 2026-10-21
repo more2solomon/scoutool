@@ -1,0 +1,32 @@
+{%- comment -%}
+    Render product desription using block settings
+
+    Accepts:
+     - block:      {Object}
+     - visibility  {Bool}
+     - blockOrder: {Number}
+     - sectionId:  {String}
+     - product:    {Object}
+{%- endcomment -%}
+{% liquid
+    assign text = product.description | strip
+    assign class = 'product__info-block product__info-block--description rte'
+
+    unless template contains 'sticky-info'
+        assign class = class | append: ' _aside'
+    endunless
+
+    assign class = class | append: ' reveal-item'
+%}
+{%- unless text == blank -%}
+    <text-expandable
+        class="{{ class }}"
+        style="order:{{ blockOrder }};{% if block.settings.is_collapsed %}--line-clamp:{{ block.settings.initial_lines }}{% endif %}"
+        data-button-text-expand="{{ 'products.product._more' | t }}"
+        data-button-text-narrow="{{ 'products.product._less' | t }}"
+        data-expanded="{% if block.settings.is_collapsed %}false{% else %}true{% endif %}"
+        {{ block.shopify_attributes }}
+    >
+        {{- text -}}
+    </text-expandable>
+{%- endunless -%}

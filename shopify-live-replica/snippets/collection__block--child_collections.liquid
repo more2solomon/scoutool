@@ -1,0 +1,163 @@
+{%- comment -%}
+    Render child collections
+
+    Accepts:
+     - block:           {Object}
+     - blockOrder:      {Number}
+{%- endcomment -%}
+
+{%- liquid
+    assign metafield_name = block.settings.metafield_name
+    assign source = collection.metafields.custom[metafield_name].value
+
+    case block.settings.image_ratio
+        when 'adapt_to_image'
+            assign image_ratio = 'adapt-to-image'
+        when 'portrait'
+            assign image_ratio = 'image-portrait'
+        when 'circle'
+            assign image_ratio = 'image-circle'
+    endcase
+
+    assign block_class = 'collection__block collection__block--child-collections'
+    if block.settings.animation_on_reveal
+        assign block_class = block_class | append: ' reveal-slide-in'
+    endif
+
+    assign list_class = 'collections-list'
+    if block.settings.is_slider_list
+        assign list_class = 'slider slider--desktop'
+    endif
+    assign list_class = list_class | append: ' image-position--' | append: block.settings.image_position
+    assign list_class = list_class | append: ' ' | append: image_ratio
+-%}
+
+{%- unless source == blank %}
+    {% style %}
+        .collection__block--child-collections ul {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: .5rem;
+            overflow: hidden;
+        }
+        .collection__block--child-collections :is(.slider-buttons__container) {
+            height: 2.5rem;
+        }
+        .collection__block--child-collections :is(slider-component) .slider-buttons {
+            top: -1rem;
+        }
+        {% if block.settings.image_ratio == 'circle' %}
+        .collection__block--child-collections li :is(.media, img) {
+            border-radius: 50%;
+        }{% if block.settings.image_position == 'cover' %}
+        .collection__block--child-collections ul > li {
+            border-radius: 50%;
+        }{% endif %}
+        {% endif %}
+        {% if settings.use_elements_border_radius %}
+        .collection__block--child-collections li > a {
+            border-radius: {{ settings.item_card_border_radius_value }}rem;
+            -webkit-border-radius: {{ settings.item_card_border_radius_value }}rem;
+        }{% endif %}
+        {% case block.settings.image_position %}
+            {% when 'none' %}
+        .collection__block--child-collections li :is(.media) {
+            display: none;
+        }
+            {% when 'cover' %}
+        .collection__block--child-collections li {
+            position: relative;
+        }
+        .collection__block--child-collections li .item-title {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: .5rem;
+            margin: 0.5rem 1rem;
+            border-radius: 2px;
+            box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+            background: rgba(255,255,255, .75);
+        }
+            {% when 'next_to_title' %}
+        .collection__block--child-collections .image-position--next_to_title li > .item-link {
+            display: grid;
+            grid-template-columns: 2.75rem 1fr;
+            align-items: center;
+            padding-left: .25rem;
+            padding-right: .25rem;
+        }
+        .collection__block--child-collections li :is(.media) {
+            padding-bottom: 0 !important;
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+        .collection__block--child-collections li .media :is(img, svg) {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+        {% endcase %}
+        {% if block.settings.is_slider_list %}
+        .collection__block--child-collections ul.slider {
+            scroll-behavior: smooth;
+            flex-wrap: nowrap;
+        }
+        .collection__block--child-collections .slider-buttons__container {
+            display: flex;
+        }{% endif %}
+
+        .collection__block--child-collections li .item-title {
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        @media (max-width: 767px), print {
+            .collection__block--child-collections ul > li {
+                --column-width: calc(50% - 8px);
+                width: var(--column-width);
+                height: var(--column-width);
+            }
+        }
+
+        @media (min-width: 768px), print {
+            .collection__block--child-collections ul > li {
+                --column-width: calc(100% / {{ block.settings.columns }});
+                --column-width-padding: 1rem;
+                width: calc(var(--column-width) - var(--column-width-padding));
+                height: fit-content;
+            }
+        }
+    {% endstyle %}
+    <div
+        class="{{ block_class }}"
+        style="order: {{ blockOrder }}"
+        {{ block.shopify_attributes }}
+    >
+        {% unless block.settings.title == blank %}
+            <h2 class="title reveal-item">{% render 'helper__decorate-heading', heading: block.settings.title %}</h2>
+        {% endunless %}
+        {%- if block.settings.is_slider_list %}
+            <slider-component data-loop="false">
+                {%- render 'slider-buttons', items: source -%}
+        {% endif -%}
+        <ul class="{{ list_class }}" data-mode="grid" data-columns="{{ block.settings.columns }}">
+            {% for collection in source %}
+                {%- render 'grid-item-collection',
+                    collection: collection,
+                    collection_type: 'slider',
+                    image_ratio: image_ratio,
+                    show_border: false,
+                    image_position: block.settings.image_position,
+                    show_elements_design: false,
+                    display_items_quantity: false,
+                    item_link_appearence: 'link'
+                -%}
+            {% endfor %}
+        </ul>
+        {%- if block.settings.is_slider_list %}
+            </slider-component>
+        {% endif -%}
+    </div>
+{% endunless -%}

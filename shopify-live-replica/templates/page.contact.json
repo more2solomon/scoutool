@@ -1,0 +1,108 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "layout_max_width": 780,
+        "animation_on_reveal": true
+      }
+    },
+    "form": {
+      "type": "contact-form",
+      "blocks": {
+        "block-1": {
+          "type": "contact_us",
+          "settings": {
+            "title": "Got Questions?",
+            "title_size": "h1",
+            "subtitle": "If you’d like to learn more about us and our products, contact us!",
+            "company_info": "<p><strong>Company Info</strong></p><p><strong>CHARGE SHOP</strong></p><p>FifthAve Street 31</p><p>New York, USA</p>",
+            "contact_info": "Contact Info",
+            "show_social_icons": true,
+            "social_heading": ""
+          }
+        }
+      },
+      "block_order": [
+        "block-1"
+      ],
+      "settings": {
+        "animation_on_reveal": true
+      }
+    },
+    "icons_bar": {
+      "type": "icons-bar",
+      "blocks": {
+        "icon-bar-1": {
+          "type": "icon",
+          "settings": {
+            "icon": "truck",
+            "text": "<p><b>ITEM BAR TITLE</b></p><p>Share shipping, delivery, policy information.</p>",
+            "text_position": "right"
+          }
+        },
+        "icon-bar-2": {
+          "type": "icon",
+          "settings": {
+            "icon": "clock",
+            "text": "<p><b>ITEM BAR TITLE</b></p><p>Share shipping, delivery, policy information.</p>",
+            "text_position": "right"
+          }
+        },
+        "icon-bar-3": {
+          "type": "icon",
+          "settings": {
+            "icon": "calendar",
+            "text": "<p><b>ITEM BAR TITLE</b></p><p>Share shipping, delivery, policy information.</p>",
+            "text_position": "right"
+          }
+        },
+        "icon-bar-4": {
+          "type": "icon",
+          "settings": {
+            "icon": "clipboard-check",
+            "text": "<p><b>ITEM BAR TITLE</b></p><p>Share shipping, delivery, policy information.</p>",
+            "text_position": "right"
+          }
+        }
+      },
+      "block_order": [
+        "icon-bar-1",
+        "icon-bar-2",
+        "icon-bar-3",
+        "icon-bar-4"
+      ],
+      "settings": {
+        "color_scheme": "background-2",
+        "visibility": "all",
+        "swipe_on_mobile": true,
+        "border": false,
+        "shadow": false,
+        "separator": false,
+        "animation_on_reveal": true,
+        "control_vertical_margins": 0.5,
+        "alignment_items_inside_flexbox": "center",
+        "max_width": 1200,
+        "icons_color": "",
+        "icons_width": 2,
+        "use_custom_colors": false,
+        "container_background": "",
+        "container_foreground": ""
+      }
+    }
+  },
+  "order": [
+    "main",
+    "form",
+    "icons_bar"
+  ]
+}

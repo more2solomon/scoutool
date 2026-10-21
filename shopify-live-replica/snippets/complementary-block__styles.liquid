@@ -1,0 +1,39 @@
+{%- comment -%}
+    Accept:
+        - is_slider: {Bool}
+        - is_border_top: {Bool}
+        - is_border_bottom: {Bool}
+{%- endcomment -%}
+
+{% style %}
+    {% if is_border_top %}
+    .product__info-block--complementary .content-wrapper {
+        border-top: 1px solid var(--color-foreground-10);
+    }{% endif %}
+
+    {% if is_border_bottom %}
+    .product__info-block--complementary .content-wrapper {
+        border-bottom: 1px solid var(--color-foreground-10);
+    }{% endif %}{% if is_slider %}
+
+    #complementary-block .grid-item::before {
+        content: none;
+    }
+
+    #complementary-block slider-component .slider {
+        padding-bottom: 3rem;
+    }
+
+    .product__info-block--complementary slider-component .slider-buttons {
+        top: unset;
+        bottom: 1rem;
+    }
+
+    #complementary-block slider-component .slider-buttons:has(.slider-button--next[disabled]):has(.slider-button--prev[disabled]) {
+        display: none;
+    }{% else %}
+
+    #complementary-block ul {
+        flex-wrap: wrap;
+    }{% endif %}
+{% endstyle %}

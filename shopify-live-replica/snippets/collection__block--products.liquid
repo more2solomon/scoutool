@@ -1,0 +1,141 @@
+{%- comment -%}
+    Render collection title using block settings
+
+    Accepts:
+     - block:           {Object}
+     - blockOrder:      {Number}
+     - has_side_column: {Boolean}
+{%- endcomment -%}
+
+{%- liquid
+    assign filtersBlocks = section.blocks | where: 'type', 'filters'
+    assign preloadItemsImage = 0
+    if block.settings.is_preload
+        assign preloadItemsImage = 2
+    endif
+
+    assign __class__ = 'collection__block collection__block--products'
+    if block.settings.animation_on_reveal
+        assign __class__ = __class__ | append: ' reveal-slide-in'
+    endif
+
+    if block.settings.sticky_block_products
+        assign __class__ = __class__ | append: ' collection__sticky-block--products'
+    endif
+-%}
+
+{{ 'component-pagination.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+
+<div id="CollectionProducts" class="{{ __class__ }}" style="order: {{ blockOrder }}" {{ block.shopify_attributes }}>
+    {%- paginate collection.products by block.settings.per_page -%}
+        {%- if collection.products.size == 0 -%}
+            <div class="collection collection--empty" id="main-collection-products" data-id="{{ section.id }}">
+                <div class="form__message">
+                    {% render 'icons-outline', name: 'exclamation-circle' %}
+                    <p>
+                        {% if collection.filters.size > 0 -%}
+                            {{
+                                'sections.collection_template.use_fewer_filters_html'
+                                | t: link: collection.url, class: 'underlined-link link'
+                            }}
+                        {%- else -%}
+                            {{ 'sections.collection_template.empty' | t }}
+                        {%- endif %}
+                    </p>
+                </div>
+            </div>
+        {%- else -%}
+            <div class="main-collection">
+                <div class="collection-toolbar collection-toolbar-top">
+                    <p class="collection-product-count">
+                        {%- if collection.products_count == collection.all_products_count -%}
+                            {{
+                                'sections.collection_template.product_count_simple'
+                                | t: count: collection.products_count
+                            }}
+                        {%- else -%}
+                            {{
+                                'sections.collection_template.product_count'
+                                | t: product_count: collection.products_count, count: collection.all_products_count
+                            }}
+                        {%- endif -%}
+                    </p>
+
+                    {% if block.settings.show_mode -%}
+                        <collection-modes class="modes" data-label="View">
+                            {%- if block.settings.mode == 'grid' -%}
+                                {%- assign typeMode = 'grid' -%}
+                                <span class="mode mode-grid active" data-mode="{{ typeMode }}">
+                                    {%- render 'icons-charge', name: 'view-grid' -%}
+                                </span>
+                                <a
+                                    href="{{ collection.url }}?view=mode-list"
+                                    class="mode mode-list"
+                                    title="View mode list"
+                                >
+                                    {%- render 'icons-charge', name: 'view-list' -%}
+                                </a>
+                            {%- else -%}
+                                {%- assign typeMode = 'list' -%}
+                                <a
+                                    href="{{ collection.url }}?view=mode-grid"
+                                    class="mode mode-grid"
+                                    title="View mode grid"
+                                >
+                                    {%- render 'icons-charge', name: 'view-grid' -%}
+                                </a>
+                                <span class="mode mode-list active" data-mode="{{ typeMode }}">
+                                    {%- render 'icons-charge', name: 'view-list' -%}
+                                </span>
+                            {%- endif -%}
+                        </collection-modes>
+                    {%- endif %}
+
+                    {% if block.settings.show_sorting -%}
+                        {% if filtersBlocks.size > 0 %}
+                            {% render 'collection-sorting', collection: collection, form: 'CollectionFiltersForm' %}
+                        {% else %}
+                            <collection-filters-form class="sorting desktop-only">
+                                <form id="CollectionSortForm" class="sorting__form">
+                                    {% render 'collection-sorting', collection: collection %}
+                                </form>
+                            </collection-filters-form>
+                        {% endif %}
+                    {%- endif %}
+                </div>
+
+                {% render 'grid-items',
+                    ul_id: 'main-collection-products',
+                    ul_class: 'products',
+                    has_side_column: has_side_column,
+                    items: collection.products,
+                    mode: block.settings.mode,
+                    columns: block.settings.columns,
+                    badge_size: block.settings.badge_size,
+                    image_ratio: block.settings.image_ratio,
+                    product_secondary_image: settings.product_card_secondary_image,
+                    product_to_cart_button: block.settings.show_to_cart_button,
+                    swatch_option_color: block.settings.show_swatch_options_color,
+                    product_show_vendor: settings.product_card_vendor,
+                    product_description: block.settings.show_description,
+                    preload_items_image: preloadItemsImage,
+                    compare_products: settings.compare_products,
+                    quick_view: settings.enable_quick_view
+                %}
+
+                {%- if paginate.pages > 1 -%}
+                    {% if block.settings.pagination_type == 'pagination_list' %}
+                        {% render 'pagination', paginate: paginate, anchor: '', class: '' %}
+                    {% else %}
+                        {% render 'pagination-load-more',
+                            type: block.settings.pagination_type,
+                            paginate: paginate,
+                            class: block.settings.pagination_type
+                        %}
+                    {% endif %}
+                {%- endif -%}
+            </div>
+        {%- endif -%}
+    {%- endpaginate -%}
+</div>

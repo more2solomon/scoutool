@@ -1,0 +1,18 @@
+{% comment %}
+    Render Critical styles for badges
+{% endcomment %}
+{% style %}
+    :is(.badge-onsale.none),
+    :is(.badge-soldout.none) {
+      display: none;
+    }
+
+    .grid-item :is(.badge-onsale__icon svg) {
+      width: .75rem;
+      margin-right: .35rem;
+    }
+
+    .grid-item :is(.badge-onsale__label) {
+      display: flex;
+    }
+{% endstyle %}

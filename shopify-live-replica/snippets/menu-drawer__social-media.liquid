@@ -1,0 +1,23 @@
+{%- comment -%}
+    Render social media in the Drawer menu
+
+    Accept:
+     - is_show_media_on_mobile: {Bool}
+{%- endcomment -%}
+{%- liquid
+    capture social_html
+        render 'social-sharing-media'
+    endcapture
+    assign social_html = social_html | strip
+-%}
+
+{%- if social_html != blank %}
+    <div class="menu-drawer__social-media{% unless is_show_media_on_mobile %} mobile--hidden{% endunless %}">
+        <div class="h4 title">
+            {{ 'sections.footer.contacts.social_heading' | t }}
+        </div>
+        <div class="icons">
+            {{- social_html -}}
+        </div>
+    </div>
+{% endif -%}

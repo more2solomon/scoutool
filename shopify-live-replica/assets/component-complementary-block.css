@@ -1,0 +1,98 @@
+.product__info-block--complementary summary {
+    display: flex;
+    justify-content: space-between;
+}
+
+#complementary-block summary > .summary__title {
+    display: flex;
+}
+
+.product__info-block--complementary summary,
+.product__info-block--complementary .complementary-title {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0.75rem .5rem;
+}
+
+[data-theme-preset="metalware"] :is(.complementary-accordion__title) {
+    font-family: var(--font-heading-family);
+}
+
+#complementary-block .grid-item {
+    font-size: .8rem;
+}
+
+#complementary-block .item-price .price--final,
+#complementary-block .grid-item span._lighter {
+    font-size: 1rem;
+}
+
+#complementary-block [data-mode="list"] .item-link {
+    --columns-gap: 1rem;
+    --columns-count: 2;
+    align-items: center;
+    grid-template-columns: min(var(--image-width, auto), calc(33.3% - var(--columns-gap, 0) / var(--columns-count, 1))) auto;
+}
+
+#complementary-block .grid-item > squama-item:hover .item-title {
+    display: -webkit-box;
+}
+
+#complementary-block [data-mode="list"] .item-price,
+#complementary-block [data-mode="list"] .item-actions-wrapper {
+    display: none;
+}
+
+#complementary-block [data-mode="list"] .item-price.listing,
+#complementary-block [data-mode="list"] .item-actions-wrapper.listing {
+    display: block;
+}
+
+#complementary-block .grid-item .item-actions-wrapper {
+    width: -moz-fit-content;
+    width: fit-content;
+}
+
+#complementary-block .grid-item .item-actions-wrapper > button {
+    height: 2rem;
+    margin: 0;
+}
+
+#complementary-block .item-details-wrapper .item-price {
+    margin-top: .75rem;
+    margin-bottom: .75rem;
+}
+
+#complementary-block .item-details-wrapper .item-price > div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin: 0;
+}
+
+#complementary-block .complementary-block__list {
+    gap: 0;
+}
+
+#complementary-block squama-item .item-link {
+    background: transparent;
+}
+
+#complementary-block .slider.slider--desktop {
+    scroll-behavior: smooth;
+}
+
+@media (min-width: 768px), print {
+    #complementary-block squama-item:hover .item-link,
+    #complementary-block squama-item[data-focused] .item-link {
+        border-color: transparent;
+        box-shadow: none;
+    }
+}
+
+@media (min-width: 990px), print {
+    #complementary-block [data-mode="list"] .item-link {
+        padding: .75rem 0;
+    }
+}

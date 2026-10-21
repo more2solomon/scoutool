@@ -1,0 +1,120 @@
+{%- comment -%}
+    Render Language switcher
+
+    Accepts:
+    - formId:                       {String}
+    - css_class:                    {String}
+{%- endcomment -%}
+{%- assign formIdNoScript = formId | append: 'NoScript' -%}
+
+{%- if localization.available_languages.size > 1 -%}
+    <div class="localization-language-wrapper{% if css_class != blank %} {{ css_class }}{% endif %}">
+        <noscript>
+            {%- form 'localization', id: formIdNoScript, class: 'localization-form' -%}
+                <div class="localization-form__select select">
+                    <span class="visually-hidden" id="{{ formIdNoScript }}Label">
+                        {{- 'localization.language_label' | t -}}
+                    </span>
+                    <select
+                        class="localization-selector"
+                        name="locale_code"
+                        aria-labelledby="{{ formIdNoScript }}Label"
+                    >
+                        {%- for language in localization.available_languages -%}
+                            <option
+                                value="{{ language.iso_code }}"
+                                lang="{{ language.iso_code }}"
+                                {%- if language.iso_code == localization.language.iso_code %}
+                                    selected
+                                {% endif %}
+                            >
+                                {%- if settings.show_switcher_language_flag %}
+                                    {% render 'flag', language_code: language.iso_code %}
+                                {% endif -%}
+                                {{ language.endonym_name | capitalize }}
+                            </option>
+                        {%- endfor -%}
+                    </select>
+                    <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+                        <use href="#icon-caret" />
+                    </svg>
+                </div>
+                <button type="submit">{{ 'localization.update_language' | t }}</button>
+            {%- endform -%}
+        </noscript>
+
+        <localization-form>
+            {%- form 'localization', id: formId, class: 'localization-form no-js-hidden' -%}
+                <span class="visually-hidden" id="{{ formId }}Label">{{ 'localization.language_label' | t }}</span>
+                <div class="disclosure">
+                    <button
+                        type="button"
+                        class="disclosure__button button--small localization-form__select localization-selector"
+                        aria-expanded="false"
+                        aria-controls="{{ formId }}List"
+                        aria-describedby="{{ formId }}Label"
+                    >
+                        {%- if settings.show_switcher_language_flag %}
+                            <span class="language-icon__wrapper">
+                                {%- render 'flag', language_code: localization.language.iso_code, flag_as_img: true -%}
+                            </span>
+                        {% endif -%}
+                        <span class="label">{{ localization.language.endonym_name | capitalize }}</span>
+                        <svg
+                            aria-hidden="true"
+                            focusable="false"
+                            role="presentation"
+                            width="16"
+                            height="16"
+                            class="icon icon-caret"
+                        >
+                            <use href="#icon-caret" />
+                        </svg>
+                        <svg
+                            aria-hidden="true"
+                            focusable="false"
+                            role="presentation"
+                            width="12"
+                            height="12"
+                            class="icon-x"
+                            hidden
+                        >
+                            <use href="#icon-x" />
+                        </svg>
+                    </button>
+                    <div
+                        class="localization-panel disclosure__list--wrapper transition-bezier"
+                        data-search-placeholder="{{ 'localization.search_placeholder' | t }}"
+                        data-localization-size="{{ localization.available_languages.size }}"
+                        hidden
+                    >
+                        <ul id="{{ formId }}List" role="list" class="disclosure__list list-unstyled">
+                            {%- for language in localization.available_languages -%}
+                                <li class="disclosure__item" tabindex="-1">
+                                    <a
+                                        class="link link--text disclosure__link {% if language.iso_code == localization.language.iso_code %} disclosure__link--active{% endif %} focus-inset"
+                                        href="#"
+                                        hreflang="{{ language.iso_code }}"
+                                        lang="{{ language.iso_code }}"
+                                        {% if language.iso_code == localization.language.iso_code %}
+                                            aria-current="true"
+                                        {% endif %}
+                                        data-value="{{ language.iso_code }}"
+                                    >
+                                        {%- if settings.show_switcher_language_flag %}
+                                            <span class="language-icon__wrapper">
+                                                {%- render 'flag', language_code: language.iso_code -%}
+                                            </span>
+                                        {% endif -%}
+                                        <span class="label">{{ language.endonym_name | capitalize }}</span>
+                                    </a>
+                                </li>
+                            {%- endfor -%}
+                        </ul>
+                    </div>
+                </div>
+                <input type="hidden" name="locale_code" value="{{ localization.language.iso_code }}">
+            {%- endform -%}
+        </localization-form>
+    </div>
+{%- endif -%}

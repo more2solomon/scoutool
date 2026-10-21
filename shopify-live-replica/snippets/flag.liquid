@@ -1,0 +1,42 @@
+{% comment %}
+    Render flag icon by iso country code. Use UTF symbols from currenct font.
+
+    Accepts:
+     - country_code:  {String}
+     - language_code: {Number}
+     - flag_as_img:   {String}
+{% endcomment %}
+
+{%- liquid
+    if country_code == null
+        case language_code
+            when 'en'
+                assign country_code = 'gb'
+            when 'zh-CN'
+                assign country_code = 'cn'
+            when 'sv'
+                assign country_code = 'se'
+            when 'uk'
+                assign country_code = 'ua'
+            else
+                assign country_code = language_code
+        endcase
+    else
+        assign country_code = country_code | downcase
+    endif
+-%}
+<country-flag
+    class="country-flag"
+    data-code="{{ country_code | downcase }}"
+    {% if flag_as_img %}
+        data-has-fallback="true"
+    {% endif %}
+>
+    {%- if flag_as_img %}
+        <img
+            src="https://hatscripts.github.io/circle-flags/flags/{{ country_code }}.svg"
+            alt="{{ country_code }}"
+            loading="lazy"
+        >
+    {% endif -%}
+</country-flag>

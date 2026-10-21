@@ -1,0 +1,37 @@
+<div class="recently-viewed-items">
+    {% style %}
+        :is(.recently-viewed-wrapper) {
+        	max-width: {{ settings.type_layout_max_width | append: 'px' }};
+        	margin: 0 auto;
+        	padding-left: .75rem;
+        	padding-right: .75rem;
+        }
+    {% endstyle %}
+    {%- render 'helper__recently-viewed-title' -%}
+    {%- assign items = search.results -%}
+    {%- capture list_viewed_items %}
+		{% render 'grid-items',
+			ul_id: 'recently-viewed-list'
+	        ul_class: 'recently-viewed-list slider slider--tablet slider--no-controls slider--mobile grid--peek'
+		    has_side_column: false
+		    items: items
+		    columns: settings.recently_viewed_per_row
+		    limit: settings.recently_viewed_limit_to_show
+		    badge_size: 'sm'
+		    image_ratio: settings.product_card_image_ratio
+		    product_secondary_image: settings.product_card_secondary_image
+		    product_to_cart_button: true
+		    swatch_option_color: true
+		    product_show_vendor: true
+		    compare_products: settings.compare_products
+		    quick_view: settings.enable_quick_view
+		    row_divider: false
+		    slideshow_ui_type: 'buttons'
+		%}
+	{% endcapture -%}
+
+    <slider-component data-loop="false">
+        {{- list_viewed_items -}}
+        {% render 'slider-buttons', items: items, section_settings: 'buttons' %}
+    </slider-component>
+</div>

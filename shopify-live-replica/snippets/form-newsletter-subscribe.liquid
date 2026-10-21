@@ -1,0 +1,87 @@
+{%- liquid
+    assign form_id = form_id | default: 'newsletter-form'
+    assign class = class | default: 'newsletter-form'
+    assign submit_button_class = 'button button--secondary newsletter-form__button'
+    if settings.show_button_ring_on_hover
+        assign submit_button_class = submit_button_class | append: ' border--outline'
+    endif
+    if settings.cut_button_corners and section.id != 'overlay'
+        assign submit_button_class = submit_button_class | append: ' border--with-cut-corners'
+    endif
+-%}
+
+{%- form 'customer', id: form_id, class: class -%}
+    <input type="hidden" name="contact[tags]" value="newsletter">
+    <div class="newsletter-form__field-wrapper">
+        <div class="field">
+            <label class="field__label visually-hidden" for="{{ form_id }}--email">
+                {{ 'newsletter.label' | t }}
+            </label>
+            <input
+                id="{{ form_id }}--email"
+                type="email"
+                name="contact[email]"
+                class="field__input"
+                value="{{ form.email }}"
+                aria-required="true"
+                autocorrect="off"
+                autocapitalize="off"
+                autocomplete="email"
+                pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
+                title="{{ 'newsletter.email.validation' | t }}"
+                required
+                {% if form.errors %}
+                    autofocus
+                    aria-invalid="true"
+                    aria-describedby="{{ form_id }}-error"
+                {% elsif form.posted_successfully? %}
+                    aria-describedby="{{ form_id }}-success"
+                {% endif %}
+                placeholder="{{ 'newsletter.label' | t }}"
+            >
+        </div>
+        <button
+            type="submit"
+            class="{{ submit_button_class }}"
+            name="commit"
+            id="{{ form_id }}-Subscribe-{{ section.id }}"
+            aria-label="{{ 'newsletter.button_label' | t }}"
+        >
+            {%- if button_icon and button_icon == 'caret' -%}
+                <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+                    <use href="#icon-caret" />
+                </svg>
+            {%- else -%}
+                {%- render 'icons-solid', name: button_icon -%}
+            {%- endif %}
+            {% unless button_icon != blank %}
+                {{ 'newsletter.button_label' | t }}
+            {% endunless %}
+        </button>
+        {%- if form.errors -%}
+            <div class="newsletter-form__message form__message--error form__message" id="{{ form_id }}-error">
+                {% render 'icons-outline', name: 'x-circle' %}
+                <p>
+                    {{ form.errors.translated_fields.email | capitalize }}
+                    {{ form.errors.messages.email }}
+                </p>
+            </div>
+        {%- endif -%}
+        {%- if form.errors == null and form.email != blank and form.tags == 'newsletter' -%}
+            <div class="newsletter-form__message form__message--error form__message" id="{{ form_id }}-error">
+                {% render 'icons-outline', name: 'x-circle' %}
+                <p>{{ 'newsletter.already_registered' | t }}</p>
+            </div>
+        {%- endif -%}
+    </div>
+    {%- if form.posted_successfully? -%}
+        <div
+            class="newsletter-form__message form__message--success form__message"
+            id="{{ form_id }}-success"
+            tabindex="-1"
+        >
+            {% render 'icons-outline', name: 'check-circle' %}
+            <p>{{ 'newsletter.success' | t }}</p>
+        </div>
+    {%- endif -%}
+{%- endform -%}

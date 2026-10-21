@@ -1,0 +1,52 @@
+{% liquid
+    assign sectionId = '#shopify-section-' | append: section.id
+    assign borderHeight = section.settings.border_height | append: 'px'
+    assign borderColor = section.settings.border_color | default: 'var(--color-foreground-10)'
+%}
+
+{% style %}
+    {{ sectionId }} .section__border-separator {
+        display: flex;
+        width: 100%;
+        border-top: {{ borderHeight }} solid {{ borderColor }};{% unless section.settings.border_max_width == blank %}
+        max-width: {{ section.settings.border_max_width }}px;
+        margin: 0 auto;{% endunless %}
+    }
+{% endstyle %}
+
+<div class="section__border-separator"></div>
+
+{% schema %}
+{
+  "name": "t:sections.section_separator.name",
+  "tag": "section",
+  "class": "spaced-section",
+  "settings": [
+        {
+            "type": "range",
+            "id": "border_height",
+            "min": 1,
+            "max": 5,
+            "step": 1,
+            "default": 1,
+            "unit": "px",
+            "label": "t:sections.section_separator.settings.border_height.label"
+        },
+        {
+            "type": "color",
+            "id": "border_color",
+            "label": "t:sections.section_separator.settings.border_color.label"
+        },
+        {
+            "type": "text",
+            "id": "border_max_width",
+            "label": "t:sections.section_separator.settings.border_max_width.label"
+        }
+    ],
+  "presets": [
+    {
+      "name": "t:sections.section_separator.presets.name"
+    }
+  ]
+}
+{% endschema %}

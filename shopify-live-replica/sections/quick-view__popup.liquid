@@ -1,0 +1,57 @@
+{%- liquid
+    capture loader
+        render 'loading-overlay'
+    endcapture
+    assign loader = loader | replace: 'hidden', ''
+-%}
+{% style %}
+    {%- unless section.settings.show_product_description %}
+    #PopupModal-quickView .product__info-block--description {
+        display: none;
+    }{% endunless -%}
+    {%- unless section.settings.show_product_sku %}
+    #PopupModal-quickView .product__title--sku {
+        display: none;
+    }{% endunless -%}
+    {%- unless section.settings.show_product_rating %}
+    #PopupModal-quickView .product__title--rating {
+        display: none;
+    }{% endunless -%}
+{% endstyle %}
+
+{%- render 'modal-dialog', id: 'quickView', aria_label: 'Quick view popup', content: loader, no_padding: true -%}
+
+{{ 'component-quick-view__popup.css' | asset_url | stylesheet_tag }}
+{{ 'component-modal-dialog.css' | asset_url | stylesheet_tag }}
+
+{% schema %}
+{
+  "name": "t:sections.quick-view.name",
+  "tag": "section",
+  "settings": [
+    {
+        "type": "checkbox",
+        "id": "show_product_description",
+        "label": "t:sections.quick-view.settings.show_product_description.label",
+        "default": true
+    },
+    {
+        "type": "checkbox",
+        "id": "show_product_sku",
+        "label": "t:sections.quick-view.settings.show_product_sku.label",
+        "default": true
+    },
+    {
+        "type": "checkbox",
+        "id": "show_product_rating",
+        "label": "t:sections.quick-view.settings.show_product_rating.label",
+        "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.quick-view.name"
+    }
+  ]
+}
+{% endschema %}

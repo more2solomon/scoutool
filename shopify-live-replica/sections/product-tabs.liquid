@@ -1,0 +1,335 @@
+{{ 'component-tabs.css' | asset_url | stylesheet_tag }}
+<link rel="stylesheet" href="{{ 'component-listing-grid.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'component-listing-grid.css' | asset_url | stylesheet_tag }}</noscript>
+
+{% style %}
+    {%- if section.settings.tabs_layout == 'collapsed' -%}
+        #shopify-section-{{ section.id }} .product-tabs {
+            display: table;
+            width: 100%;
+        }
+
+        #shopify-section-{{ section.id }} .product-tabs > [type=radio]:checked + .tab-title svg {
+            --tw-rotate: 180deg;
+        }
+    {%- endif -%}
+{% endstyle %}
+
+<div class="product-tabs dynamic-page-width{% if section.settings.animation_on_reveal %} reveal-slide-in{% endif %}">
+    {%- if section.settings.tabs_layout == 'expanded' %}
+        <div class="expanded-inner">
+            {% for block in section.blocks %}
+                {%- render 'product-tabs__expanded', block: block -%}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="collapsed-inner">
+            {% for block in section.blocks %}
+                {%- render 'product-tabs__collapsed',
+                    block: block,
+                    forloop_index: forloop.index,
+                    section: section,
+                    is_opened: forloop.first
+                -%}
+            {% endfor -%}
+        </div>
+    {% endif %}
+</div>
+
+<script src="{{ 'product-tabs.js' | asset_url }}" async></script>
+
+{%- if request.design_mode -%}
+    <script src="{{ 'theme-editor-product-tabs.js' | asset_url }}" async></script>
+{%- endif -%}
+
+{% schema %}
+{
+    "name": "t:sections.product-tabs.name",
+    "class": "spaced-section product-section-tabs",
+    "tag": "section",
+    "settings": [
+        {
+            "type": "radio",
+            "id": "tabs_layout",
+            "label": "t:sections.product-tabs.settings.tabs_layout.label",
+            "default": "collapsed",
+            "options": [
+                {
+                    "value": "collapsed",
+                    "label": "t:sections.product-tabs.settings.tabs_layout.option__1.label"
+                },
+                {
+                    "value": "expanded",
+                    "label": "t:sections.product-tabs.settings.tabs_layout.option__2.label"
+                }
+            ]
+        },
+        {
+            "type": "checkbox",
+            "id": "animation_on_reveal",
+            "label": "t:sections.all.settings.animation_on_reveal.label",
+            "default": true
+        }
+    ],
+    "max_blocks": 6,
+    "blocks": [
+        {
+            "type": "@app"
+        },
+{
+    "type": "custom_liquid",
+    "name": "t:sections.custom-liquid.name",
+    "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "label": "t:sections.product-tabs.blocks.all.settings.heading.label",
+            "default": "Tab"
+        },
+        {
+            "type": "liquid",
+            "id": "custom_liquid",
+            "label": "t:sections.custom-liquid.settings.custom_liquid.label"
+        },
+        {
+            "type": "richtext",
+            "id": "metafields_custom_data",
+            "label": "t:sections.product-tabs.blocks.all.settings.metafields_custom_data.label",
+            "info": "t:sections.product-tabs.blocks.all.settings.metafields_custom_data.info"
+        }
+    ]
+}
+,
+{
+    "type": "description",
+    "name": "t:sections.product-tabs.blocks.description.name",
+    "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "label": "t:sections.product-tabs.blocks.all.settings.heading.label",
+            "default": "Product Description"
+        }
+    ]
+}
+,
+{
+    "type": "reviews",
+    "name": "t:sections.product-tabs.blocks.reviews.name",
+    "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "label": "t:sections.product-tabs.blocks.reviews.settings.heading.label",
+            "default": "Customer Reviews"
+        }
+    ]
+}
+,
+{
+    "type": "details",
+    "name": "t:sections.product-tabs.blocks.details.name",
+    "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "label": "t:sections.product-tabs.blocks.all.settings.heading.label",
+            "default": "Details"
+        },
+        {
+            "type": "select",
+            "id": "details_position",
+            "label": "t:sections.product-tabs.blocks.details.settings.details_position.label",
+            "options": [
+                {
+                    "value": "details_in_list",
+                    "label": "t:sections.product-tabs.blocks.details.settings.details_position.details_in_list.label"
+                },
+                {
+                    "value": "details_in_row",
+                    "label": "t:sections.product-tabs.blocks.details.settings.details_position.details_in_row.label"
+                }
+            ],
+            "default": "details_in_list"
+        }
+    ]
+}
+,
+{
+    "type": "faq",
+    "name": "t:sections.product-tabs.blocks.faq.name",
+    "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "label": "t:sections.product-tabs.blocks.faq.settings.heading.label",
+            "info": "t:sections.product-tabs.blocks.faq.settings.heading.info",
+            "default": "Frequently Asked Questions"
+        },
+        {
+            "type": "text",
+            "id": "default_faqs",
+            "label": "t:sections.product-tabs.blocks.faq.settings.default_faqs.label",
+            "info": "t:sections.product-tabs.blocks.faq.settings.default_faqs.info",
+            "default": "What level of performance can I expect from 4K Color Drive?:This tv comes equipped with a 4k color drive, which allows the tv to accurately reproduce a wider spectrum of colors. you’ll experience an exceptionally vibrant, pristine image that makes each scene more lifelike."
+        },
+        {
+            "type": "url",
+            "id": "link_to_faq_page",
+            "label": "t:sections.product-tabs.blocks.faq.settings.link_to_faq_page.label"
+        },
+        {
+            "type": "checkbox",
+            "id": "can_open_multiple",
+            "label": "t:sections.frequently-asked-questions.settings.can_open_multiple.label",
+            "info": "t:sections.frequently-asked-questions.settings.can_open_multiple.info",
+            "default": false
+        }
+    ]
+},
+{
+    "type": "similar",
+    "name": "t:sections.product-tabs.blocks.similar.name",
+    "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "label": "t:sections.product-tabs.blocks.all.settings.heading.label",
+            "default": "Similar Products"
+        },
+        {
+            "type": "product_list",
+            "id": "source",
+            "limit": 6,
+            "label": "t:sections.all.promote_source.label",
+            "info": "t:sections.all.promote_source.info"
+        },
+        {
+            "type": "checkbox",
+            "id": "is_random",
+            "default": true,
+            "label": "t:sections.all.promote_random.label"
+        },
+        {
+            "type": "range",
+            "id": "products_per_page",
+            "min": 2,
+            "max": 6,
+            "step": 1,
+            "default": 4,
+            "label": "t:sections.product-tabs.blocks.similar.settings.products_per_page.label"
+        },
+        {
+            "type": "header",
+            "content": "t:sections.all.product-card.header"
+        },
+        {
+            "type": "select",
+            "id": "badge_size",
+            "options": [
+                {
+                    "value": "xs",
+                    "label": "t:sections.all.product-card.badge_size.options__1.label"
+                },
+                {
+                    "value": "sm",
+                    "label": "t:sections.all.product-card.badge_size.options__2.label"
+                },
+                {
+                    "value": "md",
+                    "label": "t:sections.all.product-card.badge_size.options__3.label"
+                },
+                {
+                    "value": "lg",
+                    "label": "t:sections.all.product-card.badge_size.options__4.label"
+                }
+            ],
+            "default": "sm",
+            "label": "t:sections.all.product-card.badge_size.label"
+        },
+        {
+            "type": "select",
+            "id": "image_ratio",
+            "label": "t:sections.all.product-card.image_ratio.label",
+            "options": [
+                {
+                    "value": "settings|product_card_image_ratio",
+                    "label": "t:sections.all.product-card.image_ratio.options.default"
+                },
+                {
+                    "value": "native",
+                    "label": "t:sections.all.product-card.image_ratio.options.native"
+                },
+                {
+                    "value": "1",
+                    "label": "t:sections.all.product-card.image_ratio.options.1_by_1"
+                },
+                {
+                    "value": "5/4",
+                    "label": "t:sections.all.product-card.image_ratio.options.4_by_5"
+                }
+            ],
+            "default": "settings|product_card_image_ratio"
+        },
+        {
+            "type": "checkbox",
+            "id": "swipe_on_mobile",
+            "label": "t:sections.featured-collection.settings.swipe_on_mobile.label",
+            "default": true
+        },
+        {
+            "type": "select",
+            "id": "slideshow_ui_type",
+            "options": [
+                {
+                    "value": "buttons",
+                    "label": "t:sections.featured-collection.settings.slideshow_ui_type.options.buttons"
+                },
+                {
+                    "value": "scrollbar",
+                    "label": "t:sections.featured-collection.settings.slideshow_ui_type.options.scrollbar"
+                }
+            ],
+            "default": "buttons",
+            "label": "t:sections.featured-collection.settings.slideshow_ui_type.label"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_swatch_options_color",
+            "default": false,
+            "label": "t:sections.all.product-card.show_swatch_options_color.label"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_to_cart_button",
+            "default": true,
+            "label": "t:sections.all.product-card.show_to_cart_button.label"
+        }
+    ]
+}
+
+    ],
+    "presets": [
+        {
+            "name": "t:sections.product-tabs.presets.collapsed",
+            "settings": {
+                "tabs_layout": "collapsed"
+            },
+            "blocks": [
+                {
+                    "type": "description"
+                },
+                {
+                    "type": "reviews"
+                },
+                {
+                    "type": "similar"
+                }
+            ]
+        }
+    ],
+    "enabled_on": {
+        "templates": ["product"]
+    }
+}
+{% endschema %}

@@ -1,0 +1,184 @@
+{% liquid
+    assign productStatus = product.available
+    assign productsList = section.settings.product_list | where: 'available'
+    assign useSearchDiscovery = section.settings.use_search_and_discovery_app
+    assign intent = 'related'
+
+    if product.gift_card?
+        assign productHandle = false
+    else
+        # do not show recommended product on the gift-card product
+        assign productHandle = true
+    endif
+%}
+
+{% render 'recommendations-complementary',
+    product_status: productStatus,
+    handle: productHandle,
+    products_list: productsList,
+    use_search_discovery: useSearchDiscovery,
+    intent: intent
+%}
+
+{% schema %}
+{
+  "name": "t:sections.product-recommendations.name",
+  "tag": "section",
+  "class": "spaced-section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:sections.product-recommendations.settings.paragraph__1.content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "Customers also bought",
+      "label": "t:sections.product-recommendations.settings.heading.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h1",
+          "label": "t:sections.product-complementary.settings.heading_size.options.h1"
+        },
+        {
+          "value": "h2",
+          "label": "t:sections.product-complementary.settings.heading_size.options.h2"
+        },
+        {
+          "value": "h3",
+          "label": "t:sections.product-complementary.settings.heading_size.options.h3"
+        }
+      ],
+      "default": "h3",
+      "label": "t:sections.product-complementary.settings.heading_size.label"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 5,
+      "label": "t:sections.product-recommendations.settings.products_per_page.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_search_and_discovery_app",
+      "label": "t:sections.product-recommendations.settings.use_search_and_discovery_app.label",
+      "info": "t:sections.product-recommendations.settings.use_search_and_discovery_app.info",
+      "default": true
+    },
+    {
+      "type": "product_list",
+      "id": "product_list",
+      "limit": 6,
+      "label": "t:sections.product-recommendations.settings.recommendations_products.label",
+      "info": "t:sections.product-recommendations.settings.recommendations_products.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "swipe_on_mobile",
+      "label": "t:sections.product-recommendations.settings.swipe_on_mobile.label",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "slideshow_ui_type",
+      "options": [
+        {
+          "value": "buttons",
+          "label": "t:sections.featured-collection.settings.slideshow_ui_type.options.buttons"
+        },
+        {
+          "value": "scrollbar",
+          "label": "t:sections.featured-collection.settings.slideshow_ui_type.options.scrollbar"
+        }
+      ],
+      "default": "buttons",
+      "label": "t:sections.featured-collection.settings.slideshow_ui_type.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.product-card.header"
+    },
+    {
+      "type": "select",
+      "id": "badge_size",
+      "options": [
+        {
+          "value": "xs",
+          "label": "t:sections.all.product-card.badge_size.options__1.label"
+        },
+        {
+          "value": "sm",
+          "label": "t:sections.all.product-card.badge_size.options__2.label"
+        },
+        {
+          "value": "md",
+          "label": "t:sections.all.product-card.badge_size.options__3.label"
+        },
+        {
+          "value": "lg",
+          "label": "t:sections.all.product-card.badge_size.options__4.label"
+        }
+      ],
+      "default": "sm",
+      "label": "t:sections.all.product-card.badge_size.label"
+    },
+    {
+        "type": "select",
+        "id": "image_ratio",
+        "label": "t:sections.all.product-card.image_ratio.label",
+        "options": [
+            {
+                "value": "settings|product_card_image_ratio",
+                "label": "t:sections.all.product-card.image_ratio.options.default"
+            },
+            {
+                "value": "native",
+                "label": "t:sections.all.product-card.image_ratio.options.native"
+            },
+            {
+                "value": "1",
+                "label": "t:sections.all.product-card.image_ratio.options.1_by_1"
+            },
+            {
+                "value": "5/4",
+                "label": "t:sections.all.product-card.image_ratio.options.4_by_5"
+            }
+        ],
+        "default": "settings|product_card_image_ratio"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_swatch_options_color",
+      "default": false,
+      "label": "t:sections.all.product-card.show_swatch_options_color.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_to_cart_button",
+      "default": true,
+      "label": "t:sections.all.product-card.show_to_cart_button.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "animation_on_reveal",
+      "label": "t:sections.all.settings.animation_on_reveal.label",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.product-recommendations.name"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["product"]
+  }
+}
+{% endschema %}

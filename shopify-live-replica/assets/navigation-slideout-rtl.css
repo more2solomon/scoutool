@@ -1,0 +1,21 @@
+@media all and (min-width: 989px) {
+  .menu-drawer {
+    --menu-drawer-position-rtl: var(--max-width);
+    transform: translateX(var(--menu-drawer-position-rtl));
+  }
+
+  header-drawer .menu-drawer__inner-container {
+    left: 0;
+    right: var(--menu-drawer-position-rtl);
+  }
+
+  header-drawer [open] .menu-drawer__inner-container {
+    right: 0;
+    transition: rigth 0.35s ease-in-out;
+  }
+
+  .menu-drawer__menu .menu-drawer__submenu {
+    --transform_x: calc(.15rem - var(--max-width));
+    box-shadow: -8px 0 1rem var(--color-foreground-50);
+  }
+}

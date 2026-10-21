@@ -1,0 +1,62 @@
+{%- comment -%}
+    Render section with custom liquid
+{%- endcomment -%}
+
+<div class="section--custom_liquid dynamic-page-width{% if section.settings.animation_on_reveal %} reveal-slide-in{% endif %}">
+    {% unless section.settings.title == blank %}
+        <h2 class="title reveal-item">
+            {% render 'helper__decorate-heading', heading: section.settings.title %}
+        </h2>
+    {% endunless %}
+    {{ section.settings.custom_liquid }}
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.custom-liquid.name",
+  "class": "spaced-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.custom-liquid.settings.title.label"
+    },
+    {
+      "type": "select",
+      "id": "title_size",
+      "options": [
+        {
+          "value": "h1",
+          "label": "t:sections.custom-liquid.settings.title_size.options.h1"
+        },
+        {
+          "value": "h2",
+          "label": "t:sections.custom-liquid.settings.title_size.options.h2"
+        },
+        {
+          "value": "h3",
+          "label": "t:sections.custom-liquid.settings.title_size.options.h3"
+        }
+      ],
+      "default": "h2",
+      "label": "t:sections.custom-liquid.settings.title_size.label"
+    },
+    {
+      "type": "liquid",
+      "id": "custom_liquid",
+      "label": "t:sections.custom-liquid.settings.custom_liquid.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "animation_on_reveal",
+      "label": "t:sections.all.settings.animation_on_reveal.label",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.custom-liquid.presets.name"
+    }
+  ]
+}
+{% endschema %}

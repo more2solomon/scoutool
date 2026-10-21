@@ -1,0 +1,101 @@
+{% comment %}
+    Initialization css sources to be loaded them async
+
+    Accepts sources:
+    - init_component_listing_grid           {Bool}
+    - init_component_price                  {Bool}
+    - init_section_featured_blog            {Bool}
+    - init_component_menu_drawer_styles     {Bool}
+    - init_navigation_menu_drawer_styles    {Bool}
+    - init_component_menu_drawer__slideout  {Bool}
+    - init_component_slider                 {Bool}
+    - init_component_loading_overlay        {Bool}
+{% endcomment %}
+{%- liquid
+    if init_component_listing_grid
+        assign componentListingGrid = 'component-listing-grid.css' | asset_url
+    endif
+
+    if init_component_price
+        assign componentPrice = 'component-price.css' | asset_url
+    endif
+
+    if init_section_blog_posts
+        assign sectionBlogPosts = 'section-blog-post.css' | asset_url
+    endif
+
+    if init_section_featured_blog
+        assign sectionFeaturedBlog = 'section-featured-blog.css' | asset_url
+    endif
+
+    if init_component_menu_drawer_styles
+        assign component_drawer_styles = 'component-menu-drawer.css' | asset_url
+    endif
+
+    if init_navigation_menu_drawer_styles
+        assign navigation_menu_drawer_styles = 'navigation-menu-drawer.css' | asset_url
+    endif
+
+    if init_component_menu_drawer__slideout
+        assign component_menu_drawer__slideout = 'component-menu-drawer__slideout.css' | asset_url
+    endif
+
+    if init_component_slider
+        assign component_slider = 'component-slider.css' | asset_url
+    endif
+
+    if init_component_loading_overlay
+        assign component_loading_overlay = 'component-loading-overlay.css' | asset_url
+    endif
+-%}
+
+<script type="application/json" id="stylesheet__object">
+    {
+        "component_slider"                  : "{{ component_slider | default: 'null' }}",
+        "component_drawer_styles"           : "{{ component_drawer_styles | default: 'null' }}",
+        "navigation_menu_drawer_styles"     : "{{ navigation_menu_drawer_styles | default: 'null' }}",
+        "component_menu_drawer__slideout"   : "{{ component_menu_drawer__slideout | default: 'null' }}",
+        "componentlistingGrid"              : "{{ componentListingGrid | default: 'null' }}",
+        "component_loading_overlay"         : "{{ component_loading_overlay | default: 'null' }}",
+        "componentPrice"                    : "{{ componentPrice | default: 'null' }}",
+        "sectionFeaturedBlog"               : "{{ sectionFeaturedBlog | default: 'null' }}",
+        "sectionBlogPosts"                  : "{{ sectionBlogPosts | default: 'null' }}"
+    }
+</script>
+<script
+    type="module"
+>
+    const stylesObject = JSON.parse(document.getElementById("stylesheet__object").textContent);  
+    const loadedStyles = new Set();
+    const _fetchStyle = (href) => {
+        return new Promise((resolve, reject) => {
+            // skip if already loaded
+            if (loadedStyles.has(href)) {
+                return resolve();
+            }
+            let link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.type = "text/css";
+            link.media = "all";
+            link.href = href;
+            link.onload = () => { loadedStyles.add(href); resolve(); };
+            link.onerror = () => reject(new Error(`Style load error for ${href}`));
+
+            document.head.appendChild(link);
+        });
+    }
+
+    async function _initStyles() {
+        const promises = [];
+
+        for (const s in stylesObject) {
+            if (stylesObject[s] !== "null") {
+                promises.push(_fetchStyle(stylesObject[s]));
+            }
+        }
+
+        await Promise.all(promises);
+    }
+    // init styles when navigation throught the pages
+    document.addEventListener("DOMContentLoaded", () => { _initStyles(); });
+</script>

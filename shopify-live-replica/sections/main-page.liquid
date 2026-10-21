@@ -1,0 +1,53 @@
+{% style %}
+    .shopify-section .narrow-page-width {
+      max-width: {{ section.settings.layout_max_width | append: 'px' }};
+      margin: 0 auto;
+      padding-left: .75rem;
+      padding-right: .75rem;
+    }
+{% endstyle %}
+
+<div class="narrow-page-width spaced-section{% if section.settings.animation_on_reveal %} reveal-slide-in{% endif -%}">
+    <h1 class="main-page-title page-title h0 reveal-item{% if settings.show_uppercase_heading %} uppercase{% endif %}">
+        {{ page.title | escape }}
+    </h1>
+    <div class="rte reveal-item">
+        {{ page.content }}
+    </div>
+</div>
+
+{{ 'section-main-page.css' | asset_url | stylesheet_tag }}
+<noscript>{{ 'section-main-page.css' | asset_url | stylesheet_tag }}</noscript>
+
+{% schema %}
+{
+  "name": "t:sections.main-page.name",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "layout_max_width",
+      "label": "t:sections.main-page.settings.layout_max_width.label",
+      "info": "t:sections.main-page.settings.layout_max_width.info",
+      "min": 720,
+      "max": 1400,
+      "step": 20,
+      "default": 780
+    },
+    {
+      "type": "checkbox",
+      "id": "animation_on_reveal",
+      "label": "t:sections.all.settings.animation_on_reveal.label",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.main-page.presets.name"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["page"]
+  }
+}
+{% endschema %}

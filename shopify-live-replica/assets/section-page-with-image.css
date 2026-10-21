@@ -1,0 +1,39 @@
+.page__media-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.image_content--width {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page__media-container .placeholder {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.page__media-container .placeholder,
+.image_full--width .page__media,
+.image_content--width .page__media {
+    margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+
+    .page__media-container .placeholder,
+.image_full--width .page__media,
+.image_content--width .page__media {
+        margin-bottom: 3rem;
+    }
+}
+
+.page__media-container img {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    -o-object-fit: cover;
+       object-fit: cover;
+}

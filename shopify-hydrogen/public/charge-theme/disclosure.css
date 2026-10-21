@@ -1,0 +1,81 @@
+.disclosure {
+  position: relative;  
+}
+
+.disclosure__list--wrapper {
+  --color-foreground: var(--header--dropdown-color);
+  --color-foreground-75: rgba(var(--header--dropdown-color-rgb), .75);
+  display: block !important;
+  background-color: var(--header--dropdown-background, #fafafa);
+  border-radius: 4px;
+  box-shadow: 0 0 1rem var(--color-foreground-50);
+  margin: .25rem 0 0;
+  max-width: 40rem;
+  min-height: auto;
+  min-width: 100%;
+  width: -moz-max-content;
+  width: max-content;
+  padding: .75rem .5rem;
+  position: absolute;
+  right: 0;
+  z-index: 999;
+  transform-origin: calc(100% - 1.5rem) -1.5rem;
+  transition-property: transform, visibility, box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+  visibility: visible;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}
+
+.disclosure__list--wrapper::after {
+  background-color: var(--header--dropdown-background, #fafafa);
+  content: '';
+  display: block;
+  height: 1rem;
+  position: absolute;
+  top: -.5rem;
+  right: 1.25rem;
+  width: 1rem;
+  --tw-rotate: 45deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}
+
+.disclosure__list--wrapper[hidden],
+details:not([open]) > .disclosure__list--wrapper {
+  visibility: hidden;
+  --tw-scale-x: 0;
+  --tw-scale-y: 0;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}
+
+.disclosure__list {
+  max-height: 19rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.disclosure__item {
+  position: relative;
+  overflow-y: auto;
+}
+
+.disclosure__link {
+  align-items: center;
+  display: inline-flex;
+  gap: .25rem;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  line-height: 1.8;
+  width: 100%;
+}
+
+.disclosure__link--active {
+  background-color: var(--color-foreground-10);
+}
+
+.language-icon__wrapper :is(country-flag) {
+    display: contents;    
+  }
+
+.language-icon__wrapper :is(img + .emoji-flag) {
+    display: none;
+  }

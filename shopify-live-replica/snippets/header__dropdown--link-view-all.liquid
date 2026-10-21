@@ -1,0 +1,22 @@
+{%- comment -%}
+    Render Link View All
+
+    Accept:
+    - link:             {String}
+    - link_appearance:  {String}
+{%- endcomment -%}
+{% style %}
+{% endstyle %}
+<li class="grid-item dropdown-inner__action">
+    <a
+        href="{{ link }}"
+        class="view-all animate-arrow{% if link_appearance == 'button' %} button button--primary{% else %} link{% endif %}{% if settings.show_button_ring_on_hover %} border--outline{% endif %}"
+        aria-label="{{ 'sections.collection_list.view_all' | t }}"
+        title="{{ 'sections.collection_list.view_all' | t }}"
+    >
+        <span>{{ 'sections.collection_list.view_all' | t }}</span>
+        {% if link_appearance == 'button' and settings.show_icon_arrow %}
+            {% render 'icons-solid', name: 'arrow-right', css_class: 'icon-arrow' %}
+        {% endif %}
+    </a>
+</li>

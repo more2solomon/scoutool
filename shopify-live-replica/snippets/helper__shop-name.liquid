@@ -1,0 +1,24 @@
+{%- comment -%}
+    Render Shop name
+
+    Accepts:
+    - screen: {String}
+{%- endcomment -%}
+<span class="h3" data-media="{{ screen }}">
+    {%- liquid
+        assign delimiter = ' '
+        unless shop.name contains delimiter
+            assign delimiter = '.'
+        endunless
+
+        assign parts = shop.name | split: delimiter
+
+        for part in parts
+            if forloop.first
+                echo part | prepend: '<strong>' | append: '</strong>'
+            else
+                echo part | prepend: delimiter
+            endif
+        endfor
+    -%}
+</span>

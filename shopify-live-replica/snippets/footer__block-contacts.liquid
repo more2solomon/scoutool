@@ -1,0 +1,153 @@
+{% comment %}
+    Render conatcts block for footer.
+
+    Accepts:
+     - block: {Object}
+{% endcomment %}
+
+{%- liquid
+    capture socialsHtml
+        render 'social-sharing-media'
+    endcapture
+    assign socialsHtml = socialsHtml | strip
+
+    assign css_class = 'footer-contacts'
+    if section.settings.animation_on_reveal
+        assign css_class = css_class | append: ' reveal-slide-in'
+    endif
+
+    unless block.settings.image_show
+        assign css_class = css_class | append: ' footer-contacts--no-image'
+    endunless
+-%}
+<div class="{{ css_class }}" {{ block.shopify_attributes }}>
+    <div class="footer-contacts__inner {{ control_section_width }}{% if block.settings.enable_stack_on_mobile %} stack-on-mobile{% endif %}">
+        {% if block.settings.image_show %}
+            {%- if settings.current_presets == 'default' -%}
+                <span class="h4 footer-contacts__image-title reveal-item">
+                    {{ 'sections.footer.contacts.title' | t }}
+                </span>
+            {%- endif -%}
+            <div
+                class="footer-contacts__image footer-contacts__image--{{ block.settings.image_align }} reveal-item"
+                style="max-width: {{ block.settings.image_width }}px"
+            >
+                {% if block.settings.image %}
+                    <div
+                        class="media"
+                        style="padding-bottom: {% render 'helper__media-padding-bottom' image: block.settings.image image_ratio: 'native' %};"
+                    >
+                        {% assign sizes = block.settings.image_width | append: 'px' %}
+                        {% assign imageWidth2x = block.settings.image_width | times: 2 %}
+                        {% assign widths = block.settings.image_width
+                            | append: ','
+                            | append: imageWidth2x
+                            | append: ',#iw#'
+                        %}
+                        {% render 'render-image', image: block.settings.image, sizes: sizes, widths: widths %}
+                    </div>
+                {% else %}
+                    <div class="image-placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
+                            <path d="M258.9 48C141.92 46.42 46.42 141.92 48 258.9c1.56 112.19 92.91 203.54 205.1 205.1 117 1.6 212.48-93.9 210.88-210.88C462.44 140.91 371.09 49.56 258.9 48zm126.42 327.25a4 4 0 01-6.14-.32 124.27 124.27 0 00-32.35-29.59C321.37 329 289.11 320 256 320s-65.37 9-90.83 25.34a124.24 124.24 0 00-32.35 29.58 4 4 0 01-6.14.32A175.32 175.32 0 0180 259c-1.63-97.31 78.22-178.76 175.57-179S432 158.81 432 256a175.32 175.32 0 01-46.68 119.25z"/><path d="M256 144c-19.72 0-37.55 7.39-50.22 20.82s-19 32-17.57 51.93C191.11 256 221.52 288 256 288s64.83-32 67.79-71.24c1.48-19.74-4.8-38.14-17.68-51.82C293.39 151.44 275.59 144 256 144z"/>
+                        </svg>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+        <div class="footer-contacts__address reveal-item">
+            {%- unless settings.current_presets == 'default' %}
+                <span class="h4 footer-contacts__image-title">
+                    {{ 'sections.footer.contacts.title' | t }}
+                </span>
+            {%- endunless -%}
+            <div>
+                {% if block.settings.address != blank %}
+                    <div class="address-item address">
+                        <i class="icon">
+                            {% render 'icons-solid', name: 'location-marker' %}
+                        </i>
+                        <div>
+                            <span class="h5 _capitalize">
+                                {{ 'sections.footer.contacts.address' | t }}
+                            </span>
+                            {{ block.settings.address }}
+                        </div>
+                    </div>
+                {% endif %}
+                {% if block.settings.show_email %}
+                    <div class="address-item email">
+                        <i class="icon">
+                            {% render 'icons-solid', name: 'mail' %}
+                        </i>
+                        <div>
+                            <span class="h5 _capitalize">
+                                {{ 'sections.footer.contacts.mail' | t }}
+                            </span>
+                            <a
+                                href="mailto:{{ settings.contact_email }}"
+                                title="{{ 'header_top.contact_email.title' | t }}"
+                            >
+                                {{- settings.contact_email -}}
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+                {% if block.settings.show_phone %}
+                    <div class="address-item phone">
+                        <i class="icon">
+                            {%- if settings.current_presets == 'garage' %}
+                                {%- render 'icons-solid', name: 'iphone' -%}
+                            {% else %}
+                                {%- render 'icons-solid', name: 'phone' -%}
+                            {% endif -%}
+                        </i>
+                        <div>
+                            <span class="h5 _capitalize">
+                                {{ 'sections.footer.contacts.phone_number' | t }}
+                            </span>
+                            <a
+                                href="tel:{{ settings.contact_phone }}"
+                                title="{{ 'sections.footer.contacts.phone_number' | t }}"
+                            >
+                                {{ settings.contact_phone }}
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if socialsHtml != blank %}
+            <div class="footer-contacts__social">
+                <div class="h4">
+                    {{ 'sections.footer.contacts.social_heading' | t }}
+                </div>
+                <div>
+                    {{ socialsHtml }}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if block.settings.show_newsletter %}
+            <div class="footer-contacts__newsletter reveal-item">
+                <div class="h4">
+                    {%- case settings.current_presets -%}
+                        {%- when 'garage' -%}
+                            {{- 'newsletter.garage_heading' | t -}}
+                        {%- when 'metalware' -%}
+                            {{- 'newsletter.metalware_heading' | t -}}
+                        {%- else -%}
+                            {{- 'newsletter.heading' | t }}
+                    {%- endcase -%}
+                </div>
+                <div>
+                    {%- render 'form-newsletter-subscribe',
+                        form_id: 'newsletter-form-footer-contacts',
+                        button_icon: 'caret'
+                    -%}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>

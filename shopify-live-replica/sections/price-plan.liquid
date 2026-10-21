@@ -1,0 +1,372 @@
+{{ 'section-price-plan.css' | asset_url | stylesheet_tag }}
+
+{% liquid
+    assign priceOption = section.blocks | where: 'type', 'price_option' | first
+    assign fontFamily = priceOption.settings.custom_font
+    assign text_position = section.settings.text_position
+
+    assign mainClass = 'price-plan-wrapper'
+    if section.settings.animation_reveal
+        assign mainClass = mainClass | append: ' reveal-slide-in'
+    endif
+    if section.settings.full_width
+        assign mainClass = mainClass | append: ' full--width'
+    else
+        assign mainClass = mainClass | append: ' dynamic-page-width'
+    endif
+
+    assign money_format_currency = shop.money_format
+    if money_format_currency contains 'amount'
+        assign money_format_currency = money_format_currency | replace: '{{amount}}', ''
+    endif
+
+    if money_format_currency contains 'amount_with_comma_separator'
+        assign money_format_currency = money_format_currency | replace: '{{amount_with_comma_separator}}', ''
+    endif
+
+    if money_format_currency contains 'amount_no_decimals_with_comma_separator'
+        assign money_format_currency = money_format_currency | replace: '{{ amount_no_decimals_with_comma_separator }}', ''
+    endif
+%}
+
+{% style %}
+    #shopify-section-{{ section.id }} .plan-item {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: {{ text_position }};
+        justify-content: flex-start;
+        gap: .75rem;
+        padding: 1.5rem 2rem 3rem;
+        {% if settings.blocks_border_radius_value %}
+            border-radius: {{ settings.blocks_border_radius_value }}rem;
+        {% endif %}
+    }
+
+    #shopify-section-{{ section.id }} .price-plan-wrapper > *,
+    #shopify-section-{{ section.id }} .price-plan-wrapper .heading > * {
+        font-family: {{ fontFamily.family }}, {{ fontFamily.fallback_families }};
+        font-style: {{ fontFamily.style }};
+        font-weight: {{ fontFamily.weight }};
+    }
+
+    .price-plan-wrapper .plan-items,
+    .plan-details .subtitle {
+        padding: 0 0 2rem;
+    }{% if section.blocks.size > 1 %}
+
+    @media (min-width: 600px), print {
+        #shopify-section-{{ section.id }} .plan-items > li {
+            width: calc(100% / {{ section.blocks.size }} - .5rem);
+        }
+        .price-plan-wrapper .slider-buttons__container {
+            display: none;
+        }
+    }{% endif %}
+{% endstyle %}
+
+<div class="{{ mainClass }}">
+    <div class="plan-details reveal-item">
+        {%- unless section.settings.heading == blank %}
+            <span class="section--title reveal-item{% if settings.show_uppercase_heading %} uppercase{% endif %}">
+                {% render 'helper__decorate-heading', heading: section.settings.heading %}
+            </span>
+        {% endunless -%}
+        {%- unless section.settings.subtitle == blank -%}
+            <p class="subtitle reveal-item">{{ section.settings.subtitle }}</p>
+        {%- endunless -%}
+    </div>
+    <slider-component data-loop="false">
+        <ul class="plan-items slider slider--mobile" data-slideshow-btn-type="{{ section.settings.slideshow_ui_type }}">
+            {%- for block in section.blocks -%}
+                {%- liquid
+                    case block.settings.description_marker
+                        when 'dot'
+                            assign descriptionMarker = '&bull;'
+                        when 'check'
+                            assign descriptionMarker = '&#10004;'
+                        when 'star'
+                            assign descriptionMarker = '&#8902;'
+                        when 'hyphen'
+                            assign descriptionMarker = '&#8208;'
+                        when 'none'
+                            assign descriptionMarker = ''
+                    endcase
+                -%}
+
+                {% style %}
+                    #shopify-section-{{ section.id }} .plan-item__heading-{{ forloop.index }} > *{
+                        color: {{ block.settings.text_color }};
+                    }
+
+                    #shopify-section-{{ section.id }} .plan-item__index-{{ forloop.index }} {
+                        background: {{ block.settings.block_background }};
+                        color: {{ block.settings.text_color }};
+                        {%- if block.settings.frame %}
+                        border-top: 2px solid {{ block.settings.frame_color }};{% endif -%}
+                    }
+
+                    #shopify-section-{{ section.id }} .plan-item__button-{{ forloop.index }} {
+                        color: {{ block.settings.button_text_color }};
+                        background: var(--color-button-background);
+                        width: 100%;
+                        border-color: var(--color-base-accent-1);
+                    }
+                {% endstyle %}
+
+                <li
+                    class="plan-item reveal-item slider__slide plan-item__index-{{ forloop.index }} {{ text_position }}"
+                    {{ block.shopify_attributes }}
+                >
+                    <h2 class="heading plan-item__heading-{{ forloop.index }}">{{ block.settings.title }}</h2>
+                    {%- unless block.settings.subtitle == blank %}
+                        <p class="subtitle reveal-item">{{ block.settings.subtitle }}</p>
+                    {%- endunless -%}
+                    {%- unless block.settings.price == blank %}
+                        <p class="plan-price">
+                            {{ block.settings.price }}&nbsp;
+                            <span class="period">{{ money_format_currency }}/{{ block.settings.period }}</span>
+                        </p>
+                    {%- endunless -%}
+                    {% if block.settings.link != blank or block.settings.button_label != blank %}
+                        <a
+                            href="{{ block.settings.link }}"
+                            target="_blank"
+                            rel="noopener norefferer"
+                            {% if block.settings.link == blank %}
+                                aria-disabled="true"
+                            {% endif %}
+                            class="{% if settings.cut_button_corners %}border--with-cut-corners{% endif %} button-link button button--primary animate-arrow reveal-item plan-item__button-{{ forloop.index }}"
+                        >
+                            {{ block.settings.button_label }}
+                        </a>
+                    {% endif %}
+                    {%- assign list_items = block.settings.plan_description | split: ', ' -%}
+                    {% assign list_items_size = list_items | replace: '[', '' | replace: ']', '' | escape %}
+                    {%- unless list_items_size == blank %}
+                        <ul class="description-items">
+                            {%- for item in list_items -%}
+                                <li class="description-item reveal-item">
+                                    {{ descriptionMarker }}
+                                    {{ item }}
+                                </li>
+                            {%- endfor -%}
+                        </ul>
+                    {% endunless -%}
+                </li>
+            {%- endfor -%}
+        </ul>
+        {% if section.settings.show_mobile_scrollbar %}
+            {% render 'slider-buttons', items: section.blocks.size, section_settings: section.settings %}
+        {% endif %}
+    </slider-component>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.price_plan.name",
+  "tag": "section",
+  "class": "spaced-section",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "t:sections.price_plan.settings.heading.label",
+      "default": "<h2>Price plan section</h2>"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subtitle",
+      "label": "t:sections.featured-collection.settings.subtitle.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "t:sections.price_plan.settings.full_width.label",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "animation_reveal",
+      "label": "t:sections.price_plan.settings.animation_reveal.label",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_mobile_scrollbar",
+      "default": true,
+      "label": "t:sections.featured-collection.settings.show_mobile_scrollbar.label"
+    },
+    {
+      "type": "select",
+      "id": "slideshow_ui_type",
+      "options": [
+        {
+          "value": "buttons",
+          "label": "t:sections.featured-collection.settings.slideshow_ui_type.options.buttons"
+        },
+        {
+          "value": "scrollbar",
+          "label": "t:sections.featured-collection.settings.slideshow_ui_type.options.scrollbar"
+        }
+      ],
+      "default": "buttons",
+      "label": "t:sections.featured-collection.settings.slideshow_ui_type.label"
+    },
+    {
+      "type": "select",
+      "id": "text_position",
+      "label": "t:sections.price_plan.blocks.price_option.settings.text_position.label",
+        "options": [
+          {
+            "value": "flex-start",
+            "label": "t:sections.price_plan.blocks.price_option.settings.text_position.options.flex-start.label"
+          },
+          {
+            "value": "center",
+            "label": "t:sections.price_plan.blocks.price_option.settings.text_position.options.center.label"
+          },
+          {
+            "value": "flex-end",
+            "label": "t:sections.price_plan.blocks.price_option.settings.text_position.options.flex-end.label"
+          }
+      ],
+      "default": "flex-start"
+    }
+  ],
+  "max_blocks": 3,
+  "blocks": [
+    {
+    "type": "price_option",
+    "name": "t:sections.price_plan.blocks.price_option.name",
+    "settings": [
+      {
+        "type": "richtext",
+        "id": "title",
+        "label": "t:sections.price_plan.blocks.price_option.settings.title.label",
+        "default": "<p>Block heading</p>"
+      },
+      {
+        "type": "inline_richtext",
+        "id": "subtitle",
+        "label": "t:sections.price_plan.blocks.price_option.settings.subtitle.label",
+        "default": "Provide additional info here"
+      },
+      {
+        "type": "text",
+        "id": "price",
+        "label": "t:sections.price_plan.blocks.price_option.settings.price.label",
+        "default": "199.99"
+      },
+      {
+        "type": "text",
+        "id": "period",
+        "label": "t:sections.price_plan.blocks.price_option.settings.period.label",
+        "default": "month"
+      },
+      {
+        "type": "text",
+        "id": "button_label",
+        "label": "t:sections.price_plan.blocks.price_option.settings.button_label.label",
+        "default": "Get started today"
+      },
+      {
+        "type": "url",
+        "id": "link",
+        "label": "t:sections.price_plan.blocks.price_option.settings.link.label"
+      },
+      {
+        "type": "text",
+        "id": "plan_description",
+        "label": "t:sections.price_plan.blocks.price_option.settings.plan_description.label",
+        "info": "t:sections.price_plan.blocks.price_option.settings.plan_description.info"
+      },
+      {
+        "type": "header",
+        "content": "t:sections.price_plan.blocks.price_option.settings.header__1.content"
+      },
+      {
+        "type": "font_picker",
+        "id": "custom_font",
+        "label": "t:sections.price_plan.blocks.price_option.settings.custom_font.label",
+        "default": "open_sans_n4"
+      },
+      {
+        "type": "color",
+        "id": "button_text_color",
+        "label": "t:sections.price_plan.blocks.price_option.settings.button_text_color.label",
+        "default": "#fff"
+      },
+      {
+        "type": "select",
+        "id": "description_marker",
+        "label": "t:sections.price_plan.blocks.price_option.settings.description_marker.label",
+          "options": [
+            {
+              "value": "none",
+              "label": "t:sections.price_plan.blocks.price_option.settings.description_marker.options.none.label"
+            },
+            {
+              "value": "dot",
+              "label": "t:sections.price_plan.blocks.price_option.settings.description_marker.options.dot.label"
+            },
+            {
+              "value": "check",
+              "label": "t:sections.price_plan.blocks.price_option.settings.description_marker.options.check.label"
+            },
+            {
+              "value": "hyphen",
+              "label": "t:sections.price_plan.blocks.price_option.settings.description_marker.options.hyphen.label"
+            },
+            {
+              "value": "star",
+              "label": "t:sections.price_plan.blocks.price_option.settings.description_marker.options.star.label"
+            }
+          ],
+          "default": "check"
+        },
+        {
+          "type": "color",
+          "id": "block_background",
+          "label": "t:sections.price_plan.blocks.price_option.settings.block_background.label",
+          "default": "#101824"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "t:sections.price_plan.blocks.price_option.settings.text_color.label",
+          "default": "#fff"
+        },
+        {
+          "type": "checkbox",
+          "id": "frame",
+          "label": "t:sections.price_plan.blocks.price_option.settings.frame.label",
+          "default": false
+        },
+        {
+          "type": "color",
+          "id": "frame_color",
+          "label": "t:sections.price_plan.blocks.price_option.settings.frame_color.label",
+          "default": "#666667"
+        }
+      ]
+    }
+],
+"presets": [
+    {
+      "name": "Price plan",
+      "blocks": [
+        {
+          "type": "price_option"
+        },
+        {
+          "type": "price_option"
+        },
+        {
+          "type": "price_option"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

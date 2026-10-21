@@ -1,0 +1,30 @@
+{%- comment -%}
+    Rendered at vide-presentation-card.liquid
+
+    Accepts:
+    - block:   {String}
+    - product: {Object}
+{%- endcomment -%}
+
+<div class="card-product-single">
+    {% if product.featured_image %}
+        {% render 'render-image',
+            image: product.featured_image,
+            widths: imageWidth,
+            sizes: imageSizes,
+            css_class: ''
+        -%}
+    {%- endif %}
+    <div>
+        <p class="product-title">{{ product.title }}</p>
+        {% render 'helper__decorate-product-price', product: product, showPriceLabel: settings.price_label %}
+    </div>
+    <a
+        href="{{ product.url }}"
+        class="button button--primary button--small product__view-details animate-arrow {% if settings.cut_button_corners %}border--with-cut-corners{% endif %}"
+        style="order: 99"
+    >
+        {{ 'products.product.view_full_details' | t }}
+        {% render 'icons-solid', name: 'arrow-right', css_class: 'icon-arrow extend' %}
+    </a>
+</div>

@@ -1,0 +1,57 @@
+.recipient-form {
+            margin-bottom: 1rem;
+            display: block}
+
+    .recipient-form .recipient-checkbox__container > label {
+            display: flex;
+            align-items: center}
+
+    .recipient-form .recipient-checkbox__container > label > input {
+            position: absolute;
+            height: 1rem;
+            width: 1rem;
+            z-index: -1}
+
+    .recipient-form .recipient-checkbox__container > label .icon {
+            background: var(--color-background);
+            border: 1px solid var(--color-foreground);
+            border-radius: 2px;
+            visibility: hidden;
+            margin-right: 0.5rem;
+            height: 1rem;
+            width: 1rem;
+            flex-shrink: 0}
+
+    .recipient-form[data-form-opened="true"] .recipient-checkbox__container > label > .icon {
+            visibility: visible}
+
+    .recipient-form .icon-checkmark path {
+        transform-origin: center;
+        --tw-scale-x: 0;
+        --tw-scale-y: 0;
+        transform: var(--tw-transform);
+        transition-property: transform;
+        transition-timing-function: cubic-bezier(.4,0,.2,1);
+        transition-duration: .15s;
+    }
+
+    .recipient-form .recipient-fields .field__input {
+        width: 100% !important;
+    }
+
+.recipient-form [type=checkbox]:checked ~ .icon-checkmark path {
+    --tw-scale-x: 1.5;
+    --tw-scale-y: 1.5;
+    transform: var(--tw-transform);
+}
+
+.recipient-form .recipient-fields {
+    padding-top: 1rem;
+    height: 0;
+    overflow: hidden;
+}
+
+.recipient-form .recipient-form-field-label {
+            text-align: right;
+            font-size: 0.875rem;
+            line-height: 1.25rem}

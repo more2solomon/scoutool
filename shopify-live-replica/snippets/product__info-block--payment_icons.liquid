@@ -1,0 +1,41 @@
+{%- comment -%}
+    Render product "Payment cons" block based on block settings
+
+    Accepts:
+     - block:      {Object}
+     - blockOrder: {Number}
+     - sectionId:  {String}
+     - product:    {Object}
+{%- endcomment -%}
+{% style %}
+    .list-payment__item svg {
+        width: {{ block.settings.control_icon_width }}px;
+        height: auto;
+    }
+{% endstyle %}
+<div
+    class="product__info-block product__info-block--border product__info-block--payment_icons reveal-item"
+    style="order: {{ blockOrder }}"
+    {{ block.shopify_attributes }}
+>
+    <span class="visually-hidden">Payment icons</span>
+    <ul class="payment-icons-list" role="list">
+        {% if block.settings.custom_payment_icon != blank %}
+            {% assign icons = block.settings.custom_payment_icon | split: ',' %}
+            {% for icon in icons %}
+                {% assign isImage = images[icon] %}
+                {% if isImage != empty %}
+                    <li class="list-payment__item">
+                        {{ images[icon] | image_url: width: block.settings.control_icon_width | image_tag: class: '' }}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            {%- for type in shop.enabled_payment_types -%}
+                <li class="list-payment__item">
+                    {{ type | payment_type_svg_tag: class: 'icon' }}
+                </li>
+            {%- endfor -%}
+        {% endif %}
+    </ul>
+</div>

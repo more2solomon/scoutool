@@ -1,0 +1,76 @@
+import HorizonHeader from "../components/HorizonHeader";
+import HorizonProductCard from "../components/HorizonProductCard";
+import { getProducts } from "../lib/shopify";
+
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const products = await getProducts();
+
+  return (
+    <main>
+      <HorizonHeader />
+
+      <section className="horizon-hero">
+        <div className="hero-content">
+          <h1>Browse our latest products</h1>
+
+          <p>
+            Discover our latest products and shop directly from our store.
+          </p>
+
+          <a href="#products" className="horizon-button">
+            Shop all
+          </a>
+        </div>
+      </section>
+
+      <section className="product-section" id="products">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">SHOP</p>
+            <h2>Latest products</h2>
+          </div>
+
+          <a href="/collections/all" className="view-all">
+            View all
+          </a>
+        </div>
+
+        {products.length > 0 ? (
+          <div className="product-grid">
+            {products.map((product) => (
+              <HorizonProductCard
+                key={product.id}
+                product={product}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="empty-products">
+            <h3>Storefront connected.</h3>
+            <p>
+              Products will appear here once the Shopify Storefront API
+              connection is available.
+            </p>
+          </div>
+        )}
+      </section>
+
+      <footer className="horizon-footer">
+        <div className="footer-inner">
+          <div>
+            <strong>SCOUTOOL</strong>
+            <p>Discover products made for you.</p>
+          </div>
+
+          <div className="footer-links">
+            <a href="/collections/all">Shop</a>
+            <a href="/pages/contact">Contact</a>
+            <a href="/policies/privacy-policy">Privacy</a>
+          </div>
+        </div>
+      </footer>
+    </main>
+  );
+}

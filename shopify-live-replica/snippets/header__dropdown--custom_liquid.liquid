@@ -1,0 +1,36 @@
+{% comment %}
+    Render header dropdown content - Custom Liquid block
+
+    Accepts:
+     - block               {Object}
+     - blockOrder:         {Numb}
+     - parent_item_index:  {Numb}
+{% endcomment %}
+
+{%- liquid
+    assign block_class = 'dropdown-inner__custom-liquid'
+    assign selectedItemIndex = block.settings.item_menu_index
+    assign block_content = block.settings.custom_liquid
+    assign link_url = block.settings.link
+    assign link_appearance = block.settings.view_all_appearance
+    assign media_condition = '(max-width: 989px)'
+
+    unless block.settings.show_block_on_mobile
+        assign block_class = block_class | append: ' hidden-on-mobile'
+    endunless
+-%}
+{%- if parent_item_index == selectedItemIndex -%}
+    {%- unless block.settings.show_block_on_mobile %}
+        <style media="{{ media_condition }}">
+            .dropdown-inner__custom-liquid:is(.hidden-on-mobile) {
+              display: none;
+            }
+        </style>
+    {% endunless -%}
+    <div class="{{ class }}" data-block-index="{{ blockOrder }}">
+        {{- block_content -}}
+        {%- unless link_url == blank -%}
+            {%- render 'header__dropdown--link-view-all', link: link_url, link_appearance: link_appearance -%}
+        {%- endunless -%}
+    </div>
+{%- endif -%}

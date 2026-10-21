@@ -1,0 +1,174 @@
+{%- comment -%}
+    Multicolumn content
+
+    Accepts:
+    - section:              {Object}
+    - block:                {Object}
+    - image_ratio:          {Numb}
+    - image_width_divider:  {Numb}
+    - image_sizes:          {String}
+    - foloop_index:         {Numb}
+{%- endcomment -%}
+{% if block.settings.image_enabled %}
+    {%- if block.settings.image != blank -%}
+        {%- liquid
+            assign loading_strategy = 'lazy'
+            assign fetchpriority_strategy = 'low'
+            assign is_preload = false
+            # if foloop_index == 1
+            # assign loading_strategy       = 'auto'
+            # assign fetchpriority_strategy = 'high'
+            # endif
+
+            capture image_html
+                render 'render-image', image: block.settings.image, sizes: image_sizes, loading_strategy: loading_strategy, fetchpriority_strategy: fetchpriority_strategy, is_preload: is_preload
+            endcapture
+        -%}
+    {% endif %}
+    <div class="multicolumn-card__image-wrapper image--{{ block.settings.image_position }}">
+        {%- liquid
+            assign media_class = 'media'
+            if settings.use_media_transparent
+                assign media_class = media_class | append: ' media--transparent'
+            endif
+
+            unless request.design_mode
+                if settings.enable_preload_images and block.settings.image != blank
+                    assign media_class = media_class | append: ' media--blur-image'
+                endif
+            endunless
+        -%}
+        {%- if settings.enable_preload_images and block.settings.image != blank -%}
+            {%- render 'loading-overlay' -%}
+        {%- endif -%}
+        <div class="{{media_class }}" style="padding-bottom: {{ 100.0 | divided_by: image_ratio }}%;">
+            {%- if block.settings.image != blank -%}
+                {{ image_html }}
+            {%- else -%}
+                {%- if section.id contains 'home-banners-1' %}
+                    <div style="background:#d4d8da;">{{ 'collection-1' | placeholder_svg_tag }}</div>
+                {% else %}
+                    <div style="background:#d4d8da;">{{ 'collection-5' | placeholder_svg_tag }}</div>
+                {% endif %}
+            {%- endif -%}
+        </div>
+
+        {% unless block.settings.image_position == 'contain' %}
+            <div class="multicolumn-card__content _{{ block.settings.image_position }} content-direction-{{ block.settings.column_content_direction }}">
+                {%- if block.settings.sub_title != blank %}
+                    <span
+                        class="sub_title reveal-item"
+                        style="color: {{ block.settings.color_title }};background:{{ block.settings.subtitle_background_gradient | default: block.settings.bg_color_subtitle }}"
+                    >
+                        {{- block.settings.sub_title -}}
+                    </span>
+                {%- endif -%}
+                {%- if block.settings.title != blank %}
+                    <h3
+                        class="title reveal-item{% if section.settings.use_uppercase_heading %} uppercase{% endif %}"
+                        style="color: {{ block.settings.color_title }};{% if section.settings.use_bold_heading %}font-weight: bold;{% endif %}font-size:{{ section.settings.font_size_heading | default: 1.5 }}rem;"
+                    >
+                        {{ block.settings.title }}
+                    </h3>
+                {% endif -%}
+                {%- if block.settings.text != blank %}
+                    <div class="rte text reveal-item" style="color: {{ block.settings.color_text }}">
+                        {{ block.settings.text }}
+                    </div>
+                {% endif -%}
+                {%- if block.settings.link != blank and block.settings.link_appearance != 'image_link' %}
+                    {%- liquid
+                        assign button_class = 'view-all reveal-item'
+                        case block.settings.link_appearance
+                            when 'button'
+                                assign button_class = button_class | append: ' button button--primary animate-arrow'
+                            when 'button_secondary'
+                                assign button_class = button_class | append: ' button animate-arrow'
+                            when 'link'
+                                assign button_class = button_class | append: ' link'
+                        endcase
+
+                        if settings.show_button_ring_on_hover
+                            assign button_class = button_class | append: ' border--outline'
+                        endif
+                        if settings.cut_button_corners
+                            assign button_class = button_class | append: ' border--with-cut-corners'
+                        endif
+                        if block.settings.button_label == blank
+                            assign button_class = button_class | append: ' btn-with-no-label'
+                        endif
+                    -%}
+                    <a
+                        href="{{ block.settings.link }}"
+                        class="{{ button_class }}"
+                        title="{{ block.settings.button_label }}"
+                    >
+                        {% unless block.settings.button_label == blank %}
+                            <span>{{ block.settings.button_label }}</span>
+                        {% endunless %}
+                        {% if block.settings.button_label == blank %}
+                            {% render 'icons-solid', name: 'arrow-right', css_class: 'icon-arrow' %}
+                        {% endif %}
+                    </a>
+                {% endif -%}
+            </div>
+        {% endunless %}
+    </div>
+{% endif %}
+
+{%- unless block.settings.image_position == 'cover' or block.settings.image_position == 'column' %}
+    <div class="multicolumn-card__content _{{ block.settings.image_position }} content-direction-{{ block.settings.column_content_direction }}">
+        {%- if block.settings.sub_title != blank %}
+            <span
+                class="sub_title reveal-item"
+                style="color: {{ block.settings.color_title }};background:{{ block.settings.subtitle_background_gradient | default: block.settings.bg_color_subtitle }}"
+            >
+                {{- block.settings.sub_title -}}
+            </span>
+        {%- endif -%}
+        {%- if block.settings.title != blank %}
+            <h3
+                class="title reveal-item{% if section.settings.use_uppercase_heading %} uppercase{% endif %}"
+                style="color: {{ block.settings.color_title }};{% if section.settings.use_bold_heading %}font-weight: bold;{% endif %}font-size:{{ section.settings.font_size_heading | default: 1.5 }}rem;"
+            >
+                {{ block.settings.title }}
+            </h3>
+        {% endif -%}
+        {%- if block.settings.text != blank %}
+            <div class="rte text reveal-item" style="color: {{ block.settings.color_text }}">
+                {{ block.settings.text }}
+            </div>
+        {% endif -%}
+        {%- if block.settings.link != blank and block.settings.link_appearance != 'image_link' %}
+            {%- liquid
+                assign button_class = 'view-all reveal-item'
+                case block.settings.link_appearance
+                    when 'button'
+                        assign button_class = button_class | append: ' button button--primary animate-arrow'
+                    when 'button_secondary'
+                        assign button_class = button_class | append: ' button animate-arrow'
+                    when 'link'
+                        assign button_class = button_class | append: ' link'
+                endcase
+
+                if settings.show_button_ring_on_hover
+                    assign button_class = button_class | append: ' border--outline'
+                endif
+                if settings.cut_button_corners
+                    assign button_class = button_class | append: ' border--with-cut-corners'
+                endif
+                if block.settings.button_label == blank
+                    assign button_class = button_class | append: ' btn-with-no-label'
+                endif
+            -%}
+            <a href="{{ block.settings.link }}" class="{{ button_class }}" title="{{ block.settings.button_label }}">
+                {% unless block.settings.button_label == blank %}
+                    <span>{{ block.settings.button_label }}</span>
+                {% endunless %}
+                {% if block.settings.button_label == blank %}
+                    {% render 'icons-solid', name: 'arrow-right', css_class: 'icon-arrow' %}
+                {% endif %}
+            </a>
+        {% endif -%}
+    </div>
+{% endunless -%}

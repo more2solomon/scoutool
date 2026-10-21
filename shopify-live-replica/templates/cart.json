@@ -1,0 +1,61 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "cart": {
+      "type": "main-cart",
+      "settings": {}
+    },
+    "icons_bar": {
+      "type": "icons-bar",
+      "blocks": {
+        "icon-bar-1": {
+          "type": "icon",
+          "settings": {
+            "icon": "truck",
+            "text": "<p><b>ITEM BAR TITLE</b></p><p>Share shipping, delivery, policy information.</p>"
+          }
+        },
+        "icon-bar-2": {
+          "type": "icon",
+          "settings": {
+            "icon": "clock",
+            "text": "<p><b>ITEM BAR TITLE</b></p><p>Share shipping, delivery, policy information.</p>"
+          }
+        },
+        "icon-bar-3": {
+          "type": "icon",
+          "settings": {
+            "icon": "calendar",
+            "text": "<p><b>ITEM BAR TITLE</b></p><p>Share shipping, delivery, policy information.</p>"
+          }
+        },
+        "icon-bar-4": {
+          "type": "icon",
+          "settings": {
+            "icon": "clipboard-check",
+            "text": "<p><b>ITEM BAR TITLE</b></p><p>Share shipping, delivery, policy information.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "icon-bar-1",
+        "icon-bar-2",
+        "icon-bar-3",
+        "icon-bar-4"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "cart",
+    "icons_bar"
+  ]
+}

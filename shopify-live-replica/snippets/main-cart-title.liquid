@@ -1,0 +1,9 @@
+{% comment %}
+    Render main cart title
+{% endcomment %}
+
+<div class="main-cart-title">
+    <h1 class="title title--primary reveal-item{% if settings.show_uppercase_heading %} uppercase{% endif %}">
+        {{ 'sections.cart.title' | t }}
+    </h1>
+</div>

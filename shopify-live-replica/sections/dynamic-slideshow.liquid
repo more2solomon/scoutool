@@ -1,0 +1,350 @@
+{{ 'component-deferred-media.css' | asset_url | stylesheet_tag }}
+{{ 'section-dynamic-slideshow.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+    if section.settings.full_width
+        assign sizes = '100vw'
+        assign widths = '742,990,1920,#iw#'
+    else
+        assign sizes = 'calc(min(100vw, 1200px) - .75rem * 2)'
+        assign widths = '698,966,1176,#iw#'
+    endif
+
+    assign main_class = 'dynamic-slideshow-container'
+
+    if section.settings.full_width
+        assign main_class = main_class | append: ' full--width'
+    else
+        assign main_class = main_class | append: ' dynamic-page-width'
+    endif
+
+    assign height = '50vh'
+
+    case section.settings.slide_height
+        when 'small'
+            assign padding_bottom = '20rem'
+            assign height = '20rem'
+        when 'medium'
+            assign padding_bottom = '30rem'
+            assign height = '30rem'
+        when 'large'
+            assign padding_bottom = '40rem'
+            assign height = '40rem'
+    endcase
+-%}
+{% style %}
+    .dynamic-slideshow-container .slider {
+        display: flex;
+        gap: 1rem;
+        padding: 0 1rem 1rem;
+    }
+    @media screen and (min-width: 750px), print {
+        .dynamic-slideshow-container .slider {
+            padding: 0 2rem;
+        }
+    }
+    {%- if section.blocks.size > 1 -%}
+    @media screen and (min-width: 768px), print {
+        .dynamic-slideshow-container ul li {
+            width: calc(100% / {{ section.blocks.size }});
+        }
+    }{%- endif -%}
+
+    @media screen and (min-width: 768px) {
+        .dynamic-slideshow-container .card > video {
+            height: {{ height }};
+        }
+    }
+{% endstyle %}
+<div class="{{ main_class }}">
+    {%- unless section.settings.heading == blank -%}
+        <div class="heading">
+            <{{ section.settings.heading_size }} class="_title reveal-item{% if settings.show_uppercase_heading %} uppercase{% endif %}">
+                {%- render 'helper__decorate-heading', heading: section.settings.heading -%}
+            </{{ section.settings.heading_size }}>
+        </div>
+    {%- endunless -%}
+    <slider-component data-loop="false">
+        <ul
+            class="items slider slider--mobile"
+            id="template-{{ section.id }}"
+            data-blocks-size="{{ section.blocks.size }}"
+            data-slideshow-btn-type="{{ section.settings.slideshow_ui_type }}"
+        >
+            {% for block in section.blocks %}
+                {%- case block.type -%}
+                    {% when 'image' %}
+                        <li
+                            class="card slider__slide reveal-item{% if section.settings.slide_height == 'auto' %} with-height__auto{% endif %}"
+                            {{ block.shopify_attributes }}
+                        >
+                            {% unless block.settings.link == blank -%}
+                                <a href="{{ block.settings.link }}" class="item-link">
+                            {%- endunless %}
+                            <div
+                                class="image--wrapper media"
+                                {% unless padding_bottom == blank %}
+                                    style="padding-bottom: {{ padding_bottom }};"
+                                {% endunless %}
+                            >
+                                {%- if block.settings.image != blank -%}
+                                    {%- render 'render-image',
+                                        image: block.settings.image,
+                                        width: block.settings.image.width,
+                                        widths: widths,
+                                        sizes: sizes,
+                                        is_preload: section.settings.is_preload
+                                    -%}
+                                {%- else -%}
+                                    {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                {%- endif -%}
+                                {%- if block.settings.description != blank %}
+                                    <span
+                                        class="card-description rte"
+                                        style="justify-content:{{ block.settings.card_description_position }}"
+                                    >
+                                        {{ block.settings.description }}
+                                    </span>
+                                {% endif -%}
+                            </div>
+                            {% unless block.settings.link == blank %}</a>{% endunless %}
+                        </li>
+
+                    {%- when 'video' -%}
+                        {%- assign is_autoplay = block.settings.autoplay_internal_video -%}
+                        <li class="card video slider__slide reveal-item" {{ block.shopify_attributes }}>
+                            {%- if block.settings.internal_video_link %}
+                                {%- assign video = block.settings.internal_video_link -%}
+                                {%- if is_autoplay %}
+                                    {{ video | video_tag: autoplay: true, muted: true, loop: true }}
+                                {% else %}
+                                    {{ video | video_tag: autoplay: false, muted: true, loop: true, controls: true }}
+                                {% endif -%}
+                            {% elsif block.settings.video_url %}
+                                <div
+                                    class="embed-responsive embed-responsive-16by9"
+                                    style="padding-bottom: {% if padding_bottom != blank %}{{ padding_bottom }}{% else %}50%{% endif %};"
+                                >
+                                    {%- if block.settings.video_url.type == 'youtube' -%}
+                                        <iframe
+                                            src="https://www.youtube.com/embed/{{ block.settings.video_url.id }}?&autoplay=1&mute=1&showinfo=1&loop=1&playlist={{ block.settings.video_url.id }}&controls=1"
+                                        ></iframe>
+                                    {%- else -%}
+                                        <iframe
+                                            src="https://player.vimeo.com/video/{{ block.settings.video_url.id }}?title=0&byline=0&portrait=0&autopause=0&playlist={{ block.settings.video_url.id }}&controls=1"
+                                            class="js-vimeo"
+                                            allowfullscreen
+                                            title="{{ block.settings.video_url.id }}"
+                                        ></iframe>
+                                    {%- endif -%}
+                                </div>
+                            {% endif %}
+                            {%- if block.settings.description != blank %}
+                                <a
+                                    class="card-description"
+                                    style="justify-content:{{ block.settings.video_description_position }}"
+                                    href="{{ block.settings.video_link }}"
+                                >
+                                    {{ block.settings.description }}
+                                </a>
+                            {% endif -%}
+                        </li>
+                {% endcase %}
+            {% endfor %}
+        </ul>
+        {%- if section.blocks.size > 1 -%}
+            {% render 'slider-buttons', items: section.blocks, section_settings: section.settings %}
+        {%- endif -%}
+    </slider-component>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.dynamic-slideshow.name",
+  "tag": "section",
+  "class": "spaced-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "default": false,
+      "label": "t:sections.dynamic-slideshow.settings.full_width.label"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:sections.dynamic-slideshow.settings.header.label",
+      "default": "Dynamic slideshow"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:sections.featured-collection.settings.heading_size.options.h2"
+        },
+        {
+          "value": "h3",
+          "label": "t:sections.featured-collection.settings.heading_size.options.h3"
+        },
+        {
+          "value": "h4",
+          "label": "t:sections.featured-collection.settings.heading_size.options.h4"
+        },
+        {
+          "value": "h5",
+          "label": "t:sections.featured-collection.settings.heading_size.options.h5"
+        },
+        {
+          "value": "h6",
+          "label": "t:sections.featured-collection.settings.heading_size.options.h6"
+        }
+      ],
+      "default": "h2",
+      "label": "t:sections.featured-collection.settings.heading_size.label"
+    },
+    {
+      "type": "select",
+      "id": "slide_height",
+      "options": [
+        {
+          "value": "small",
+          "label": "t:sections.slider.settings.slide_height.options__2.label"
+        },
+        {
+          "value": "medium",
+          "label": "t:sections.slider.settings.slide_height.options__3.label"
+        },
+        {
+          "value": "large",
+          "label": "t:sections.slider.settings.slide_height.options__4.label"
+        },
+        {
+          "value": "auto",
+          "label": "t:sections.slider.settings.slide_height.options__5.label"
+        }
+      ],
+      "default": "auto",
+      "label": "t:sections.slider.settings.slide_height.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "is_preload",
+      "default": false,
+      "label": "t:sections.dynamic-slideshow.settings.is_preload.label"
+    },
+    {
+      "type": "select",
+      "id": "slideshow_ui_type",
+      "options": [
+        {
+          "value": "buttons",
+          "label": "t:sections.featured-collection.settings.slideshow_ui_type.options.buttons"
+        },
+        {
+          "value": "scrollbar",
+          "label": "t:sections.featured-collection.settings.slideshow_ui_type.options.scrollbar"
+        }
+      ],
+      "default": "buttons",
+      "label": "t:sections.featured-collection.settings.slideshow_ui_type.label"
+    }
+  ],
+  "max_blocks": 5,
+  "blocks": [
+    {
+      "type": "image",
+      "name": "t:sections.dynamic-slideshow.blocks.image.name",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.dynamic-slideshow.blocks.image.settings.image.label"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "description",
+          "label": "t:sections.dynamic-slideshow.blocks.image.settings.description.label"
+        },
+        {
+          "type": "select",
+          "id": "card_description_position",
+          "label": "t:sections.dynamic-slideshow.blocks.image.settings.card_description_position.label",
+          "options": [
+            {
+              "value": "flex-start",
+              "label": "t:sections.dynamic-slideshow.blocks.image.settings.card_description_position.options.flex-start"
+            },
+            {
+              "value": "center",
+              "label": "t:sections.dynamic-slideshow.blocks.image.settings.card_description_position.options.center"
+            },
+            {
+              "value": "flex-end",
+              "label": "t:sections.dynamic-slideshow.blocks.image.settings.card_description_position.options.flex-end"
+            }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "t:sections.dynamic-slideshow.blocks.image.settings.link.label"
+        }
+      ]
+    },
+    {
+      "type": "video",
+      "name": "t:sections.dynamic-slideshow.blocks.video.name",
+      "settings": [
+        {
+          "type": "video",
+          "id": "internal_video_link",
+          "label": "t:sections.collage.blocks.video.settings.internal_video_link.label"
+        },
+        {
+          "type": "video_url",
+          "id": "video_url",
+          "accept": [
+            "youtube",
+            "vimeo"
+          ],
+          "default": "https:\/\/www.youtube.com\/watch?v=_9VUPq3SxOc",
+          "label": "t:sections.collage.blocks.video.settings.video_url.label",
+          "placeholder": "t:sections.collage.blocks.video.settings.video_url.placeholder",
+          "info": "t:sections.collage.blocks.video.settings.video_url.info"
+        },
+        {
+          "type": "checkbox",
+          "id": "autoplay_internal_video",
+          "default": true,
+          "label": "t:sections.collage.blocks.video.settings.autoplay_internal_video.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Dynamic slideshow",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

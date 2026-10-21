@@ -1,0 +1,15 @@
+{%- comment -%}
+    Render product SKU
+
+    Accepts:
+     - product:     {Object}
+{%- endcomment -%}
+{%- if product == null -%}
+    {%- assign sku = 'demo-sku' -%}
+{%- else -%}
+    {%- assign sku = product.selected_or_first_available_variant.sku -%}
+{%- endif -%}
+{%- unless sku == '' or sku == null -%}
+    <span class="label">{{ 'products.product.sku' | t }}</span>
+    <span class="value">{{ sku }}</span>
+{%- endunless -%}

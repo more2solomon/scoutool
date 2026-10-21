@@ -1,0 +1,20 @@
+{%- comment -%}
+    Render product quantity input using block settings
+
+    Accepts:
+     - block:      {Object}
+     - blockOrder: {Number}
+     - sectionId:  {String}
+     - product:    {Object}
+{%- endcomment -%}
+{%- liquid
+    assign product_form_id = 'product-form-' | append: sectionId | append: '-' | append: product.id
+-%}
+
+<div
+    class="product__info-block product__info-block--quantity reveal-item"
+    style="order: {{ blockOrder }}"
+    {{ block.shopify_attributes }}
+>
+    {% render 'quantity-selector', product: product, form_id: product_form_id %}
+</div>

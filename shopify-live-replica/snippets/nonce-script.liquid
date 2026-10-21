@@ -1,0 +1,55 @@
+<script type="text/javascript">
+    let subscribers = {};
+    const PUB_SUB_EVENTS = {
+      cartUpdate: "cart-update",
+      quantityUpdate: "quantity-update",
+      variantChange: "variant-change",
+      windowResizeX: "window-resize-x",
+    };
+
+    function debounce(fn, wait) {
+      let t;
+      return (...args) => {
+          clearTimeout(t);
+          t = setTimeout(() => fn.apply(this, args), wait);
+      };
+    }
+
+    function subscribe(eventName, callback) {
+      if (subscribers[eventName] === undefined) subscribers[eventName] = [];
+
+      subscribers[eventName] = [...subscribers[eventName], callback];
+
+      return function unsubscribe() {
+          subscribers[eventName] = subscribers[eventName].filter((cb) => {
+              return cb !== callback;
+          });
+      };
+    }
+    document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+
+    if (HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules')) {
+
+      const specScript = document.createElement('script');
+      specScript.type = 'speculationrules';
+      specRules = {
+        "prerender": [{
+          "where": {
+            "or": [
+              { "href_matches": "/*" },
+              { "href_matches": "/collections*" },
+              { "href_matches": "/products*" },
+              { "href_matches": "/blogs*" },
+              { "href_matches": "/pages*" },
+              { "not": { "href_matches": "/logout" }},
+              { "not": { "href_matches": "/password" }}
+            ]
+          }
+        }]
+      };
+      specScript.textContent = JSON.stringify(specRules);
+
+      const scriptTag = document.getElementsByTagName('script')[0];
+      scriptTag.parentElement.insertBefore(specScript, scriptTag);
+    }
+</script>

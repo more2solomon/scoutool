@@ -1,0 +1,161 @@
+{% liquid
+    assign isBreadcrumbsShown = true
+    if settings.current_presets == 'default'
+        assign templates = 'index, 404, article, list-collections' | split: ', '
+    else
+        assign templates = 'index, 404, article, list-collections, customers/login, customers/register, customers/account' | split: ', '
+    endif
+
+    for temp in templates
+        if template == temp
+            assign isBreadcrumbsShown = false
+        endif
+    endfor
+%}
+{%- if isBreadcrumbsShown %}
+    {% assign sectionId = '#shopify-section-' | append: section.id %}
+    {% style %}
+        {% if section.settings.show_breadcrumbs_on_mobile == false %}
+        @media (max-width: 989px), print {
+            {{ sectionId }} {
+                display: none;
+            }
+        }{% endif %}
+        {{ sectionId }} {
+            position: relative;
+            width: 100%; {% if section.settings.show_border_bottom %}
+            border-bottom: 1px solid var(--color-foreground-10);{% endif %}
+            z-index: 20;
+        }
+
+        .breadcrumbs {
+            padding: .75rem;
+        }
+
+        .breadcrumbs > ul {
+            display: flex;
+        }
+
+        .breadcrumbs > ul > li {
+            width: auto;
+            position: relative;
+            padding: 0 .75rem;
+            font-size: .875rem;
+            line-height: 1.5rem;
+            flex-shrink: 0;
+            color: var(--color-foreground);
+        }
+
+        .breadcrumbs > ul > li:last-child > .arrow {
+            display: none;
+        }
+
+        .breadcrumbs > ul > li:first-child {
+            padding-left: 4px;
+        }
+
+        .breadcrumbs > ul > li .arrow {
+            position: absolute;
+            top: 9px;
+            display: inline-block;
+            border-width: 0 2px 2px 0;
+            border-color: var(--color-foreground);
+            padding: 2px;
+        }{% if request.locale.iso_code contains 'ar' %}
+
+        .breadcrumbs > .items > .item .arrow {
+            left: -5px;
+            transform: rotate(135deg);
+            -webkit-transform: rotate(135deg);
+        }{% else %}
+
+        .breadcrumbs > ul > li .arrow {
+            right: 1px;
+            transform: rotate(-45deg);
+            -webkit-transform: rotate(-45deg);
+        }{% endif %}
+
+        .breadcrumbs > ul > li a:hover,
+        .breadcrumbs > ul > li a:focus {
+            text-decoration: underline;
+        }
+    {% endstyle %}
+
+    <div class="dynamic-page-width breadcrumbs" aria-label="breadcrumbs">
+        <ul class="items slider slider--desktop">
+            <li class="item slider__slide">
+                <a href="{{ shop.url }}" title="{{ 'general.breadcrumbs.home_page' | t }}"
+                    ><strong>{{ 'general.breadcrumbs.home_link' | t }}</strong><i class="arrow right"></i
+                ></a>
+            </li>
+            {%- assign t = template | split: '.' | first -%}
+            {%- case t -%}
+                {%- when 'page' -%}
+                    <li class="item slider__slide">
+                        {{ page.title }}
+                    </li>
+
+                {%- when 'collection' -%}
+                    {%- if collection.handle %}
+                        <li class="item slider__slide">
+                            {{ collection.title }}
+                        </li>
+                    {% endif -%}
+                {%- when 'product' -%}
+                    {%- if collection.title -%}
+                        <li class="item slider__slide">
+                            <strong>{{ collection.title | link_to: collection.url }}</strong>
+                            <i class="arrow right"></i>
+                        </li>
+                    {%- endif -%}
+                    <li class="item slider__slide">
+                        {{ product.title }}
+                    </li>
+
+                {%- when 'article' -%}
+                    {%- if article.url -%}
+                        <li class="item slider__slide">
+                            <strong>{{ blog.title | link_to: blog.url }}</strong>
+                            <i class="arrow right"></i>
+                        </li>
+                    {%- endif -%}
+                    <li class="item slider__slide">
+                        {{ article.title }}
+                    </li>
+
+                {%- else -%}
+                    <li class="item requested_path slider__slide">
+                        {{ page_title }}
+                    </li>
+            {%- endcase -%}
+        </ul>
+    </div>
+{% endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.breadcrumbs.name",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs_on_mobile",
+      "label": "t:sections.breadcrumbs.settings.show_breadcrumbs_on_mobile.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_border_bottom",
+      "label": "t:sections.breadcrumbs.settings.show_border_bottom.label",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.breadcrumbs.presets.name"
+    }
+  ],
+  "enabled_on": {
+    "groups": ["header"]
+  }
+}
+{% endschema %}

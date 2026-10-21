@@ -1,0 +1,55 @@
+{%- comment -%}
+    Accepts:
+     - product:         {Object}
+     - showPriceLabel:  {Boolean}
+     - listing_class:   {String} / default: ''
+{%- endcomment -%}
+
+{%- liquid
+    assign isOnSale = false
+    if product.compare_at_price > product.price
+        assign isOnSale = true
+    endif
+
+    assign listing_class = listing_class | default: ''
+    assign price_block_class = 'item-price'
+
+    if showPriceLabel
+        assign price_block_class = price_block_class | append: ' item-price--with-label'
+    else
+        assign price_block_class = price_block_class | append: ' item-price--no-label'
+    endif
+    unless listing_class == blank
+        assign price_block_class = price_block_class | append: ' ' | append: listing_class
+    endunless
+-%}
+
+<div class="{{ price_block_class }}">
+    {%- if isOnSale -%}
+        <div class="on-sale">
+            <span class="label{% unless showPriceLabel %} visually-hidden{% endunless %}">
+                {{- 'products.product.price.sale_price' | t -}}
+            </span>
+            {% render 'render-price',
+                price: product.price,
+                variants: product.price_varies,
+                css_class: 'price regular-price price--final'
+            %}
+        </div>
+    {%- endif -%}
+    <div class="regular{% if isOnSale %} price--compare{% endif %}">
+        <span class="label{% unless showPriceLabel %} visually-hidden{% endunless %}">
+            {{- 'products.product.price.regular_price' | t -}}
+        </span>
+        {% if isOnSale %}
+            {% render 'render-price', price: product.compare_at_price, css_class: 'price old-price' %}
+        {% else %}
+            {% render 'render-price',
+                price: product.price,
+                variants: product.price_varies,
+                css_class: 'price regular-price price--final'
+            %}
+        {% endif %}
+    </div>
+    {% render 'render-price-unit', variant: product.selected_or_first_available_variant %}
+</div>

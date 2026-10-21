@@ -1,0 +1,45 @@
+:is(.border--with-cut-corners) + .shopify-payment-button button,
+:is(.border--with-cut-corners),
+:is(.product__view-details) > svg,
+:is(.product__view-details) > svg {
+	position: relative;
+  	overflow: hidden;
+	border: 0;	
+	--edge-size: .5em;
+	clip-path: polygon(
+		0 var(--edge-size),
+		var(--edge-size) 0,
+		100% 0,
+		100% calc(100% - var(--edge-size)),
+		calc(100% - var(--edge-size)) 100%,
+		0 100%
+	);
+}
+	:is(.border--with-cut-corners) + .shopify-payment-button button:after, :is(.border--with-cut-corners):after, :is(.product__view-details) > svg:after, :is(.product__view-details) > svg:after {	
+	    content: "";
+	    position: absolute;
+	    background: #fff;
+	    height: calc(100% + 2rem);
+	    left: -100%;
+	    opacity: .2;
+	    top: -0.5rem;
+	    transform: rotate(35deg);
+	    transition: all 550ms cubic-bezier(0.19, 1, 0.22, 1);
+	    width: 1.5rem;
+	    z-index: -10;
+	}
+	:is(.border--with-cut-corners) + .shopify-payment-button button:hover:after,
+	:is(.border--with-cut-corners) + .shopify-payment-button button:focus:after,
+	:is(.border--with-cut-corners):hover:after,
+	:is(.border--with-cut-corners):focus:after,
+	:is(.product__view-details) > svg:hover:after,
+	:is(.product__view-details) > svg:focus:after,
+	:is(.product__view-details) > svg:hover:after,
+	:is(.product__view-details) > svg:focus:after {	 	
+    	left: 110%;
+    	transition: all 550ms cubic-bezier(0.19, 1, 0.22, 1);  		
+	}
+
+:is(.popup-modal__content.border--with-cut-corners):after {
+	content: none;
+}

@@ -1,0 +1,8 @@
+{%- comment -%}
+    Render Title for the section Recently Viewed
+{%- endcomment -%}
+
+{%- assign section_title = 'general.recently_viewed.title' | t -%}
+<h2 class="title{% if settings.show_uppercase_heading %} uppercase{% endif %}">
+    {% render 'helper__decorate-heading', heading: section_title %}
+</h2>

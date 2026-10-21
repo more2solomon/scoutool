@@ -1,0 +1,4433 @@
+<link
+    rel="stylesheet"
+    href="{{ 'section-navigation-megamenu.css' | asset_url }}"
+    media="print"
+    onload="this.media='all'"
+>
+<link
+    rel="stylesheet"
+    href="{{ 'section-navigation-smallmenu.css' | asset_url }}"
+    media="print"
+    onload="this.media='all'"
+>
+<link rel="stylesheet" href="{{ 'component-list-menu.css' | asset_url }}" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="{{ 'component-search.css' | asset_url }}" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="{{ 'disclosure.css' | asset_url }}" media="print" onload="this.media='all'">
+
+{%- liquid
+    assign sectionId = section.id | prepend: '#shopify-section-'
+
+    case settings.show_search_icon
+        when 'all_screens'
+            assign searchLayout = 'icon'
+        when 'mobile_only'
+            assign searchLayout = 'icon__mobile-only'
+        else
+            assign searchLayout = 'expanded'
+    endcase
+
+    assign _header_class_ = 'header'
+    if section.settings.full_width
+        assign _header_class_ = _header_class_ | append: ' full--width'
+    else
+        assign _header_class_ = _header_class_ | append: ' header--dynamic-page-width'
+    endif
+
+    if section.settings.menu != blank
+        assign _header_class_ = _header_class_ | append: ' header--has-menu'
+    endif
+
+    assign _header_class_ = _header_class_ | append: ' logo--' | append: settings.logo_position
+    assign _header_class_ = _header_class_ | append: ' search--' | append: searchLayout
+    assign _header_class_ = _header_class_ | append: ' search-icon__position-' | append: settings.search_icon_position
+
+    assign current_type_menu = section.settings.type_menu
+    assign _header_class_ = _header_class_ | append: ' ' | append: current_type_menu | append: '-menu'
+
+    if settings.show_login_icon_on_mobile
+        assign _header_class_ = _header_class_ | append: ' with--login-icon-onmobile'
+    endif
+
+    # use item menu as phone number link
+    assign phone_number_icon_width = 18
+    assign selected_item_menu_as_phone_link = section.settings.item_menu_name | escape | downcase
+-%}
+
+{% style %}
+    :where(header) {
+      --header--dropdown-background: {{ settings.colors_header_dd_background }};
+      --header--dropdown-color: {{ settings.colors_header_dd_text }};
+      --header--dropdown-color-rgb: {{ settings.colors_header_dd_text.red }}, {{ settings.colors_header_dd_text.green }}, {{ settings.colors_header_dd_text.blue }};
+      --header--dropdown-third--level-background: {{ settings.colors_header_dd_third_level_background }};
+      --header--dropdown-third--level-color: {{ settings.colors_header_dd_third_level_text }};
+      --header--item-highlighted-foreground: {{ settings.colors_header_item_highlighted_foreground }};
+      --header--active-item-highlighted-foreground: {{ settings.colors_header_hover_item_highlighted_foreground }};
+      --header--item-highlighted-background: {{ settings.colors_header_item_highlighted_background_gradient | default: settings.colors_header_item_highlighted_background }};
+      --header--dividers-color: {{ settings.colors_navigation_divider }};
+      --header--menu-item--active--text-color: #E13124;
+      --search--button--background-color: {{ settings.colors_search_button_background_gradient | default: settings.colors_search_button_background }};
+      --search__background-color: {{ settings.colors_search_field_background }};
+      --search-placeholder-color: {{ settings.colors_search_placeholder_color }};
+      --search--input--text-color:{{ settings.colors_search_field_text}};
+    }
+{% endstyle %}
+
+{% style %}
+    .header--dynamic-page-width {
+        padding-left: .75rem;
+        padding-right: .75rem;
+    }
+
+    .header-wrapper {
+        position: relative;
+        z-index: 99;
+        background: var(--header--background-color);
+        display: block;
+    }
+
+    .header {
+        display: grid;
+        align-items: center;
+        color: var(--header--text-color);
+        padding-top: .75rem;
+        padding-bottom: .75rem;
+        grid-template-columns: auto 1fr;
+    }
+
+    .header.logo--middle.search-icon__position-left .header__search {
+        grid-area: search-left;
+    }
+
+    .header.logo--middle.search-icon__position-right .header__search {
+        grid-area: search;
+    }
+
+    .header.combined-menu:not(:has(header-menu)),
+    .header.slideout-menu:not(:has(header-menu)) {
+        padding-bottom: .75rem;
+    }
+
+    .header.search--expanded {
+        grid-template-areas:'heading heading heading'
+                            'menu_drawer search-left icons';
+        grid-template-columns: auto auto 1fr;
+    }
+
+    .header.search--expanded.search-icon__position-left {
+        grid-template-columns: auto 1fr;
+    }
+
+    .header.search--icon {
+        grid-template-areas:'menu_drawer heading search-left icons';
+    }
+
+    header-drawer {
+        justify-self: start;
+    }
+
+    .header__heading {
+        grid-area: heading;
+        display: flex;
+        color: currentColor;
+        margin: 0;
+    }
+
+    .header__heading-link {
+        grid-area: heading;
+        position: relative;
+        z-index: 31;
+        display: flex;
+        justify-self: center;
+        padding: 0 .75rem;
+        text-decoration-line: none;
+        overflow-wrap: break-word;
+        margin-bottom: 1rem;
+    }{% if section.settings.logo == blank or section.settings.dislay_shopname_on_mobile %}
+
+    .header__heading-link .h3 {
+        color: currentColor;
+        font-style: italic;
+        font-weight: normal;
+        margin: 0;
+        word-break: break-all;
+    }
+
+    .header__heading-link strong {
+        color: var(--color-base-accent-1);
+    }{% endif %}
+
+    .header__icons {
+        align-items: center;
+        grid-area: icons;
+        display: flex;
+        gap: .25rem;
+        justify-content: end;
+        width: auto;
+    }
+
+    .switcher-language__left .disclosure__list--wrapper::after {
+        top: -.25rem;{% unless request.locale.iso_code contains 'ar' %}
+        right: unset;
+        left: 1rem;{% endunless %}
+        z-index: -1;
+    }
+
+    .header__inline-menu {
+        grid-area: navigation;
+        display: none;
+    }
+
+    .switcher-language__left .localization-selector,
+    .header__icons .localization-selector,
+    .header__icon {
+        --color-button-background: none;
+        --color-button-border: transparent;
+        --color-button-text: var(--header--text-color);
+        border-width: 1px;
+        font-size: 1rem;
+        font-weight: 600;
+        line-height: 1.5rem;
+    }
+    {% if settings.current_presets == 'garage' %}
+    .header__icon--summary {
+        --color-button-text: var(--color-base-accent-2);
+    }{% endif %}
+
+    .header__icon .icon-x {
+        display: none;
+    }
+
+    .header__icon--menu {
+        padding: .5rem;
+    }
+
+    .header__icon--cart {
+        align-items: center;
+        display: flex;
+        gap: .5rem;
+        min-width: auto;
+        padding: .5rem .6rem .5rem .4rem;
+    }
+
+    .cart-label,
+    .cart-count-bubble {
+        display: none;
+    }
+
+    .search__button {
+        --color-button-border: var(--search--button--background-color);
+        --color-button-background: var(--search--button--background-color);
+        --color-button-text: var(--color-base-accent-1-inverse);
+        min-width: auto;
+    }
+
+    .search__button svg {
+        height: 1.5rem;
+        width: 1.5rem;
+    }
+
+    .search__input,
+    :is(filter-category) .search-filter-wrapper > button {
+        background-color: var(--search__background-color);
+        color: var(--search--input--text-color);
+        /* override Safari rouded corners on input field */
+        -webkit-appearance: none;
+    }
+
+    .header__search,
+    .header__search form {
+        position: relative;
+        width: 100%;
+        z-index: 40;
+    }
+
+    .header__search .field {
+        margin: 0;{% if section.settings.add_border_searchfield and settings.show_search_icon == 'none' %}
+        box-shadow: 0 0 0 2px var(--header--background-color), 0 0 0 3px rgba(var(--header--text-color-rgb), .3);
+        background: var(--header--background-color);{% endif %}
+    }
+
+    .header__search .search__button {
+        border: 0;
+    }
+
+    /* Separate selector for search field in header becuase search field can appear at search result page */
+    .header__search .search__input {
+        padding-right: 3rem;{% if settings.use_elements_border_radius == false %}
+        border: 0{% endif %};
+    }{%- if localization.available_languages.size > 1  or localization.available_countries.size > 1 -%}
+
+    .header__icons .localization-currency-wrapper,
+    .header__icons .localization-language-wrapper {
+        display: none;
+    }
+
+    header .language-icon__wrapper {
+        --switcher-icon-width: 24px;
+        margin-right: .25rem;
+    }
+
+    .language-icon__wrapper {
+        align-items: center;
+        border-radius: 100%;
+        display: flex;
+        flex-shrink: 0;
+        justify-content: center;
+        overflow: hidden;
+        width: var(--switcher-icon-width);
+        height: var(--switcher-icon-width);
+    }
+
+    .language-icon__wrapper i {
+        font-size: 2rem;
+        font-style: normal;
+        vertical-align: top;
+    }{%- endif -%}{% if section.settings.show_overlay %}
+    .header-menu__overlay-element.shown {
+        background: rgba(0,0,0,{{ settings.overlay_transparenty }});{% if settings.enable_overlay_blur %}
+        backdrop-filter: blur({{ settings.overlay_blur | times: 10 | append: 'px' }});{% endif %}
+    }{% endif %}{% if localization.available_languages.size > 1  or localization.available_countries.size > 1 %}
+
+    .localization-form__currency {
+        white-space: nowrap;
+    }{% endif %}
+
+    @media (max-width: 500px), print {
+        .header__heading :is(img) {
+            max-width: {{ section.settings.mobile_logo_width }}px;
+        }
+        {%- if settings.show_login_icon_on_mobile -%}
+        .header__buttons--wrapper,
+        .header__icon--account {
+            display: flex;
+            min-width: auto;
+        }
+
+        .header.search--icon .predictive-search {
+            right: -1rem;
+        }
+
+        header.header .header__heading-link {
+            padding: 0;
+        }
+
+        .header .button.header__icon {
+            padding: .5rem;
+        }
+
+        .header__icon--account > span,
+        #menu-drawer .item--account {
+            display: none;
+        }{% else %}
+
+        .header__icon--account {
+            display: none;
+        }{%- endif -%}
+    }
+
+    @media (max-width: 989px), print {
+        .header-wrapper {
+            position: relative;
+        }
+        {%- if section.settings.center_logo_on_mobile -%}
+        .header.logo--left .header__heading,
+        .header__heading {
+            justify-content: center;
+        }
+        {% endif %}
+        .header__search,
+        .header__search form {
+            z-index: 31;
+        }
+
+        .switcher-language__left {
+            display: none;
+        }
+    }
+
+    @media (min-width: 750px), print {
+        .header.logo {
+            grid-template-columns: 15rem auto;
+        }
+
+        .header__heading :is(img) {
+            max-width: {{ section.settings.logo_width }}px;
+        }
+
+        .header.logo--left .header__heading {
+            justify-content: center;
+        }
+
+        .header__heading-link {
+            margin-right: .25rem;
+        }
+
+        .account-label,
+        .cart-label {
+            display: inline;
+            white-space: nowrap;
+        }
+
+        .dropdown-inner:not(.small) summary {
+            padding-left: 0;
+        }
+
+        .header__submenu .image--link {
+            font-size: 1rem;
+            color: var(--color-foreground);
+            font-weight: bold;
+            margin-top: 0.75rem;
+        }
+
+        .header__submenu .media:hover ~ .image--link {
+            color: var(--color-foreground-75);
+        }
+
+        .header__icon--account > svg {
+            height: 1.25rem;
+        }{% if settings.current_presets == 'gorpcore' %}
+
+        .header__icon > svg,
+        .header__icons .icon-caret {
+            color: var(--header--text-color-rgb);
+        }{% else %}
+
+        .header__icon > svg,
+        .header__icons .icon-caret {
+            --icons__color-rgba: rgba(var(--header--text-color-rgb), .6);
+            color: var(--icons__color-rgba);
+        }{% endif %}
+
+        .header__buttons--wrapper {
+            display: flex;
+            gap: 0;
+            align-items: center;
+        }{% if shop.customer_accounts_enabled %}
+
+        .header__icon--account {
+            display: inline-flex;
+            min-width: auto;
+            gap: .25rem;
+        }{% endif %}{% if section.settings.show_icons_line_divider %}
+
+        .header__buttons--wrapper > * {
+            border-right: 1px solid var(--header--dividers-color);
+            border-radius: 0;
+            -webkit-border-radius: 0;
+        }
+
+        .header__buttons--wrapper > .header__icon--cart,
+        .header__buttons--wrapper > cart-sidebar {
+            border-right: none;
+        }{% endif %}
+    }
+
+    @media (min-width: 990px), print {
+        .header--dynamic-page-width {
+            max-width: {{ section.settings.header_max_width }}px;
+            margin: 0 auto;
+        }
+
+        .header__inline-menu:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            background: {{ settings.colors_navigation_background }};
+            height: 100%;
+            max-height: 45px;
+            z-index: -1;
+        }
+
+        .header {
+            padding-bottom: 0;{% unless section.settings.type_menu == 'slideout' %}
+            padding-top: 1.25rem;{% endunless %}
+            {%- if section.settings.menu == blank -%}
+            padding-bottom: 1.25rem{%- endif -%};
+        }
+
+        .header.logo--left .header__heading,
+        .header__heading {
+            justify-content: {{ section.settings.justify_logo }};
+        }
+        {%- if section.settings.show_header_line_divider -%}
+        .header_line--divider {
+            grid-area: line_divider;
+            position: absolute;
+            display: flex !important;
+            left: 0;
+            right: 0;
+        }
+
+        .header_line--divider:after {
+            content: '';
+            width: 100%;
+            height: 1px;
+            background: var(--header--dividers-color);
+            margin-top: -1rem;
+        }
+
+        [data-theme-preset="metalware"] .header_line--divider:after {
+            max-width: {{ section.settings.header_max_width }}px;
+            margin: 0 auto;
+            margin-top: -.5rem;
+        }
+        {% endif %}
+
+        .logo--middle.search--icon.search-icon__position-left .search--icon .field__button,
+        .logo--middle.search--icon.search-icon__position-left .search__input{
+            right: unset;
+        }
+        {% if section.settings.type_menu == 'slideout' or section.settings.type_menu == 'combined' %}
+        header-drawer {
+            grid-area: menu_drawer;
+            padding: .5rem 0;
+        }
+
+        header-drawer + .header__heading {
+            margin-left: 1rem;
+        }
+
+        header-drawer .localization-currency-wrapper,
+        header-drawer .localization-language-wrapper {
+            display: none;
+        }
+
+        .header.logo--middle.search--icon__mobile-only {
+            grid-template-areas:'menu_drawer search-left heading icons';
+            grid-template-columns: max-content;
+        }
+        {% if section.settings.menu_2 == blank %}
+        .header.logo--left {
+            grid-template-areas:'menu_drawer heading icons';
+        }{% else %}
+        .header.logo--left {
+            grid-template-areas:'menu_drawer heading icons'
+                                'navigation navigation navigation' !important;
+        }
+
+        .header.logo--middle.search--icon.search-icon__position-left {
+            grid-template-areas:'search-left menu_drawer heading icons'
+                                'navigation navigation navigation navigation';
+        }
+
+        .header.logo--middle.search-icon__position-right {
+            grid-template-areas:'menu_drawer language_left heading icons'
+                                'navigation navigation navigation navigation';
+        }
+
+        .header.logo--middle.search--expanded.search-icon__position-left {
+            grid-template-areas:'menu_drawer search-left heading icons'
+                                'navigation navigation navigation navigation';
+            gap: 0 .5rem;
+        }
+        .header.logo--middle.search--icon__mobile-only {
+            grid-template-areas:'menu_drawer search-left heading icons'
+                                'navigation navigation navigation navigation';
+        }{% endif %}
+
+        .logo--middle .header__icons .localization-language-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-menu__overlay-element.shown {
+            z-index: 40;
+        }
+
+        .header__search {
+            width: clamp(16rem, 100vw, 30rem);
+        }
+
+        .header.logo--left.search--icon predictive-search form.search--icon .predictive-search {
+            width: calc(100% + 12rem);
+        }
+
+        predictive-search form.search--expanded .predictive-search {
+            min-width: calc(550px - 2px);
+            transform-origin: calc(50% + 2rem) -1.5rem;
+        }{% else %}
+
+        header-drawer {
+            display: none;
+        }
+
+        {% case settings.logo_position %}
+            {% when 'left' %}
+            {% if settings.show_search_icon == 'all_screens' %}
+        .header.logo--left.search--icon {
+            grid-template-areas:
+                'heading icons icons'{% if section.settings.show_header_line_divider %}
+                'line_divider line_divider line_divider'{% endif %}
+                'navigation navigation navigation';
+        }
+        {% elsif settings.show_search_icon == 'none' %}
+        .header.logo--left.search--expanded {
+            grid-template-areas:
+                'heading icons icons'{% if section.settings.show_header_line_divider %}
+                'line_divider line_divider line_divider'{% endif %}
+                'navigation navigation navigation';
+        }
+        {% elsif settings.show_search_icon == 'mobile_only' %}
+        .header.logo--left.search--icon__mobile-only {
+            grid-template-areas:
+                'heading icons icons'{% if section.settings.show_header_line_divider %}
+                'line_divider line_divider line_divider'{% endif %}
+                'navigation navigation navigation';
+        }{% endif %}
+
+            {% when 'middle' %}
+            {% if settings.show_search_icon == 'none' %}
+            .header.logo--middle.search--expanded.search-icon__position-left {
+                grid-template-areas:
+                        'search-left heading icons'{% if section.settings.show_header_line_divider %}
+                        'line_divider line_divider line_divider'{% endif %}
+                        'navigation navigation navigation';
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .header.logo--middle.search--expanded.search-icon__position-right {
+                grid-template-areas:'language_left heading icons'
+                                    'navigation navigation navigation';
+                grid-template-columns: auto 0fr;
+            }
+            {% elsif settings.show_search_icon == 'all_screens' %}
+            .header.logo--middle.search--icon.search-icon__position-left {
+                grid-template-areas:
+                        'search-left heading icons'{% if section.settings.show_header_line_divider %}
+                        'line_divider line_divider line_divider'{% endif %}
+                        'navigation navigation navigation';
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .header.logo--middle.search--icon.search-icon__position-right {
+                grid-template-areas:'language_left heading icons'
+                                    'navigation navigation navigation';
+                grid-template-columns: auto 0fr;
+            }
+            {% elsif settings.show_search_icon == 'mobile_only' %}
+            .header.logo--middle.search--icon__mobile-only.search-icon__position-left {
+                grid-template-areas:
+                        'search-left heading icons'{% if section.settings.show_header_line_divider %}
+                        'line_divider line_divider line_divider'{% endif %}
+                        'navigation navigation navigation';
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .header.logo--middle.search--icon__mobile-only.search-icon__position-right {
+                grid-template-areas:'language_left heading icons'
+                                    'navigation navigation navigation';
+                grid-template-columns: auto 0fr;
+            }
+            {% endif %}
+            .header__heading-link .h3 {
+                word-break: normal;
+            }
+        {% endcase %}
+
+        .switcher-language__left {
+            grid-area: language_left;
+        }{% endif %}
+
+        .header__buttons--wrapper {
+            position: relative;
+        }
+
+        .header__heading-link {
+            margin-left: -.75rem;
+            margin-bottom: 0;
+        }
+
+        .header__icons._expanded {
+            gap: 1.5rem; {% if request.locale.iso_code contains 'ar' %}
+            margin-right: 1rem;{% else %}
+            margin-left: 1rem;{% endif %}
+        }
+
+        .header__icons[data-only-icons="true"] localization-form button .language-icon__wrapper ~ span,
+        .header__icons[data-only-icons="true"] .account-label,
+        .header__icons[data-only-icons="true"] .cart-label {
+            display: none;
+        }{% if localization.available_languages.size > 1  or localization.available_countries.size > 1 %}
+        .header__icons .localization-currency-wrapper,
+        .header__icons .localization-language-wrapper {
+            display: block;
+        }
+
+        .header__icons .localization-language-wrapper button .language-icon__wrapper ~ span,
+        .header__icons .localization-selector .localization-form__currency-name,
+        .header__icons .localization-selector .localization-form__country,
+        .header__icons .localization-selector .localization-form__currency::before,
+        .header__icons .localization-selector .localization-form__currency::after {
+            display: none;
+        }
+
+        .header__icons .localization-selector {
+            gap: .25rem;
+            width: auto;
+        }
+
+        .header__icons button.localization-selector {
+            padding-right: .25rem;
+        }{% endif %}
+
+        .list-menu--inline :is(svg.menu-item__phone) {
+          position: absolute;
+          width: calc(1rem + 6px);
+        }
+
+        .list-menu--inline :is(svg.menu-item__phone) + span {
+          margin-left: 1.75rem;
+        }
+    }
+
+    @media (min-width: 1200px), print {
+        .header__icons .localization-language-wrapper button .language-icon__wrapper ~ span {
+            display: block;
+        }
+    }
+    {% if section.settings.type_menu == 'slideout' or section.settings.type_menu == 'combined' %}
+    @media (min-width: 1300px), print {
+        .header.logo--left .header__icons button:not(.search__button),
+        .header.logo--left .header__icons .button {
+            min-width: 8rem;
+        }
+
+        .header.logo--left .header__icons button.localization-selector {
+            padding-right: .75rem;
+        }
+
+        .header.logo--left .header__icons._icon__mobile-only {
+            gap: 1.5rem;
+        }
+    }{% endif %}
+{% endstyle %}
+{% style %}
+    .list-menu {
+        list-style-type: none;
+        margin: 0;
+    }
+
+    .list-menu--inline > li {
+        display: flex;
+        align-items: center;
+    }
+
+    .list-menu--inline > li:not(.top__menu-item-active):last-child {
+        margin: 0;
+    }
+
+    .list-menu__item {
+        display: flex;
+        align-items: center;
+        line-height: 1.3;
+
+    }{% if section.settings.enable_menu_items_uppercase %}
+
+    .menu-drawer__top-level-menu > li > details > summary,
+    .menu-drawer__top-level-menu > li > a:not(.business-announcement) {
+        text-transform: uppercase;
+    }{% endif %}
+
+    [data-main-item-menu=true] .header__submenu .list-menu__item,
+    .dropdown-inner.small .list-menu__item {
+        position: relative;
+        width: 100%;
+        word-break: break-word;
+    }
+
+    [data-main-item-menu=true] .header__submenu .list-menu__item .icon {
+        position: absolute;
+        right: 0.5rem;
+        transform: rotate(0deg);
+        transition: transform 0.2s ease-in-out;
+    }
+
+    @media (min-width: 768px), print {
+        .header .highlite_parent_item_on_active_child,
+        .top__menu-item-active {
+            margin-left: -1px;
+        }{% if settings.current_presets == 'default' %}
+
+        .header .highlite_parent_item_on_active_child,
+        .header [data-items-menu].top__menu-item-active summary svg,
+        .header [data-main-item-menu].top__menu-item-active .header__menu-item-top svg,
+        .header [data-main-item-menu].top__menu-item-active .header__menu-item-top span,
+        .header [data-items-menu].top__menu-item-active .header__menu-item-top span {
+            color: var(--color-base-accent-1-inverse);
+        }{% endif %}
+
+        .header .highlite_parent_item_on_active_child::after,
+        li[data-link-highlighted="true"]::after,
+        .header .list-menu--inline > li:last-child::after,
+        .top__menu-item-active::after {
+            display: none;
+        }
+
+        .list-menu--inline {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }{% if request.locale.iso_code contains 'ar' %}
+
+        summary.header__menu-item > svg {
+            margin-left: .5rem;
+        }{% else %}
+
+        summary.header__menu-item > svg {
+            margin-right: .5rem;
+        }{% endif %}
+
+        .header__menu-item-top {
+            font-size: {% if settings.current_presets == 'default' or settings.current_presets == 'metalware' %}1.125{% else %}1{% endif %}rem;
+            padding: {% if settings.current_presets == 'gorpcore' %}.5rem 1.5rem{% else %}.75rem 1.5rem{% endif %};
+        }
+        {% unless settings.current_presets == 'metalware' %}
+        .header__menu-item-top {
+            font-weight: bold;
+        }{% endunless %}
+
+        .header .header__menu-item-top .icon-caret {
+            margin-right: 0.25rem;
+            margin-left: 0.25rem;
+        }
+
+        .dropdown-inner:not(.small) summary {
+            padding-left: 0;
+        }
+    }
+    {% if section.settings.dislay_shopname_on_mobile %}
+    @media (max-width: 900px), print {
+        .header__heading [data-media="desktop__only"],
+        .header__heading .header__heading-logo {
+            display: none;
+        }
+
+    }{% endif %}
+
+    @media (min-width: 990px), print {
+        .list-menu--inline > li:has(.phone-icon) {
+            color: var(--header--item-highlighted-foreground);
+            background: var(--header--item-highlighted-background);
+            border-radius: 5px;
+        }
+        {% if section.settings.add_menu_dividers %}
+        .header .list-menu--inline > li::after {
+            content: '';
+            height: 2rem;
+            width: 1px;
+            background-color: rgba(var(--header--text-color-rgb), .3);
+        }{% endif %}
+
+        [data-theme-preset="gorpcore"] .list-menu--inline,
+        [data-theme-preset="metalware"] .list-menu--inline {
+            margin: .75rem 0;
+        }
+
+        .list-menu--inline > li > a:has(.phone-icon) {
+            position: relative;
+            padding: 0.4rem 1rem;
+        }
+
+        .list-menu--inline :is(.phone-icon) {
+            position: absolute;
+            left: .75rem;
+        }
+
+        .dropdown-inner {
+            background-color: var(--header--dropdown-background, #fafafa);
+            --color-foreground: var(--header--dropdown-color);
+            --color-foreground-75: rgba(var(--header--dropdown-color-rgb), .75);
+        }{% if settings.current_presets == 'gorpcore' %}
+
+        .header .highlite_parent_item_on_active_child,
+        .top__menu-item-active,
+        .header .header__menu-item-1-highlighted {
+            border-radius: 1.5rem;
+        }{% endif %}
+        {% if settings.current_presets == 'default' %}
+        .top__menu-item-active,
+        .header .highlite_parent_item_on_active_child,
+        .header .header__menu-item-1-highlighted {
+            border-top-left-radius: 0.25rem;
+            border-top-right-radius: 0.25rem;
+        }{% endif %}{% if section.settings.enable_menu_items_uppercase %}
+
+        .header__menu-item-top,
+        .header__menu-item-top :is(.list-menu__item) {
+            text-transform: uppercase;
+        }{% endif %}
+
+        .header__menu-item-top :is(.list-menu__item) {
+            position: relative;
+        }
+
+        .header .highlite_parent_item_on_active_child,
+        .top__menu-item-active,
+        .header .header__menu-item-1-highlighted {
+            color: var(--header--item-highlighted-foreground);
+            background: var(--header--item-highlighted-background);
+        }
+
+        [data-main-item-menu] .childlist-menu--disclosure,
+        .dropdown-inner.small .childlist-menu--disclosure {
+            background: var(--header--dropdown-third--level-background);
+            color: var(--header--dropdown-third--level-color);
+        }
+
+        .header__inline-menu {
+            display: block;
+            margin: 1.5rem 0 0;
+        }
+
+        [data-main-item-menu] .childlist-menu--disclosure {
+            display: {% if section.settings.show_collection_image %}flex{% else %}block{% endif %};
+        }
+        {% if section.settings.dislay_shopname_on_mobile %}
+        .header__heading [data-media="mobile__only"] {
+            display: none;
+        }{% endif %}
+    }
+{% endstyle %}
+
+{%- if request.locale.iso_code contains 'ar' -%}
+    {% style %}
+        .header.search--icon .search__input {
+            left: 0;
+        }
+
+        @media all and (max-width: 480px), print {
+        	.logo--middle.search--icon .header__search .search__button {
+                padding-right: 0;
+            }
+        }
+
+        @media all and (min-width: 500px), print {
+        	.logo--middle.search--icon .predictive-search {
+                left: calc(100% + 10rem);
+            }
+        }
+
+        @media all and (min-width: 990px), print {
+            .logo--middle predictive-search .predictive-search {
+                right: 0;
+            }{% unless section.settings.type_menu == 'navigation' %}
+
+            .logo--middle.search--icon .header__search .search__button,
+            .logo--middle .search--icon .search__input {
+                left: 0;
+                right: unset;
+            }{% endunless %}
+
+            .header.search--icon {
+                grid-template-columns: 1fr 1fr .5fr auto;
+            }
+        }
+    {% endstyle %}
+{%- endif -%}
+
+{%- unless searchLayout == 'expanded' -%}
+    {% style %}
+        .header.search--icon .header__search .search__button {
+            background: transparent;
+            color: var(--header--text-color);
+        }
+
+        @media all and (max-width: 989px) {
+            .header.search--icon__mobile-only {
+                grid-template-areas: 'menu_drawer heading search-left icons';
+            }
+
+            .header.search--icon__mobile-only .header__search .search__button {
+                background: transparent;
+                color: var(--header--text-color);
+            }
+
+            .header.search--icon__mobile-only .header__heading-link,
+            .header.search--icon .header__heading-link {
+                margin-bottom: 0.25rem; {% if section.settings.dislay_shopname_on_mobile %}
+                margin-right: 2rem;{% endif %}
+            }
+
+            .header.search--icon__mobile-only .header__search .search__button,
+            .header.search--icon .header__search .search__button {
+                padding: 1.25rem 0.5rem;
+            }
+
+            .header.search--icon__mobile-only .header__search .search__button:not(.disclosure__button),
+            .header.search--icon .header__search .search__button:not(.disclosure__button) {
+                top: 50%;
+                transform: translateY(-50%);
+            }
+        }
+
+        @media all and (min-width: 990px) {
+            .search--icon .search__button {
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            {% unless request.locale.iso_code contains 'ar' %}{% unless section.settings.type_menu == 'navigation' %}
+            .logo--middle.search-icon__position-left .search--icon .field__button,
+            .logo--middle.search-icon__position-left .search__input {
+                right: unset;
+            }{% endunless %}{% endunless %}
+
+            .logo--middle .search--icon .search_label {
+                display: block;
+            }
+            {% unless section.settings.type_menu == 'navigation' %}
+            .logo--middle.search-icon__position-left .search--icon.active .search__input {
+                padding-left: 2.5rem;
+            }
+
+            .logo--middle.search-icon__position-left .predictive-search {
+                left: 0;
+            }
+
+            .logo--middle .search--icon .search__input {
+                left: unset;
+            }{% if section.settings.menu_2 == blank %}
+
+            header.header {
+                padding-bottom: 0.25rem;
+            }{% endif %}
+            {% endunless %}
+            predictive-search form.search--icon .predictive-search {
+                left: unset
+            }
+        }
+    {% endstyle %}
+{%- endunless -%}
+
+{%- if settings.predictive_search_use_filter_by_category %}
+    {% style %}
+        :is(filter-category) {
+            position: absolute;
+            right: 3rem;
+            top: 2px;
+            z-index: 99;
+        }
+
+        .search-filter-wrapper > button {
+            border-color: transparent;
+            border-radius: 0;
+            border-left: 1px solid var(--color-button-border);
+            box-shadow: none;
+            padding: .35rem .75rem .5rem;
+        }
+
+        .search-filter-wrapper button > svg {
+            color: var(--search--input--text-color) !important;
+        }
+
+        .search-filter-wrapper > button > span {
+            font-weight: 400;
+        }
+
+        .search-filter-wrapper > button > span,
+        .search-filter-wrapper .results-option span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        header .search-filter-wrapper svg {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        @media all and (max-width: 500px) {
+            .search-filter-wrapper > button > span {
+                max-width: 2.5rem;
+            }
+
+            .search-filter-wrapper .current-option__desktop {
+                display: none;
+            }
+        }
+
+        @media all and (min-width: 501px) and (max-width: 989px) {
+            .search-filter-wrapper > button > span {
+                max-width: 5rem;
+            }
+
+            .search-filter-wrapper .current-option__mobile {
+                display: none;
+            }
+        }
+
+        @media all and (min-width: 990px) {
+            .search-filter-wrapper .current-option__mobile {
+                display: none;
+            }
+
+            .search-filter-wrapper > button > span {
+                max-width: 10rem;
+            }
+
+            .logo--middle.search--icon.search-icon__position-left :is(filter-category) {
+                right: 0;
+            }
+        }
+    {% endstyle %}
+{% endif -%}
+
+{%- capture header_html -%}
+  <header class="{{ _header_class_ }}">
+    {%- if section.settings.menu != blank -%}
+      <header-drawer>
+  <details class="menu-drawer-container">
+    <summary class="menu-drawer-toggler header__icon header__icon--menu header__icon--summary button button--small" aria-label="{{ 'sections.header.menu' | t }}" data-label="{{ section.settings.show_drawer_label_on_mobile }}">
+      <span>
+        {% render 'icons-charge' name: 'menu' %}
+        {% render 'icons-charge' name: 'x' css_class:'icon-x' %}
+      </span>
+    </summary>
+    <div id="menu-drawer" class="menu-drawer motion-reduce" tabindex="-1">
+      <div class="menu-drawer__inner-container">
+        <div class="menu-drawer__navigation-container">
+          <div class="menu-drawer__navigation-title">
+            <span class="title{% if settings.current_presets == 'garage' %} hidden{% endif %}">{{ 'sections.header.title' | t }}</span>
+            <button type="button" class="menu-drawer__navigation-close modal__close-button" aria-label="{{ 'accessibility.close' | t }}">
+                <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-close"><use href="#icon-close" /></svg>
+            </button>
+          </div>
+          <nav class="menu-drawer__navigation  menu-drawer__section-content">
+            <ul class="menu-drawer__menu menu-drawer__top-level-menu list-menu" role="list">
+              {%- for link in section.settings.menu.links -%}
+              {%- assign indexItemMenu = forloop.index -%}
+                {%- if link.links != blank -%}
+                  <li>
+                    <details>
+                      <summary class="menu-drawer__menu-item list-menu__item link link--text focus-inset{% if link.child_active %} menu-drawer__menu-item--active{% endif %}">
+                        <a href="{{ link.url }}" class="menu-drawer__menu-item-top">
+                          {{ link.title | escape }}
+                        </a>
+                        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret"><use href="#icon-caret" /></svg>
+                      </summary>
+                      <div id="link-{{ link.title | escape }}" class="menu-drawer__submenu motion-reduce" tabindex="-1">
+                        <div class="menu-drawer__inner-submenu">
+                          <ul class="menu-drawer__menu menu-drawer__child-menu list-menu" role="list" tabindex="-1">
+                            {%- for childlink in link.links -%}
+  <li>
+    {%- if childlink.links == blank -%}
+      <a href="{{ childlink.url }}" class="list-menu--collection-icon menu-drawer__menu-item link link--text list-menu__item focus-inset{% if childlink.current %} menu-drawer__menu-item--active{% endif %}{%- if section.settings.show_collection_icon %} menu-drawer__menu-item--with-collection-icon{% endif %}"{% if childlink.current %} aria-current="page"{% endif %}>
+        {%- if section.settings.show_collection_icon -%}
+          {% comment %}
+    Render collection icon next to a collection mame in the dropdown menu
+
+    Accepts:
+      - childlink.url: {String}
+{% endcomment %}
+
+{%- liquid
+    assign iconWidth = section.settings.collection_icon_width
+    assign inlineStyle = 'width: Wpx' | replace: 'W', iconWidth
+    assign inlineStyle = inlineStyle | append: ';margin-right:0.25rem;'
+    assign iconWidth_2x = iconWidth | times: 2
+    assign iconSizes = iconWidth | append: 'px'
+    assign iconWidths = iconWidth | append: ', ' | append: iconWidth_2x    
+    assign icon_rendered = false    
+-%}
+
+{%- if section.settings.collection_icon -%}
+  {%- unless icon_rendered -%}
+    {% assign icon_rendered = true %}
+    {{ section.settings.collection_icon |
+        image_url: width: iconWidth |
+        image_tag:
+          class: 'collection__item-image',
+          loading: 'lazy',
+          sizes: iconSizes,
+          widths: iconWidths,
+          style: inlineStyle
+    }}
+  {%- endunless -%}
+{% else -%}    
+    {%- liquid 
+        assign collection_handle = childlink.url | split: '/' | last | downcase 
+        #verify if collection exists (prevent js error for the product links or pages)
+        assign collection_object = collections[collection_handle].id
+        assign is_exist = false
+        unless collection_object == blank
+            assign is_exist = true
+        endunless
+    -%}    
+    {%- if is_exist %}
+    <collection-icon class="collection-icon"
+     data-collection-handle="{{ collection_handle }}"
+     data-collection-icon-width="{{ iconWidth }}"     
+    ></collection-icon>
+    {% endif -%}
+{%- endif -%}
+        {%- endif -%}                                    
+        {{ childlink.title | escape }}
+      </a>
+    {%- else -%}
+      <details>
+        <summary class="menu-drawer__menu-item link link--text list-menu__item focus-inset">
+          <a href="{{ childlink.url }}" class="menu-drawer__menu-item-childlink list-menu--collection-icon">
+            {%- if section.settings.show_collection_icon -%}
+            {% comment %}
+    Render collection icon next to a collection mame in the dropdown menu
+
+    Accepts:
+      - childlink.url: {String}
+{% endcomment %}
+
+{%- liquid
+    assign iconWidth = section.settings.collection_icon_width
+    assign inlineStyle = 'width: Wpx' | replace: 'W', iconWidth
+    assign inlineStyle = inlineStyle | append: ';margin-right:0.25rem;'
+    assign iconWidth_2x = iconWidth | times: 2
+    assign iconSizes = iconWidth | append: 'px'
+    assign iconWidths = iconWidth | append: ', ' | append: iconWidth_2x    
+    assign icon_rendered = false    
+-%}
+
+{%- if section.settings.collection_icon -%}
+  {%- unless icon_rendered -%}
+    {% assign icon_rendered = true %}
+    {{ section.settings.collection_icon |
+        image_url: width: iconWidth |
+        image_tag:
+          class: 'collection__item-image',
+          loading: 'lazy',
+          sizes: iconSizes,
+          widths: iconWidths,
+          style: inlineStyle
+    }}
+  {%- endunless -%}
+{% else -%}    
+    {%- liquid 
+        assign collection_handle = childlink.url | split: '/' | last | downcase 
+        #verify if collection exists (prevent js error for the product links or pages)
+        assign collection_object = collections[collection_handle].id
+        assign is_exist = false
+        unless collection_object == blank
+            assign is_exist = true
+        endunless
+    -%}    
+    {%- if is_exist %}
+    <collection-icon class="collection-icon"
+     data-collection-handle="{{ collection_handle }}"
+     data-collection-icon-width="{{ iconWidth }}"     
+    ></collection-icon>
+    {% endif -%}
+{%- endif -%}
+            {%- endif -%}
+            {{ childlink.title | escape }}
+          </a>
+          <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret"><use href="#icon-caret" /></svg>
+        </summary>
+        <div id="childlink-{{ childlink.title | escape }}" class="menu-drawer__submenu motion-reduce">
+          <ul class="menu-drawer__menu menu-drawer__grandchild-menu list-menu" role="list" tabindex="-1">
+            {%- for grandchildlink in childlink.links -%}
+              <li>
+                <a href="{{ grandchildlink.url }}" class="menu-drawer__menu-item link link--text list-menu__item focus-inset{% if grandchildlink.current %} menu-drawer__menu-item--active{% endif %}"{% if grandchildlink.current %} aria-current="page"{% endif %}>
+                  {%- if section.settings.show_collection_icon -%}
+                    {% comment %}
+    Render collection icon next to a collection mame in the dropdown menu
+
+    Accepts:
+      - grandchildlink.url: {String}
+{% endcomment %}
+
+{%- liquid
+    assign iconWidth = section.settings.collection_icon_width
+    assign inlineStyle = 'width: Wpx' | replace: 'W', iconWidth
+    assign inlineStyle = inlineStyle | append: ';margin-right:0.25rem;'
+    assign iconWidth_2x = iconWidth | times: 2
+    assign iconSizes = iconWidth | append: 'px'
+    assign iconWidths = iconWidth | append: ', ' | append: iconWidth_2x    
+    assign icon_rendered = false    
+-%}
+
+{%- if section.settings.collection_icon -%}
+  {%- unless icon_rendered -%}
+    {% assign icon_rendered = true %}
+    {{ section.settings.collection_icon |
+        image_url: width: iconWidth |
+        image_tag:
+          class: 'collection__item-image',
+          loading: 'lazy',
+          sizes: iconSizes,
+          widths: iconWidths,
+          style: inlineStyle
+    }}
+  {%- endunless -%}
+{% else -%}    
+    {%- liquid 
+        assign collection_handle = grandchildlink.url | split: '/' | last | downcase 
+        #verify if collection exists (prevent js error for the product links or pages)
+        assign collection_object = collections[collection_handle].id
+        assign is_exist = false
+        unless collection_object == blank
+            assign is_exist = true
+        endunless
+    -%}    
+    {%- if is_exist %}
+    <collection-icon class="collection-icon"
+     data-collection-handle="{{ collection_handle }}"
+     data-collection-icon-width="{{ iconWidth }}"     
+    ></collection-icon>
+    {% endif -%}
+{%- endif -%}
+                  {%- endif -%}
+                  {{ grandchildlink.title | escape }}
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      </details>
+    {%- endif -%}
+  </li>
+{%- endfor -%}
+                          </ul>
+                        </div>
+                      </div>
+                      
+                      {%- if section.blocks.size > 0 -%}
+{%- for block in section.blocks -%}
+  {% case block.type %}
+{% comment %}Render image and Collection list in the dropdown content{% endcomment %}
+    {% when 'image_item_menu' %}
+      {% render 'header__dropdown--content_banner_collections'
+        block: block
+        blockOrder: forloop.index
+        parent_item_index: indexItemMenu
+      %}
+{% comment %}Render Product list in the dropdown content{% endcomment %}
+    {% when 'list_product_items' %}
+      {% render 'header__dropdown--list_product_items'
+        block: block
+        blockOrder: forloop.index
+        parent_item_index: indexItemMenu
+      %}
+{% comment %}Render Custom Liquid in the dropdown content{% endcomment %}
+    {% when 'custom_liquid' %}
+      {% render 'header__dropdown--custom_liquid'
+        block: block
+        blockOrder: forloop.index
+        parent_item_index: indexItemMenu
+      %}
+{% comment %}Render Custom Liquid in the dropdown content{% endcomment %}
+    {% when 'banner' %}
+      {% render 'header__dropdown--banner'
+        block: block
+        blockOrder: forloop.index
+        parent_item_index: indexItemMenu
+      %}
+  {% endcase %}
+{%- endfor -%}
+{%- endif -%}
+
+                    </details>
+                  </li>
+                {%- else -%}
+                  <li>
+    {%- assign title = link.title | downcase -%}
+    {%- if selected_item_menu_as_phone_link == title %}
+    <a href="tel:{{ section.settings.phone_number | default: '1 888 222 2222' }}"
+     class="menu-drawer__menu-item link link--text list-menu__item focus-inset{% if link.current %} menu-drawer__menu-item--active{% endif %}{% if section.settings.use_default_phone_icon %} with--phone__menu-item{% endif %}"{% if link.current %} aria-current="page"{% endif %}
+     style="background: {{ section.settings.phone_number_menu_background }};"
+    >
+    {%- if section.settings.use_default_phone_icon %}
+        {% render 'icons-solid', name: 'phone', css_class: 'menu-item__phone' %}
+    {% else %}
+    {% unless section.settings.phone_icon == blank %}
+        <span class="phone-icon">
+            {{ section.settings.phone_icon | image_url: width: phone_number_icon_width | image_tag }}
+        </span>
+    {% endunless %}
+    {% endif -%}
+        <span style="color: {{ section.settings.phone_number_menu_foreground }}">{{ link.title | escape }}</span>
+    </a>
+    {% else %}
+    <a href="{{ link.url }}" class="menu-drawer__menu-item link link--text list-menu__item focus-inset{% if link.current %} menu-drawer__menu-item--active{% endif %}"{% if link.current %} aria-current="page"{% endif %}>
+        <span>{{ link.title | escape }}</span>
+    </a>
+    {% endif -%}
+</li>
+
+                {%- endif -%}
+              {%- endfor -%}
+
+              {% if shop.customer_accounts_enabled %}
+                <li class="item--account">
+                  {%- render 'menu-drawer__menu-item-account.liquid' -%}
+                </li>
+              {% endif %}
+              {%- if settings.show_business_block %}
+              <li>
+                {%- render 'header_business-announcement', css_class: 'drawer-menu--block' -%}
+              </li>
+              {% endif -%}
+
+            </ul>
+          </nav>
+        </div>
+
+        {%- if settings.switcher_language_position == 'header' %}        
+        {% render 'switcher-language' formId: 'DrawerLanguageForm' %}        
+        {% endif -%}
+        {% comment %}{% if settings.show_switcher_currency %}{% render 'switcher-currency' formId: 'DrawerCurrencyForm' %}{% endif %}{% endcomment %}
+        {%- if settings.switcher_country_position == 'header' %}        
+        {% render 'switcher-country' formId: 'DrawerCountryForm' %}        
+        {% endif -%}
+
+
+        {%- render 'menu-drawer__social-media'
+          is_show_media_on_mobile: section.settings.mobile_drawer_show_social_media 
+        -%}        
+        
+        {%- render 'menu-drawer__navigation-footer' -%}
+      </div>
+    </div>
+  </details>
+</header-drawer>
+
+    {%- endif -%}
+
+    <div class="h1 header__heading">
+      <a href="{{ routes.root_url }}" class="header__heading-link focus-inset">
+        {%- if section.settings.dislay_shopname_on_mobile -%}
+          {% render 'helper__shop-name', screen: 'mobile__only' %}
+        {%- endif -%}
+        {%- if section.settings.logo != blank -%}
+          {% render 'helper__logo', logo: section.settings.logo %}
+        {%- else -%}
+          {% render 'helper__shop-name', screen: 'desktop__only' %}
+        {%- endif -%}
+      </a>
+    </div>
+
+    {% #middle logo position %}
+    {%- if settings.logo_position == 'middle' -%}
+      {%- if settings.search_icon_position == 'left' %}
+        <div class="header__search">
+  {%- if settings.predictive_search_enabled -%}
+    <predictive-search data-loading-text="{{ 'accessibility.loading' | t }}">
+  {%- endif -%}
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search search--{{ searchLayout }}">
+      <input type="hidden" name="query_length" id="predictive_search_query_length"
+        value="{{ settings.predictive_search_min_query_length }}"
+      >
+      <input type="hidden" name="predictive-search-types" value="collection-{{ settings.predictive_search_show_collections }}">
+      <input type="hidden" name="predictive-search-types" value="article-{{ settings.predictive_search_show_articles }}">
+      <input type="hidden" name="predictive-search-types" value="page-{{ settings.predictive_search_show_pages }}">
+      <input type="hidden" name="filter.p.product_type" value="" id="filter-category-input">
+      <div class="field">
+        <label class="search__label field__label visually-hidden" for="Search-In-Modal">{{ 'general.search.search' | t }}</label>
+        <input
+          class="search__input field__input"
+          id="Search-In-Modal"
+          type="search"
+          name="q"
+          value="{{ search.terms | escape }}"
+          placeholder="{{ 'general.search.search' | t }}"
+          {%- if settings.predictive_search_enabled -%}
+            role="combobox"
+            aria-expanded="false"
+            aria-owns="predictive-search-results-list"
+            aria-controls="predictive-search-results-list"
+            aria-haspopup="listbox"
+            aria-autocomplete="list"
+            autocorrect="off"
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+          {%- endif -%}
+        >
+        <input name="options[prefix]" type="hidden" value="last">
+        {%- if settings.predictive_search_enabled -%}
+          <div class="predictive-search predictive-search--search-template" tabindex="-1" data-predictive-search>
+              <div class="predictive-search__loading-state">
+              </div>
+          </div>
+          <span class="predictive-search-status visually-hidden" role="status" aria-hidden="true"></span>
+        {%- endif -%}
+
+      <button class="search__button field__button{% if settings.show_button_ring_on_hover %} border--outline{% endif %}" aria-label="{{ 'general.search.search' | t }}">
+        <svg aria-hidden="true" focusable="false" role="presentation">
+          <use href="#icon-search" />
+        </svg>
+        {% if settings.show_search_icon == 'all_screens' %}
+          <span class="search_label">{{ 'general.search.label' | t }}</span>
+        {% endif %}
+      </button>
+
+      {% if settings.predictive_search_use_filter_by_category %}
+      <filter-category class="search-filter-category">
+        <label class="label visually-hidden no-js-hidden" for="filter-category-button">
+          {{- 'general.search.filter-category.label' | t -}}
+        </label>
+        <div class="search-filter-wrapper">
+          <button class="button--small disclosure__button" type="button" aria-expanded="false" aria-haspopup="listbox" id="filter-category-button">
+            <span class="current-option current-option__desktop">
+              {{ 'general.search.filter-category.results-options.all_collections' | t }}
+            </span>            
+            <span class="current-option current-option__mobile">
+              {{ 'general.search.filter-category.results-options.all' | t }}
+            </span>            
+            <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+              <use href="#icon-caret"></use>
+            </svg>
+          </button>
+          <ul class="select__results-options disclosure__list--wrapper" role="listbox" tabindex="-1" hidden>
+            <li class="results-option" id="default-option" role="option" aria-selected="false">
+              <a class="link link--text disclosure__link{% if settings.show_uppercase_heading %} uppercase{% endif %}" href="#" data-value>
+                <span>{{ 'general.search.filter-category.results-options.all_collections' | t }}</span>
+              </a>
+            </li>
+            {% for collection in collections %}
+            <li class="results-option" id="option-{{ forloop.index }}" role="option">
+              <a class="link link--text disclosure__link{% if settings.show_uppercase_heading %} uppercase{% endif %}" href="#" data-value="{{ collection.handle }}">
+                <span>{{ collection.title | capitalize }}</span>
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </filter-category>
+
+      {% endif %}
+      </div>
+    </form>
+  {%- if settings.predictive_search_enabled -%}
+    </predictive-search>
+  {%- endif -%}
+</div>
+      {% else %}
+        {% if settings.switcher_language_position == 'header' %}
+          {%- render 'switcher-language' 
+            formId: 'LanguageForm-left'
+            css_class: 'switcher-language__left'            
+          -%}
+        {% endif %}
+      {% endif -%}
+    {%- endif -%}
+
+    <div class="header__icons _{{ searchLayout }}" {% if section.settings.logo == blank and shop.name.size > 30 %} data-only-icons="true"{% endif %}>
+      {% #left logo position - default %}
+      {%- if settings.search_icon_position == 'right' or settings.logo_position == 'left' -%}
+        <div class="header__search">
+  {%- if settings.predictive_search_enabled -%}
+    <predictive-search data-loading-text="{{ 'accessibility.loading' | t }}">
+  {%- endif -%}
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search search--{{ searchLayout }}">
+      <input type="hidden" name="query_length" id="predictive_search_query_length"
+        value="{{ settings.predictive_search_min_query_length }}"
+      >
+      <input type="hidden" name="predictive-search-types" value="collection-{{ settings.predictive_search_show_collections }}">
+      <input type="hidden" name="predictive-search-types" value="article-{{ settings.predictive_search_show_articles }}">
+      <input type="hidden" name="predictive-search-types" value="page-{{ settings.predictive_search_show_pages }}">
+      <input type="hidden" name="filter.p.product_type" value="" id="filter-category-input">
+      <div class="field">
+        <label class="search__label field__label visually-hidden" for="Search-In-Modal">{{ 'general.search.search' | t }}</label>
+        <input
+          class="search__input field__input"
+          id="Search-In-Modal"
+          type="search"
+          name="q"
+          value="{{ search.terms | escape }}"
+          placeholder="{{ 'general.search.search' | t }}"
+          {%- if settings.predictive_search_enabled -%}
+            role="combobox"
+            aria-expanded="false"
+            aria-owns="predictive-search-results-list"
+            aria-controls="predictive-search-results-list"
+            aria-haspopup="listbox"
+            aria-autocomplete="list"
+            autocorrect="off"
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+          {%- endif -%}
+        >
+        <input name="options[prefix]" type="hidden" value="last">
+        {%- if settings.predictive_search_enabled -%}
+          <div class="predictive-search predictive-search--search-template" tabindex="-1" data-predictive-search>
+              <div class="predictive-search__loading-state">
+              </div>
+          </div>
+          <span class="predictive-search-status visually-hidden" role="status" aria-hidden="true"></span>
+        {%- endif -%}
+
+      <button class="search__button field__button{% if settings.show_button_ring_on_hover %} border--outline{% endif %}" aria-label="{{ 'general.search.search' | t }}">
+        <svg aria-hidden="true" focusable="false" role="presentation">
+          <use href="#icon-search" />
+        </svg>
+        {% if settings.show_search_icon == 'all_screens' %}
+          <span class="search_label">{{ 'general.search.label' | t }}</span>
+        {% endif %}
+      </button>
+
+      {% if settings.predictive_search_use_filter_by_category %}
+      <filter-category class="search-filter-category">
+        <label class="label visually-hidden no-js-hidden" for="filter-category-button">
+          {{- 'general.search.filter-category.label' | t -}}
+        </label>
+        <div class="search-filter-wrapper">
+          <button class="button--small disclosure__button" type="button" aria-expanded="false" aria-haspopup="listbox" id="filter-category-button">
+            <span class="current-option current-option__desktop">
+              {{ 'general.search.filter-category.results-options.all_collections' | t }}
+            </span>            
+            <span class="current-option current-option__mobile">
+              {{ 'general.search.filter-category.results-options.all' | t }}
+            </span>            
+            <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+              <use href="#icon-caret"></use>
+            </svg>
+          </button>
+          <ul class="select__results-options disclosure__list--wrapper" role="listbox" tabindex="-1" hidden>
+            <li class="results-option" id="default-option" role="option" aria-selected="false">
+              <a class="link link--text disclosure__link{% if settings.show_uppercase_heading %} uppercase{% endif %}" href="#" data-value>
+                <span>{{ 'general.search.filter-category.results-options.all_collections' | t }}</span>
+              </a>
+            </li>
+            {% for collection in collections %}
+            <li class="results-option" id="option-{{ forloop.index }}" role="option">
+              <a class="link link--text disclosure__link{% if settings.show_uppercase_heading %} uppercase{% endif %}" href="#" data-value="{{ collection.handle }}">
+                <span>{{ collection.title | capitalize }}</span>
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </filter-category>
+
+      {% endif %}
+      </div>
+    </form>
+  {%- if settings.predictive_search_enabled -%}
+    </predictive-search>
+  {%- endif -%}
+</div>
+      {%- endif -%}
+      <div class="header__buttons--wrapper">
+        {% if settings.show_business_block %}
+        {%- render 'header_business-announcement', css_class: 'header--block' -%}
+        {% endif %}
+          {% unless settings.logo_position == 'middle' and settings.search_icon_position == 'right' %}
+            {% if settings.switcher_language_position == 'header' %}            
+            {%- render 'switcher-language' 
+              formId: 'LanguageForm-right'
+              css_class: 'switcher-language__right'
+            -%}
+            {% endif %}
+          {% endunless %}
+          {% comment %}{% if settings.show_switcher_currency %}{% render 'switcher-currency' formId: 'CurrencyForm' %}{% endif %}{% endcomment %}
+          {% if settings.switcher_country_position == 'header' %}{% render 'switcher-country' formId: 'CountryForm' %}{% endif %}
+
+        {%- if shop.customer_accounts_enabled -%}
+
+  {% if customer %}
+  <details-disclosure>
+    <details class="disclosure">
+      <summary class="button header__icon header__icon--account">
+        {% render 'icons-charge' name: 'account' %}
+        <span class="account-label">{{ customer.first_name }}</span>
+        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+          <use href="#icon-caret" />
+        </svg>
+      </summary>
+      <div class="localization-panel disclosure__list--wrapper">
+        <ul role="list" class="disclosure__list">
+          <li class="disclosure__item" tabindex="-1">
+            <a class="link disclosure__link link--text" href="{{ routes.account_url }}">{{ 'customer.account_fallback' | t }}</a>
+          </li>
+          <li class="disclosure__item" tabindex="-1">
+            <a class="link disclosure__link link--text" href="{{ routes.account_logout_url }}">{{ 'customer.log_out' | t }}</a>
+          </li>
+        </ul>
+      </div>
+    </details>
+  </details-disclosure>
+  {% else %}
+    <a href="{{ routes.account_login_url }}" class="button header__icon header__icon--account" title="{{ 'customer.log_in' | t }}">
+      <svg aria-hidden="true" focusable="false" role="presentation" width="20" height="20" class="icon-user">
+        <use href="#icon-user" />
+      </svg>
+      <span class="account-label">{{ 'customer.log_in' | t }}</span>
+    </a>
+  {%- endif -%}
+
+{%- endif -%}
+
+
+        <a href="{{ routes.cart_url }}"
+          class="button header__icon header__icon--cart"
+          id="cart-icon-bubble"
+          title="{{ 'templates.cart.cart' | t }}"
+        >
+          {% render 'cart-icon-bubble-inner' cart: cart %}
+        </a>
+      </div>
+    </div>
+    {%- liquid
+      assign bgHighlightedItem = section.settings.first_item_bg_highlighted
+      assign megaMenuList = section.settings.megamenu_items | escape | downcase | split: "," | strip
+      assign smallMenuList = section.settings.smallmenu_items | escape | downcase | split: "," | strip
+      assign showOverlay = section.settings.show_overlay
+      assign is_megamenu_item_uses_layout_width = section.settings.megamenu_items_use_layout_width
+      assign main_menu = section.settings.menu
+      assign extra_menu = section.settings.menu_2
+      assign navigation = main_menu
+    -%}
+
+    {%- if current_type_menu == 'navigation' %}
+      {%- unless section.settings.menu == blank %}
+      {% comment %}
+    Render Navigation menu
+
+    Accepts:
+        - 'navigation': {String}
+{% endcomment %}
+{%- liquid
+  assign current_type = 'navigation'
+  if current_type == 'combined'
+    assign navigation = extra_menu
+  endif
+-%}
+
+{% style %}
+  header-menu {
+    display: contents;
+  }
+  .full-width .container--grid .col-items .list-menu--disclosure.row-2 {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.main_items_per_row }}, 1fr);
+    gap: 1rem .5rem;
+  }{% if settings.cut_button_corners %}
+  
+  [data-link-highlighted="true"] summary.header__menu-item-top,
+  header-menu .highlite_parent_item_on_active_child,
+  header-menu .top__menu-item-active {
+    background: var(--header--background-color)!important;
+  }
+  
+  [data-link-highlighted="true"] summary.header__menu-item-top::before,
+  header-menu .highlite_parent_item_on_active_child summary.header__menu-item-top::before,
+  header-menu .top__menu-item-active summary.header__menu-item-top::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--header--item-highlighted-background);    
+    --item-edge-size: .75rem;
+    clip-path: polygon(
+        0 var(--item-edge-size),
+        var(--item-edge-size) 0,
+        100% 0,
+        100% calc(100% - var(--item-edge-size)),
+        calc(100% - var(--item-edge-size)) 100%,
+        0 100%
+      );
+    }
+  {% endif %}
+{% endstyle %}
+
+<header-menu>
+  <nav class="header__inline-menu">    
+    <div class="header_line--divider"></div>    
+    <ul class="list-menu list-menu--inline{% if section.settings.enable_dropdown_menu_animation %} with--dropdown__menu-animation{% endif %}" role="list"
+      data-activate-menu="{{ section.settings.activate_top_level_menu }}"
+    >
+      {%- for link in navigation.links -%}
+      {%- assign indexItemMenu = forloop.index -%}
+      {%- assign linkTitle = link.title | escape | downcase -%}
+{% # Render dropdown Megamenu of selected top menu item  %}
+        {%- if megaMenuList contains linkTitle -%}
+          {%- assign typeDropdownMenu = 'full-width' -%}
+          <li data-items-menu
+            item-index="{{ indexItemMenu }}"
+            class="{% if link.current and bgHighlightedItem == false %}top__menu-item-active{% endif %} {{ typeDropdownMenu }}"
+            {% if forloop.first %}data-link-highlighted="{{ bgHighlightedItem }}"{% endif %}
+          >
+          <details-disclosure>
+  <details>
+    <summary class="header__menu-item header__menu-item-top {% if bgHighlightedItem %}header__menu-item-{{ forloop.index }}-highlighted{% else %}header__menu-item-{{ forloop.index }}{% endif %} {% if link.child_active %}header__active-menu-item{% endif %} {{ typeDropdownMenu }} list-menu__item focus-inset">
+      {%- if forloop.first and settings.current_presets == 'default' -%}{% render 'icons-charge', name: 'summary' %}{%- endif -%}
+      <a href="{{ link.url }}" class="menu-item-top list-menu__item focus-inset{% if link.current %} list-menu__item--active{% endif %}"{% if link.current %} aria-current="page"{% endif %}>
+        <span>{{ link.title | escape }}</span>
+          <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret"><use href="#icon-caret" /></svg>
+      </a>      
+    </summary>
+    <div class="dropdown-inner {{ typeDropdownMenu }}{% if is_megamenu_item_uses_layout_width %} with--layout-width{% endif %}"{% if showOverlay %} data-megamenu-use-overlay="{{ showOverlay }}"{% endif %}>
+      {%- assign itemsSize = link.links.size -%}
+
+{% # render extra attribute to remove dropdown menu links if config option is checked using js code %}
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if indexItemMenu == block.settings.item_menu_index and block.settings.disable_menu_links -%}
+            <span class="item_image_link" data-item-image-index="{{ block.settings.item_menu_index }}" hidden></span>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+{% # end render extra attribute to remove dropdown menu links if config option is checked using js code %}
+
+      <div class="container--grid {% if section.settings.full_width %}full--width{% else %}dynamic-page-width{% endif %}">
+        <div class="col-items" data-item-index="{{ indexItemMenu }}">
+        {%- if link.links != blank -%}
+          <ul class="header__submenu list-menu list-menu--disclosure motion-reduce {% if itemsSize > 4 %}row-2{% endif %}" role="list" tabindex="-1" data-links-size="{{ itemsSize }}">
+            {%- for childlink in link.links -%}
+<li>
+  {%- if section.settings.collection_icon_possition == 'center'and section.settings.show_collection_icon %}   
+  <a href="{{ childlink.url }}" class="list-menu--collection-icon collection-icon__center{% if section.settings.collection_icon != blank %} collection--custom-icon{% endif %}" style="width:{{ section.settings.collection_icon_width }}px">
+    {% comment %}
+    Render collection icon next to a collection mame in the dropdown menu
+
+    Accepts:
+      - childlink.url: {String}
+{% endcomment %}
+
+{%- liquid
+    assign iconWidth = section.settings.collection_icon_width
+    assign inlineStyle = 'width: Wpx' | replace: 'W', iconWidth
+    assign inlineStyle = inlineStyle | append: ';margin-right:0.25rem;'
+    assign iconWidth_2x = iconWidth | times: 2
+    assign iconSizes = iconWidth | append: 'px'
+    assign iconWidths = iconWidth | append: ', ' | append: iconWidth_2x    
+    assign icon_rendered = false    
+-%}
+
+{%- if section.settings.collection_icon -%}
+  {%- unless icon_rendered -%}
+    {% assign icon_rendered = true %}
+    {{ section.settings.collection_icon |
+        image_url: width: iconWidth |
+        image_tag:
+          class: 'collection__item-image',
+          loading: 'lazy',
+          sizes: iconSizes,
+          widths: iconWidths,
+          style: inlineStyle
+    }}
+  {%- endunless -%}
+{% else -%}    
+    {%- liquid 
+        assign collection_handle = childlink.url | split: '/' | last | downcase 
+        #verify if collection exists (prevent js error for the product links or pages)
+        assign collection_object = collections[collection_handle].id
+        assign is_exist = false
+        unless collection_object == blank
+            assign is_exist = true
+        endunless
+    -%}    
+    {%- if is_exist %}
+    <collection-icon class="collection-icon"
+     data-collection-handle="{{ collection_handle }}"
+     data-collection-icon-width="{{ iconWidth }}"     
+    ></collection-icon>
+    {% endif -%}
+{%- endif -%}
+  </a>  
+  {% endif -%}
+  <details open>
+    <summary class="header__menu-item menu-childitem link--text list-menu__item {% if childlink.child_active %}list-menu__item--active{% endif %} focus-inset">
+      <a href="{{ childlink.url }}" class="header__menu-item list-menu__item link--text focus-inset{% if section.settings.center_collection_title %} center--collection-title{% endif %}"{% if childlink.current %} aria-current="page"{% endif %}>
+        {%- if section.settings.collection_icon_possition == 'normal' and section.settings.show_collection_icon -%}
+          {% comment %}
+    Render collection icon next to a collection mame in the dropdown menu
+
+    Accepts:
+      - childlink.url: {String}
+{% endcomment %}
+
+{%- liquid
+    assign iconWidth = section.settings.collection_icon_width
+    assign inlineStyle = 'width: Wpx' | replace: 'W', iconWidth
+    assign inlineStyle = inlineStyle | append: ';margin-right:0.25rem;'
+    assign iconWidth_2x = iconWidth | times: 2
+    assign iconSizes = iconWidth | append: 'px'
+    assign iconWidths = iconWidth | append: ', ' | append: iconWidth_2x    
+    assign icon_rendered = false    
+-%}
+
+{%- if section.settings.collection_icon -%}
+  {%- unless icon_rendered -%}
+    {% assign icon_rendered = true %}
+    {{ section.settings.collection_icon |
+        image_url: width: iconWidth |
+        image_tag:
+          class: 'collection__item-image',
+          loading: 'lazy',
+          sizes: iconSizes,
+          widths: iconWidths,
+          style: inlineStyle
+    }}
+  {%- endunless -%}
+{% else -%}    
+    {%- liquid 
+        assign collection_handle = childlink.url | split: '/' | last | downcase 
+        #verify if collection exists (prevent js error for the product links or pages)
+        assign collection_object = collections[collection_handle].id
+        assign is_exist = false
+        unless collection_object == blank
+            assign is_exist = true
+        endunless
+    -%}    
+    {%- if is_exist %}
+    <collection-icon class="collection-icon"
+     data-collection-handle="{{ collection_handle }}"
+     data-collection-icon-width="{{ iconWidth }}"     
+    ></collection-icon>
+    {% endif -%}
+{%- endif -%}
+        {%- endif -%}
+        <span>{{ childlink.title | escape }}</span>
+        {%- if childlink.links != blank -%}<svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret"><use href="#icon-caret" /></svg>{%- endif -%}
+      </a>
+    </summary>
+    {%- if childlink.links != blank -%}
+      <ul class="childlist-menu--disclosure list-menu motion-reduce" data-type-menu="{{ typeDropdownMenu }}">
+      {%- if section.settings.second_dropdown_limit_qty_categories == 0 -%}
+      {%- for grandchildlink in childlink.links -%}
+        <li>
+          <a href="{{ grandchildlink.url }}" class="header__menu-item list-menu__item link--text focus-inset"{% if grandchildlink.current %} aria-current="page"{% endif %}>
+            {{ grandchildlink.title | escape }}
+          </a>
+        </li>
+      {%- endfor -%}
+      {%- else -%}
+      {%- for grandchildlink in childlink.links limit: section.settings.second_dropdown_limit_qty_categories -%}
+        <li>
+          <a href="{{ grandchildlink.url }}" class="header__menu-item list-menu__item link--text focus-inset"{% if grandchildlink.current %} aria-current="page"{% endif %}>
+            {{ grandchildlink.title | escape }}
+          </a>
+        </li>
+      {%- endfor -%}
+      {%- if childlink.links.size > section.settings.second_dropdown_limit_qty_categories -%}
+        <li>
+          <a href="{{ childlink.url }}" class="header__menu-item list-menu__item link--text focus-inset link_shop-all">
+            <span>{{ section.settings.second_dropdown_limit_qty_categories_link | escape }}</span>
+          </a>
+        </li>
+      {%- endif -%}
+      {%- endif -%}
+      </ul>
+    {%- endif-%}
+  </details>
+</li>
+{%- endfor -%}
+          </ul>
+        {% endif %}
+
+          {%- if section.blocks.size > 0 -%}
+{%- for block in section.blocks -%}
+  {% case block.type %}
+{% comment %}Render image and Collection list in the dropdown content{% endcomment %}
+    {% when 'image_item_menu' %}
+      {% render 'header__dropdown--content_banner_collections'
+        block: block
+        blockOrder: forloop.index
+        parent_item_index: indexItemMenu
+      %}
+{% comment %}Render Product list in the dropdown content{% endcomment %}
+    {% when 'list_product_items' %}
+      {% render 'header__dropdown--list_product_items'
+        block: block
+        blockOrder: forloop.index
+        parent_item_index: indexItemMenu
+      %}
+{% comment %}Render Custom Liquid in the dropdown content{% endcomment %}
+    {% when 'custom_liquid' %}
+      {% render 'header__dropdown--custom_liquid'
+        block: block
+        blockOrder: forloop.index
+        parent_item_index: indexItemMenu
+      %}
+{% comment %}Render Custom Liquid in the dropdown content{% endcomment %}
+    {% when 'banner' %}
+      {% render 'header__dropdown--banner'
+        block: block
+        blockOrder: forloop.index
+        parent_item_index: indexItemMenu
+      %}
+  {% endcase %}
+{%- endfor -%}
+{%- endif -%}
+        </div>
+      </div>
+    </div>
+  </details>
+</details-disclosure>
+          </li>
+
+{% # Render dropdown small menu of selected top menu item %}
+        {%- elsif smallMenuList contains linkTitle -%}
+          {%- assign typeDropdownMenu = 'small' -%}
+          <li {% if forloop.first %}data-main-item-menu="true"{% else %}data-items-menu{% endif%}
+            item-index="{{ indexItemMenu }}"
+            class="{{ typeDropdownMenu }}{% if link.current and bgHighlightedItem == false %} top__menu-item-active{% endif %}"
+            {% if forloop.first %}data-link-highlighted="{{ bgHighlightedItem }}"{% endif %}
+          >
+          {%- if link.links != blank -%}
+<details-disclosure>
+  <details>
+    <summary class="header__menu-item header__menu-item-top {% if bgHighlightedItem %}header__menu-item-{{ forloop.index }}-highlighted{% else %}header__menu-item-{{ forloop.index }}{% endif %} {% if link.child_active %}header__active-menu-item{% endif %} {{ typeDropdownMenu }} list-menu__item focus-inset">
+      {%- if forloop.first and settings.current_presets == 'default' -%}{% render 'icons-charge', name: 'summary' %}{%- endif -%}            
+      <a href="{{ link.url }}" class="menu-item-top list-menu__item focus-inset{% if link.current %} list-menu__item--active{% endif %}"{% if link.current %} aria-current="page"{% endif %}>
+        <span>{{ link.title | escape }}</span>
+          <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret"><use href="#icon-caret" /></svg>
+      </a>      
+    </summary>
+
+    {% unless forloop.first %}<div class="dropdown-inner small">{% endunless %}
+      <ul class="header__submenu list-menu list-menu--disclosure motion-reduce small" role="list" tabindex="-1" data-links-size="{{ itemsSize }}">
+        {%- for childlink in link.links -%}
+<li>{%- if childlink.links == blank -%}
+    <a href="{{ childlink.url }}" class="header__menu-item list-menu__item link--text focus-inset{% if childlink.current %} list-menu__item--active{% endif %}"{% if childlink.current %} aria-current="page"{% endif %}>
+      {%- if section.settings.show_collection_icon -%}
+        {% comment %}
+    Render collection icon next to a collection mame in the dropdown menu
+
+    Accepts:
+      - childlink.url: {String}
+{% endcomment %}
+
+{%- liquid
+    assign iconWidth = section.settings.collection_icon_width
+    assign inlineStyle = 'width: Wpx' | replace: 'W', iconWidth
+    assign inlineStyle = inlineStyle | append: ';margin-right:0.25rem;'
+    assign iconWidth_2x = iconWidth | times: 2
+    assign iconSizes = iconWidth | append: 'px'
+    assign iconWidths = iconWidth | append: ', ' | append: iconWidth_2x    
+    assign icon_rendered = false    
+-%}
+
+{%- if section.settings.collection_icon -%}
+  {%- unless icon_rendered -%}
+    {% assign icon_rendered = true %}
+    {{ section.settings.collection_icon |
+        image_url: width: iconWidth |
+        image_tag:
+          class: 'collection__item-image',
+          loading: 'lazy',
+          sizes: iconSizes,
+          widths: iconWidths,
+          style: inlineStyle
+    }}
+  {%- endunless -%}
+{% else -%}    
+    {%- liquid 
+        assign collection_handle = childlink.url | split: '/' | last | downcase 
+        #verify if collection exists (prevent js error for the product links or pages)
+        assign collection_object = collections[collection_handle].id
+        assign is_exist = false
+        unless collection_object == blank
+            assign is_exist = true
+        endunless
+    -%}    
+    {%- if is_exist %}
+    <collection-icon class="collection-icon"
+     data-collection-handle="{{ collection_handle }}"
+     data-collection-icon-width="{{ iconWidth }}"     
+    ></collection-icon>
+    {% endif -%}
+{%- endif -%}
+      {%- endif -%}
+      {{ childlink.title | escape }}
+    </a>
+  {%- else -%}
+    <details>
+      <summary class="header__menu-item menu-childitem link--text list-menu__item {% if childlink.child_active %}list-menu__item--active{% endif %} focus-inset">
+        <a {% if section.settings.activate_top_level_menu == 'on_hover' %}href="{{ childlink.url }}"{% endif %}
+          class="header__menu-item list-menu__item link--text focus-inset{% if childlink.current %} list-menu__item--active{% endif %}"{% if childlink.current %} aria-current="page"{% endif %}>
+          {%- if section.settings.show_collection_icon -%}
+          {% comment %}
+    Render collection icon next to a collection mame in the dropdown menu
+
+    Accepts:
+      - childlink.url: {String}
+{% endcomment %}
+
+{%- liquid
+    assign iconWidth = section.settings.collection_icon_width
+    assign inlineStyle = 'width: Wpx' | replace: 'W', iconWidth
+    assign inlineStyle = inlineStyle | append: ';margin-right:0.25rem;'
+    assign iconWidth_2x = iconWidth | times: 2
+    assign iconSizes = iconWidth | append: 'px'
+    assign iconWidths = iconWidth | append: ', ' | append: iconWidth_2x    
+    assign icon_rendered = false    
+-%}
+
+{%- if section.settings.collection_icon -%}
+  {%- unless icon_rendered -%}
+    {% assign icon_rendered = true %}
+    {{ section.settings.collection_icon |
+        image_url: width: iconWidth |
+        image_tag:
+          class: 'collection__item-image',
+          loading: 'lazy',
+          sizes: iconSizes,
+          widths: iconWidths,
+          style: inlineStyle
+    }}
+  {%- endunless -%}
+{% else -%}    
+    {%- liquid 
+        assign collection_handle = childlink.url | split: '/' | last | downcase 
+        #verify if collection exists (prevent js error for the product links or pages)
+        assign collection_object = collections[collection_handle].id
+        assign is_exist = false
+        unless collection_object == blank
+            assign is_exist = true
+        endunless
+    -%}    
+    {%- if is_exist %}
+    <collection-icon class="collection-icon"
+     data-collection-handle="{{ collection_handle }}"
+     data-collection-icon-width="{{ iconWidth }}"     
+    ></collection-icon>
+    {% endif -%}
+{%- endif -%}
+          {%- endif -%}
+          {{ childlink.title | escape }}
+          <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret"><use href="#icon-caret" /></svg>
+        </a>
+      </summary>
+      <ul class="childlist-menu--disclosure list-menu motion-reduce{% if section.settings.show_collection_image %} grandchild--with__collection-image{% endif %}" data-type-menu="{{ typeDropdownMenu }}">
+        {%- for grandchildlink in childlink.links -%}
+          <li>
+            <a href="{{ grandchildlink.url }}"
+              class="header__menu-item list-menu__item link--text focus-inset{% if grandchildlink.current %} list-menu__item--active{% endif %}"
+              {% if grandchildlink.current %} aria-current="page"{% endif %}
+            >
+              {%- if section.settings.show_collection_image -%}
+                {% comment %}
+    Render collection image in the third level menu
+
+    Accepts:
+        - grandchildlink.url: {String}
+{% endcomment %}
+{%- liquid
+  assign imageWidth = '140'
+  assign imageHeight =  imageWidth
+  assign isCollectionHasImage = false
+  assign grandchildlink_url = grandchildlink.url | split: '/' | last | downcase    
+  assign target_collection = collections[grandchildlink_url]
+-%}
+    
+{%- unless grandchildlink_url == '/' -%}
+  {%- if target_collection and target_collection.featured_image != blank and isCollectionHasImage == false -%}
+    {% assign isCollectionHasImage = true %}
+    {{ target_collection.featured_image 
+      | image_url: width: imageWidth, height: imageHeight 
+      | image_tag: class: 'collection-image' 
+    }}
+  {%- endif -%}
+{%- endunless -%}
+
+{%- unless isCollectionHasImage -%}
+  {%- if section.settings.collection_image -%}
+    {{ section.settings.collection_image 
+      | image_url: width: imageWidth, height: imageHeight 
+      | image_tag: class: 'collection-image' 
+    }}
+  {%- else -%}
+    {{ 'product-1' 
+      | placeholder_svg_tag: 'collection-image' 
+      | width: imageWidth, height: imageHeight 
+    }}
+  {%- endif -%}
+{%- endunless -%}
+
+<span class="grandchildlink-title">
+  {{ grandchildlink.title | escape }}
+</span>
+
+
+              {% else -%}
+                {{ grandchildlink.title | escape }}
+              {% endif -%}
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </details>
+  {%- endif -%}
+</li>
+{%- endfor -%}
+      </ul>
+    {% unless forloop.first %}</div>{% endunless %}
+  </details>
+</details-disclosure>
+{%- else -%}
+<a href="{{ link.url }}" class="header__menu-item header__menu-item-top {% if bgHighlightedItem %}header__menu-item-{{ forloop.index }}-highlighted{% else %}header__menu-item-{{ forloop.index }}{% endif %} {% if link.current %}header__active-menu-item{% endif %} list-menu__item focus-inset"{% if link.current %} aria-current="page"{% endif %}>
+  <span>{{ link.title | escape }}</span>
+</a>
+{%- endif -%}
+          </li>
+{% # Render dropdown menu of selected type: Megamenu or Small  %}
+        {%- else -%}
+          {%- assign typeDropdownMenu = section.settings.second_level_menu_width -%}
+
+        <li {% if typeDropdownMenu == 'small' and forloop.first %}data-main-item-menu="true"{% else %}data-items-menu{% endif%}
+          item-index="{{ indexItemMenu }}"
+          class="{% if link.current and bgHighlightedItem == false %}top__menu-item-active{% endif %}"
+          {% if forloop.first %}data-link-highlighted="{{ bgHighlightedItem }}"{% endif %}
+        >
+          {%- if link.links != blank -%}
+            <details-disclosure>
+              <details>
+                <summary class="header__menu-item header__menu-item-top {% if bgHighlightedItem %}header__menu-item-{{ forloop.index }}-highlighted{% else %}header__menu-item-{{ forloop.index }}{% endif %} {% if link.child_active %}header__active-menu-item{% endif %} {{ typeDropdownMenu }} list-menu__item focus-inset">
+                  {%- if forloop.first and settings.current_presets == 'default' -%}{% render 'icons-charge', name: 'summary' %}{%- endif -%}
+                  <a href="{{ link.url }}" class="menu-item-top list-menu__item focus-inset{% if link.current %} list-menu__item--active{% endif %}"{% if link.current %} aria-current="page"{% endif %}>
+                    <span>{{ link.title | escape }}</span>
+                      <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret"><use href="#icon-caret" /></svg>
+                  </a>
+                </summary>
+                {%- unless forloop.first and typeDropdownMenu == 'small' -%}
+                  <div class="dropdown-inner {{ section.settings.second_level_menu_width }}"{% if showOverlay %} data-megamenu-use-overlay="{{ showOverlay }}"{% endif %}>
+                {%- endunless -%}
+                {%- assign itemsSize = link.links.size -%}
+
+                {%- if section.blocks.size > 0 -%}
+                  {%- for block in section.blocks -%}
+                    {% if indexItemMenu == block.settings.item_menu_index and block.settings.disable_menu_links %}
+                      <span class="item_image_link" data-item-image-index="{{ block.settings.item_menu_index }}" hidden></span>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+
+                {%- if typeDropdownMenu == 'full-width' -%}
+                  <div class="container--grid {% if section.settings.full_width %}full--width{% else %}dynamic-page-width{% endif %}"{% if showOverlay %} data-megamenu-use-overlay="{{ showOverlay }}"{% endif %}>
+                  <div class="col-items" data-item-index="{{ indexItemMenu }}">
+                {%- endif -%}
+                  <ul class="header__submenu list-menu list-menu--disclosure motion-reduce {% if itemsSize > 4 %}row-2{% endif %}" role="list" tabindex="-1" data-links-size="{{ itemsSize }}">
+
+                    {%- if typeDropdownMenu == 'small' -%}
+                      {%- for childlink in link.links -%}
+<li>{%- if childlink.links == blank -%}
+    <a href="{{ childlink.url }}" class="header__menu-item list-menu__item link--text focus-inset{% if childlink.current %} list-menu__item--active{% endif %}"{% if childlink.current %} aria-current="page"{% endif %}>
+      {%- if section.settings.show_collection_icon -%}
+        {% comment %}
+    Render collection icon next to a collection mame in the dropdown menu
+
+    Accepts:
+      - childlink.url: {String}
+{% endcomment %}
+
+{%- liquid
+    assign iconWidth = section.settings.collection_icon_width
+    assign inlineStyle = 'width: Wpx' | replace: 'W', iconWidth
+    assign inlineStyle = inlineStyle | append: ';margin-right:0.25rem;'
+    assign iconWidth_2x = iconWidth | times: 2
+    assign iconSizes = iconWidth | append: 'px'
+    assign iconWidths = iconWidth | append: ', ' | append: iconWidth_2x    
+    assign icon_rendered = false    
+-%}
+
+{%- if section.settings.collection_icon -%}
+  {%- unless icon_rendered -%}
+    {% assign icon_rendered = true %}
+    {{ section.settings.collection_icon |
+        image_url: width: iconWidth |
+        image_tag:
+          class: 'collection__item-image',
+          loading: 'lazy',
+          sizes: iconSizes,
+          widths: iconWidths,
+          style: inlineStyle
+    }}
+  {%- endunless -%}
+{% else -%}    
+    {%- liquid 
+        assign collection_handle = childlink.url | split: '/' | last | downcase 
+        #verify if collection exists (prevent js error for the product links or pages)
+        assign collection_object = collections[collection_handle].id
+        assign is_exist = false
+        unless collection_object == blank
+            assign is_exist = true
+        endunless
+    -%}    
+    {%- if is_exist %}
+    <collection-icon class="collection-icon"
+     data-collection-handle="{{ collection_handle }}"
+     data-collection-icon-width="{{ iconWidth }}"     
+    ></collection-icon>
+    {% endif -%}
+{%- endif -%}
+      {%- endif -%}
+      {{ childlink.title | escape }}
+    </a>
+  {%- else -%}
+    <details>
+      <summary class="header__menu-item menu-childitem link--text list-menu__item {% if childlink.child_active %}list-menu__item--active{% endif %} focus-inset">
+        <a {% if section.settings.activate_top_level_menu == 'on_hover' %}href="{{ childlink.url }}"{% endif %}
+          class="header__menu-item list-menu__item link--text focus-inset{% if childlink.current %} list-menu__item--active{% endif %}"{% if childlink.current %} aria-current="page"{% endif %}>
+          {%- if section.settings.show_collection_icon -%}
+          {% comment %}
+    Render collection icon next to a collection mame in the dropdown menu
+
+    Accepts:
+      - childlink.url: {String}
+{% endcomment %}
+
+{%- liquid
+    assign iconWidth = section.settings.collection_icon_width
+    assign inlineStyle = 'width: Wpx' | replace: 'W', iconWidth
+    assign inlineStyle = inlineStyle | append: ';margin-right:0.25rem;'
+    assign iconWidth_2x = iconWidth | times: 2
+    assign iconSizes = iconWidth | append: 'px'
+    assign iconWidths = iconWidth | append: ', ' | append: iconWidth_2x    
+    assign icon_rendered = false    
+-%}
+
+{%- if section.settings.collection_icon -%}
+  {%- unless icon_rendered -%}
+    {% assign icon_rendered = true %}
+    {{ section.settings.collection_icon |
+        image_url: width: iconWidth |
+        image_tag:
+          class: 'collection__item-image',
+          loading: 'lazy',
+          sizes: iconSizes,
+          widths: iconWidths,
+          style: inlineStyle
+    }}
+  {%- endunless -%}
+{% else -%}    
+    {%- liquid 
+        assign collection_handle = childlink.url | split: '/' | last | downcase 
+        #verify if collection exists (prevent js error for the product links or pages)
+        assign collection_object = collections[collection_handle].id
+        assign is_exist = false
+        unless collection_object == blank
+            assign is_exist = true
+        endunless
+    -%}    
+    {%- if is_exist %}
+    <collection-icon class="collection-icon"
+     data-collection-handle="{{ collection_handle }}"
+     data-collection-icon-width="{{ iconWidth }}"     
+    ></collection-icon>
+    {% endif -%}
+{%- endif -%}
+          {%- endif -%}
+          {{ childlink.title | escape }}
+          <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret"><use href="#icon-caret" /></svg>
+        </a>
+      </summary>
+      <ul class="childlist-menu--disclosure list-menu motion-reduce{% if section.settings.show_collection_image %} grandchild--with__collection-image{% endif %}" data-type-menu="{{ typeDropdownMenu }}">
+        {%- for grandchildlink in childlink.links -%}
+          <li>
+            <a href="{{ grandchildlink.url }}"
+              class="header__menu-item list-menu__item link--text focus-inset{% if grandchildlink.current %} list-menu__item--active{% endif %}"
+              {% if grandchildlink.current %} aria-current="page"{% endif %}
+            >
+              {%- if section.settings.show_collection_image -%}
+                {% comment %}
+    Render collection image in the third level menu
+
+    Accepts:
+        - grandchildlink.url: {String}
+{% endcomment %}
+{%- liquid
+  assign imageWidth = '140'
+  assign imageHeight =  imageWidth
+  assign isCollectionHasImage = false
+  assign grandchildlink_url = grandchildlink.url | split: '/' | last | downcase    
+  assign target_collection = collections[grandchildlink_url]
+-%}
+    
+{%- unless grandchildlink_url == '/' -%}
+  {%- if target_collection and target_collection.featured_image != blank and isCollectionHasImage == false -%}
+    {% assign isCollectionHasImage = true %}
+    {{ target_collection.featured_image 
+      | image_url: width: imageWidth, height: imageHeight 
+      | image_tag: class: 'collection-image' 
+    }}
+  {%- endif -%}
+{%- endunless -%}
+
+{%- unless isCollectionHasImage -%}
+  {%- if section.settings.collection_image -%}
+    {{ section.settings.collection_image 
+      | image_url: width: imageWidth, height: imageHeight 
+      | image_tag: class: 'collection-image' 
+    }}
+  {%- else -%}
+    {{ 'product-1' 
+      | placeholder_svg_tag: 'collection-image' 
+      | width: imageWidth, height: imageHeight 
+    }}
+  {%- endif -%}
+{%- endunless -%}
+
+<span class="grandchildlink-title">
+  {{ grandchildlink.title | escape }}
+</span>
+
+
+              {% else -%}
+                {{ grandchildlink.title | escape }}
+              {% endif -%}
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </details>
+  {%- endif -%}
+</li>
+{%- endfor -%}
+                    {%- else -%}
+                      {%- for childlink in link.links -%}
+<li>
+  {%- if section.settings.collection_icon_possition == 'center'and section.settings.show_collection_icon %}   
+  <a href="{{ childlink.url }}" class="list-menu--collection-icon collection-icon__center{% if section.settings.collection_icon != blank %} collection--custom-icon{% endif %}" style="width:{{ section.settings.collection_icon_width }}px">
+    {% comment %}
+    Render collection icon next to a collection mame in the dropdown menu
+
+    Accepts:
+      - childlink.url: {String}
+{% endcomment %}
+
+{%- liquid
+    assign iconWidth = section.settings.collection_icon_width
+    assign inlineStyle = 'width: Wpx' | replace: 'W', iconWidth
+    assign inlineStyle = inlineStyle | append: ';margin-right:0.25rem;'
+    assign iconWidth_2x = iconWidth | times: 2
+    assign iconSizes = iconWidth | append: 'px'
+    assign iconWidths = iconWidth | append: ', ' | append: iconWidth_2x    
+    assign icon_rendered = false    
+-%}
+
+{%- if section.settings.collection_icon -%}
+  {%- unless icon_rendered -%}
+    {% assign icon_rendered = true %}
+    {{ section.settings.collection_icon |
+        image_url: width: iconWidth |
+        image_tag:
+          class: 'collection__item-image',
+          loading: 'lazy',
+          sizes: iconSizes,
+          widths: iconWidths,
+          style: inlineStyle
+    }}
+  {%- endunless -%}
+{% else -%}    
+    {%- liquid 
+        assign collection_handle = childlink.url | split: '/' | last | downcase 
+        #verify if collection exists (prevent js error for the product links or pages)
+        assign collection_object = collections[collection_handle].id
+        assign is_exist = false
+        unless collection_object == blank
+            assign is_exist = true
+        endunless
+    -%}    
+    {%- if is_exist %}
+    <collection-icon class="collection-icon"
+     data-collection-handle="{{ collection_handle }}"
+     data-collection-icon-width="{{ iconWidth }}"     
+    ></collection-icon>
+    {% endif -%}
+{%- endif -%}
+  </a>  
+  {% endif -%}
+  <details open>
+    <summary class="header__menu-item menu-childitem link--text list-menu__item {% if childlink.child_active %}list-menu__item--active{% endif %} focus-inset">
+      <a href="{{ childlink.url }}" class="header__menu-item list-menu__item link--text focus-inset{% if section.settings.center_collection_title %} center--collection-title{% endif %}"{% if childlink.current %} aria-current="page"{% endif %}>
+        {%- if section.settings.collection_icon_possition == 'normal' and section.settings.show_collection_icon -%}
+          {% comment %}
+    Render collection icon next to a collection mame in the dropdown menu
+
+    Accepts:
+      - childlink.url: {String}
+{% endcomment %}
+
+{%- liquid
+    assign iconWidth = section.settings.collection_icon_width
+    assign inlineStyle = 'width: Wpx' | replace: 'W', iconWidth
+    assign inlineStyle = inlineStyle | append: ';margin-right:0.25rem;'
+    assign iconWidth_2x = iconWidth | times: 2
+    assign iconSizes = iconWidth | append: 'px'
+    assign iconWidths = iconWidth | append: ', ' | append: iconWidth_2x    
+    assign icon_rendered = false    
+-%}
+
+{%- if section.settings.collection_icon -%}
+  {%- unless icon_rendered -%}
+    {% assign icon_rendered = true %}
+    {{ section.settings.collection_icon |
+        image_url: width: iconWidth |
+        image_tag:
+          class: 'collection__item-image',
+          loading: 'lazy',
+          sizes: iconSizes,
+          widths: iconWidths,
+          style: inlineStyle
+    }}
+  {%- endunless -%}
+{% else -%}    
+    {%- liquid 
+        assign collection_handle = childlink.url | split: '/' | last | downcase 
+        #verify if collection exists (prevent js error for the product links or pages)
+        assign collection_object = collections[collection_handle].id
+        assign is_exist = false
+        unless collection_object == blank
+            assign is_exist = true
+        endunless
+    -%}    
+    {%- if is_exist %}
+    <collection-icon class="collection-icon"
+     data-collection-handle="{{ collection_handle }}"
+     data-collection-icon-width="{{ iconWidth }}"     
+    ></collection-icon>
+    {% endif -%}
+{%- endif -%}
+        {%- endif -%}
+        <span>{{ childlink.title | escape }}</span>
+        {%- if childlink.links != blank -%}<svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret"><use href="#icon-caret" /></svg>{%- endif -%}
+      </a>
+    </summary>
+    {%- if childlink.links != blank -%}
+      <ul class="childlist-menu--disclosure list-menu motion-reduce" data-type-menu="{{ typeDropdownMenu }}">
+      {%- if section.settings.second_dropdown_limit_qty_categories == 0 -%}
+      {%- for grandchildlink in childlink.links -%}
+        <li>
+          <a href="{{ grandchildlink.url }}" class="header__menu-item list-menu__item link--text focus-inset"{% if grandchildlink.current %} aria-current="page"{% endif %}>
+            {{ grandchildlink.title | escape }}
+          </a>
+        </li>
+      {%- endfor -%}
+      {%- else -%}
+      {%- for grandchildlink in childlink.links limit: section.settings.second_dropdown_limit_qty_categories -%}
+        <li>
+          <a href="{{ grandchildlink.url }}" class="header__menu-item list-menu__item link--text focus-inset"{% if grandchildlink.current %} aria-current="page"{% endif %}>
+            {{ grandchildlink.title | escape }}
+          </a>
+        </li>
+      {%- endfor -%}
+      {%- if childlink.links.size > section.settings.second_dropdown_limit_qty_categories -%}
+        <li>
+          <a href="{{ childlink.url }}" class="header__menu-item list-menu__item link--text focus-inset link_shop-all">
+            <span>{{ section.settings.second_dropdown_limit_qty_categories_link | escape }}</span>
+          </a>
+        </li>
+      {%- endif -%}
+      {%- endif -%}
+      </ul>
+    {%- endif-%}
+  </details>
+</li>
+{%- endfor -%}
+                    {%- endif -%}
+
+                  </ul>
+                {%- if typeDropdownMenu == 'full-width' -%}</div>{%- endif -%}
+                {%- unless typeDropdownMenu == 'small' -%}
+                {%- if section.blocks.size > 0 -%}
+{%- for block in section.blocks -%}
+  {% case block.type %}
+{% comment %}Render image and Collection list in the dropdown content{% endcomment %}
+    {% when 'image_item_menu' %}
+      {% render 'header__dropdown--content_banner_collections'
+        block: block
+        blockOrder: forloop.index
+        parent_item_index: indexItemMenu
+      %}
+{% comment %}Render Product list in the dropdown content{% endcomment %}
+    {% when 'list_product_items' %}
+      {% render 'header__dropdown--list_product_items'
+        block: block
+        blockOrder: forloop.index
+        parent_item_index: indexItemMenu
+      %}
+{% comment %}Render Custom Liquid in the dropdown content{% endcomment %}
+    {% when 'custom_liquid' %}
+      {% render 'header__dropdown--custom_liquid'
+        block: block
+        blockOrder: forloop.index
+        parent_item_index: indexItemMenu
+      %}
+{% comment %}Render Custom Liquid in the dropdown content{% endcomment %}
+    {% when 'banner' %}
+      {% render 'header__dropdown--banner'
+        block: block
+        blockOrder: forloop.index
+        parent_item_index: indexItemMenu
+      %}
+  {% endcase %}
+{%- endfor -%}
+{%- endif -%}
+                {%- endunless -%}
+                {%- if typeDropdownMenu == 'full-width' -%}</div>{%- endif -%}
+                {%- unless forloop.first and typeDropdownMenu == 'small' -%}</div>{%- endunless -%}
+              </details>
+            </details-disclosure>
+          {%- else -%}            
+            {%- assign title = link.title | downcase -%}
+            {%- if selected_item_menu_as_phone_link == title %}
+            <a href="tel:{{ section.settings.phone_number | default: '1 888 222 2222' }}" class="header__menu-item header__menu-item-top {% if bgHighlightedItem %}header__menu-item-{{ forloop.index }}-highlighted{% else %}header__menu-item-{{ forloop.index }}{% endif %} {% if link.current %}header__active-menu-item{% endif %} list-menu__item focus-inset"{% if link.current %} aria-current="page"{% endif %} style="background: {{ section.settings.phone_number_menu_background_gradient | default: section.settings.phone_number_menu_background }};">
+              {%- if section.settings.use_default_phone_icon %}
+                {% render 'icons-solid', name: 'phone', css_class: 'menu-item__phone' %}
+              {% else %}
+              {% unless section.settings.phone_icon == blank %}
+              <span class="phone-icon">
+                {{ section.settings.phone_icon | image_url: width: phone_number_icon_width | image_tag }}
+              </span>
+              {% endunless %}
+              {% endif -%}
+              <span style="color: {{ section.settings.phone_number_menu_foreground | default: 'currentColor' }}">{{ link.title | escape }}</span>
+            </a>
+            {% else %}
+            <a href="{{ link.url }}" class="header__menu-item header__menu-item-top {% if bgHighlightedItem %}header__menu-item-{{ forloop.index }}-highlighted{% else %}header__menu-item-{{ forloop.index }}{% endif %} {% if link.current %}header__active-menu-item{% endif %} list-menu__item focus-inset"{% if link.current %} aria-current="page"{% endif %}>
+              <span>{{ link.title | escape }}</span>
+            </a>
+            {% endif %}
+          {%- endif -%}
+        </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </nav>
+</header-menu>
+      {% endunless -%}
+    {% elsif current_type_menu == 'combined' %}
+      {%- unless section.settings.menu_2 == blank %}
+      {% comment %}
+    Render Navigation menu
+
+    Accepts:
+        - 'combined': {String}
+{% endcomment %}
+{%- liquid
+  assign current_type = 'combined'
+  if current_type == 'combined'
+    assign navigation = extra_menu
+  endif
+-%}
+
+{% style %}
+  header-menu {
+    display: contents;
+  }
+  .full-width .container--grid .col-items .list-menu--disclosure.row-2 {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.main_items_per_row }}, 1fr);
+    gap: 1rem .5rem;
+  }{% if settings.cut_button_corners %}
+  
+  [data-link-highlighted="true"] summary.header__menu-item-top,
+  header-menu .highlite_parent_item_on_active_child,
+  header-menu .top__menu-item-active {
+    background: var(--header--background-color)!important;
+  }
+  
+  [data-link-highlighted="true"] summary.header__menu-item-top::before,
+  header-menu .highlite_parent_item_on_active_child summary.header__menu-item-top::before,
+  header-menu .top__menu-item-active summary.header__menu-item-top::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--header--item-highlighted-background);    
+    --item-edge-size: .75rem;
+    clip-path: polygon(
+        0 var(--item-edge-size),
+        var(--item-edge-size) 0,
+        100% 0,
+        100% calc(100% - var(--item-edge-size)),
+        calc(100% - var(--item-edge-size)) 100%,
+        0 100%
+      );
+    }
+  {% endif %}
+{% endstyle %}
+
+<header-menu>
+  <nav class="header__inline-menu">    
+    <div class="header_line--divider"></div>    
+    <ul class="list-menu list-menu--inline{% if section.settings.enable_dropdown_menu_animation %} with--dropdown__menu-animation{% endif %}" role="list"
+      data-activate-menu="{{ section.settings.activate_top_level_menu }}"
+    >
+      {%- for link in navigation.links -%}
+      {%- assign indexItemMenu = forloop.index -%}
+      {%- assign linkTitle = link.title | escape | downcase -%}
+{% # Render dropdown Megamenu of selected top menu item  %}
+        {%- if megaMenuList contains linkTitle -%}
+          {%- assign typeDropdownMenu = 'full-width' -%}
+          <li data-items-menu
+            item-index="{{ indexItemMenu }}"
+            class="{% if link.current and bgHighlightedItem == false %}top__menu-item-active{% endif %} {{ typeDropdownMenu }}"
+            {% if forloop.first %}data-link-highlighted="{{ bgHighlightedItem }}"{% endif %}
+          >
+          <details-disclosure>
+  <details>
+    <summary class="header__menu-item header__menu-item-top {% if bgHighlightedItem %}header__menu-item-{{ forloop.index }}-highlighted{% else %}header__menu-item-{{ forloop.index }}{% endif %} {% if link.child_active %}header__active-menu-item{% endif %} {{ typeDropdownMenu }} list-menu__item focus-inset">
+      {%- if forloop.first and settings.current_presets == 'default' -%}{% render 'icons-charge', name: 'summary' %}{%- endif -%}
+      <a href="{{ link.url }}" class="menu-item-top list-menu__item focus-inset{% if link.current %} list-menu__item--active{% endif %}"{% if link.current %} aria-current="page"{% endif %}>
+        <span>{{ link.title | escape }}</span>
+          <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret"><use href="#icon-caret" /></svg>
+      </a>      
+    </summary>
+    <div class="dropdown-inner {{ typeDropdownMenu }}{% if is_megamenu_item_uses_layout_width %} with--layout-width{% endif %}"{% if showOverlay %} data-megamenu-use-overlay="{{ showOverlay }}"{% endif %}>
+      {%- assign itemsSize = link.links.size -%}
+
+{% # render extra attribute to remove dropdown menu links if config option is checked using js code %}
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if indexItemMenu == block.settings.item_menu_index and block.settings.disable_menu_links -%}
+            <span class="item_image_link" data-item-image-index="{{ block.settings.item_menu_index }}" hidden></span>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+{% # end render extra attribute to remove dropdown menu links if config option is checked using js code %}
+
+      <div class="container--grid {% if section.settings.full_width %}full--width{% else %}dynamic-page-width{% endif %}">
+        <div class="col-items" data-item-index="{{ indexItemMenu }}">
+        {%- if link.links != blank -%}
+          <ul class="header__submenu list-menu list-menu--disclosure motion-reduce {% if itemsSize > 4 %}row-2{% endif %}" role="list" tabindex="-1" data-links-size="{{ itemsSize }}">
+            {%- for childlink in link.links -%}
+<li>
+  {%- if section.settings.collection_icon_possition == 'center'and section.settings.show_collection_icon %}   
+  <a href="{{ childlink.url }}" class="list-menu--collection-icon collection-icon__center{% if section.settings.collection_icon != blank %} collection--custom-icon{% endif %}" style="width:{{ section.settings.collection_icon_width }}px">
+    {% comment %}
+    Render collection icon next to a collection mame in the dropdown menu
+
+    Accepts:
+      - childlink.url: {String}
+{% endcomment %}
+
+{%- liquid
+    assign iconWidth = section.settings.collection_icon_width
+    assign inlineStyle = 'width: Wpx' | replace: 'W', iconWidth
+    assign inlineStyle = inlineStyle | append: ';margin-right:0.25rem;'
+    assign iconWidth_2x = iconWidth | times: 2
+    assign iconSizes = iconWidth | append: 'px'
+    assign iconWidths = iconWidth | append: ', ' | append: iconWidth_2x    
+    assign icon_rendered = false    
+-%}
+
+{%- if section.settings.collection_icon -%}
+  {%- unless icon_rendered -%}
+    {% assign icon_rendered = true %}
+    {{ section.settings.collection_icon |
+        image_url: width: iconWidth |
+        image_tag:
+          class: 'collection__item-image',
+          loading: 'lazy',
+          sizes: iconSizes,
+          widths: iconWidths,
+          style: inlineStyle
+    }}
+  {%- endunless -%}
+{% else -%}    
+    {%- liquid 
+        assign collection_handle = childlink.url | split: '/' | last | downcase 
+        #verify if collection exists (prevent js error for the product links or pages)
+        assign collection_object = collections[collection_handle].id
+        assign is_exist = false
+        unless collection_object == blank
+            assign is_exist = true
+        endunless
+    -%}    
+    {%- if is_exist %}
+    <collection-icon class="collection-icon"
+     data-collection-handle="{{ collection_handle }}"
+     data-collection-icon-width="{{ iconWidth }}"     
+    ></collection-icon>
+    {% endif -%}
+{%- endif -%}
+  </a>  
+  {% endif -%}
+  <details open>
+    <summary class="header__menu-item menu-childitem link--text list-menu__item {% if childlink.child_active %}list-menu__item--active{% endif %} focus-inset">
+      <a href="{{ childlink.url }}" class="header__menu-item list-menu__item link--text focus-inset{% if section.settings.center_collection_title %} center--collection-title{% endif %}"{% if childlink.current %} aria-current="page"{% endif %}>
+        {%- if section.settings.collection_icon_possition == 'normal' and section.settings.show_collection_icon -%}
+          {% comment %}
+    Render collection icon next to a collection mame in the dropdown menu
+
+    Accepts:
+      - childlink.url: {String}
+{% endcomment %}
+
+{%- liquid
+    assign iconWidth = section.settings.collection_icon_width
+    assign inlineStyle = 'width: Wpx' | replace: 'W', iconWidth
+    assign inlineStyle = inlineStyle | append: ';margin-right:0.25rem;'
+    assign iconWidth_2x = iconWidth | times: 2
+    assign iconSizes = iconWidth | append: 'px'
+    assign iconWidths = iconWidth | append: ', ' | append: iconWidth_2x    
+    assign icon_rendered = false    
+-%}
+
+{%- if section.settings.collection_icon -%}
+  {%- unless icon_rendered -%}
+    {% assign icon_rendered = true %}
+    {{ section.settings.collection_icon |
+        image_url: width: iconWidth |
+        image_tag:
+          class: 'collection__item-image',
+          loading: 'lazy',
+          sizes: iconSizes,
+          widths: iconWidths,
+          style: inlineStyle
+    }}
+  {%- endunless -%}
+{% else -%}    
+    {%- liquid 
+        assign collection_handle = childlink.url | split: '/' | last | downcase 
+        #verify if collection exists (prevent js error for the product links or pages)
+        assign collection_object = collections[collection_handle].id
+        assign is_exist = false
+        unless collection_object == blank
+            assign is_exist = true
+        endunless
+    -%}    
+    {%- if is_exist %}
+    <collection-icon class="collection-icon"
+     data-collection-handle="{{ collection_handle }}"
+     data-collection-icon-width="{{ iconWidth }}"     
+    ></collection-icon>
+    {% endif -%}
+{%- endif -%}
+        {%- endif -%}
+        <span>{{ childlink.title | escape }}</span>
+        {%- if childlink.links != blank -%}<svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret"><use href="#icon-caret" /></svg>{%- endif -%}
+      </a>
+    </summary>
+    {%- if childlink.links != blank -%}
+      <ul class="childlist-menu--disclosure list-menu motion-reduce" data-type-menu="{{ typeDropdownMenu }}">
+      {%- if section.settings.second_dropdown_limit_qty_categories == 0 -%}
+      {%- for grandchildlink in childlink.links -%}
+        <li>
+          <a href="{{ grandchildlink.url }}" class="header__menu-item list-menu__item link--text focus-inset"{% if grandchildlink.current %} aria-current="page"{% endif %}>
+            {{ grandchildlink.title | escape }}
+          </a>
+        </li>
+      {%- endfor -%}
+      {%- else -%}
+      {%- for grandchildlink in childlink.links limit: section.settings.second_dropdown_limit_qty_categories -%}
+        <li>
+          <a href="{{ grandchildlink.url }}" class="header__menu-item list-menu__item link--text focus-inset"{% if grandchildlink.current %} aria-current="page"{% endif %}>
+            {{ grandchildlink.title | escape }}
+          </a>
+        </li>
+      {%- endfor -%}
+      {%- if childlink.links.size > section.settings.second_dropdown_limit_qty_categories -%}
+        <li>
+          <a href="{{ childlink.url }}" class="header__menu-item list-menu__item link--text focus-inset link_shop-all">
+            <span>{{ section.settings.second_dropdown_limit_qty_categories_link | escape }}</span>
+          </a>
+        </li>
+      {%- endif -%}
+      {%- endif -%}
+      </ul>
+    {%- endif-%}
+  </details>
+</li>
+{%- endfor -%}
+          </ul>
+        {% endif %}
+
+          {%- if section.blocks.size > 0 -%}
+{%- for block in section.blocks -%}
+  {% case block.type %}
+{% comment %}Render image and Collection list in the dropdown content{% endcomment %}
+    {% when 'image_item_menu' %}
+      {% render 'header__dropdown--content_banner_collections'
+        block: block
+        blockOrder: forloop.index
+        parent_item_index: indexItemMenu
+      %}
+{% comment %}Render Product list in the dropdown content{% endcomment %}
+    {% when 'list_product_items' %}
+      {% render 'header__dropdown--list_product_items'
+        block: block
+        blockOrder: forloop.index
+        parent_item_index: indexItemMenu
+      %}
+{% comment %}Render Custom Liquid in the dropdown content{% endcomment %}
+    {% when 'custom_liquid' %}
+      {% render 'header__dropdown--custom_liquid'
+        block: block
+        blockOrder: forloop.index
+        parent_item_index: indexItemMenu
+      %}
+{% comment %}Render Custom Liquid in the dropdown content{% endcomment %}
+    {% when 'banner' %}
+      {% render 'header__dropdown--banner'
+        block: block
+        blockOrder: forloop.index
+        parent_item_index: indexItemMenu
+      %}
+  {% endcase %}
+{%- endfor -%}
+{%- endif -%}
+        </div>
+      </div>
+    </div>
+  </details>
+</details-disclosure>
+          </li>
+
+{% # Render dropdown small menu of selected top menu item %}
+        {%- elsif smallMenuList contains linkTitle -%}
+          {%- assign typeDropdownMenu = 'small' -%}
+          <li {% if forloop.first %}data-main-item-menu="true"{% else %}data-items-menu{% endif%}
+            item-index="{{ indexItemMenu }}"
+            class="{{ typeDropdownMenu }}{% if link.current and bgHighlightedItem == false %} top__menu-item-active{% endif %}"
+            {% if forloop.first %}data-link-highlighted="{{ bgHighlightedItem }}"{% endif %}
+          >
+          {%- if link.links != blank -%}
+<details-disclosure>
+  <details>
+    <summary class="header__menu-item header__menu-item-top {% if bgHighlightedItem %}header__menu-item-{{ forloop.index }}-highlighted{% else %}header__menu-item-{{ forloop.index }}{% endif %} {% if link.child_active %}header__active-menu-item{% endif %} {{ typeDropdownMenu }} list-menu__item focus-inset">
+      {%- if forloop.first and settings.current_presets == 'default' -%}{% render 'icons-charge', name: 'summary' %}{%- endif -%}            
+      <a href="{{ link.url }}" class="menu-item-top list-menu__item focus-inset{% if link.current %} list-menu__item--active{% endif %}"{% if link.current %} aria-current="page"{% endif %}>
+        <span>{{ link.title | escape }}</span>
+          <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret"><use href="#icon-caret" /></svg>
+      </a>      
+    </summary>
+
+    {% unless forloop.first %}<div class="dropdown-inner small">{% endunless %}
+      <ul class="header__submenu list-menu list-menu--disclosure motion-reduce small" role="list" tabindex="-1" data-links-size="{{ itemsSize }}">
+        {%- for childlink in link.links -%}
+<li>{%- if childlink.links == blank -%}
+    <a href="{{ childlink.url }}" class="header__menu-item list-menu__item link--text focus-inset{% if childlink.current %} list-menu__item--active{% endif %}"{% if childlink.current %} aria-current="page"{% endif %}>
+      {%- if section.settings.show_collection_icon -%}
+        {% comment %}
+    Render collection icon next to a collection mame in the dropdown menu
+
+    Accepts:
+      - childlink.url: {String}
+{% endcomment %}
+
+{%- liquid
+    assign iconWidth = section.settings.collection_icon_width
+    assign inlineStyle = 'width: Wpx' | replace: 'W', iconWidth
+    assign inlineStyle = inlineStyle | append: ';margin-right:0.25rem;'
+    assign iconWidth_2x = iconWidth | times: 2
+    assign iconSizes = iconWidth | append: 'px'
+    assign iconWidths = iconWidth | append: ', ' | append: iconWidth_2x    
+    assign icon_rendered = false    
+-%}
+
+{%- if section.settings.collection_icon -%}
+  {%- unless icon_rendered -%}
+    {% assign icon_rendered = true %}
+    {{ section.settings.collection_icon |
+        image_url: width: iconWidth |
+        image_tag:
+          class: 'collection__item-image',
+          loading: 'lazy',
+          sizes: iconSizes,
+          widths: iconWidths,
+          style: inlineStyle
+    }}
+  {%- endunless -%}
+{% else -%}    
+    {%- liquid 
+        assign collection_handle = childlink.url | split: '/' | last | downcase 
+        #verify if collection exists (prevent js error for the product links or pages)
+        assign collection_object = collections[collection_handle].id
+        assign is_exist = false
+        unless collection_object == blank
+            assign is_exist = true
+        endunless
+    -%}    
+    {%- if is_exist %}
+    <collection-icon class="collection-icon"
+     data-collection-handle="{{ collection_handle }}"
+     data-collection-icon-width="{{ iconWidth }}"     
+    ></collection-icon>
+    {% endif -%}
+{%- endif -%}
+      {%- endif -%}
+      {{ childlink.title | escape }}
+    </a>
+  {%- else -%}
+    <details>
+      <summary class="header__menu-item menu-childitem link--text list-menu__item {% if childlink.child_active %}list-menu__item--active{% endif %} focus-inset">
+        <a {% if section.settings.activate_top_level_menu == 'on_hover' %}href="{{ childlink.url }}"{% endif %}
+          class="header__menu-item list-menu__item link--text focus-inset{% if childlink.current %} list-menu__item--active{% endif %}"{% if childlink.current %} aria-current="page"{% endif %}>
+          {%- if section.settings.show_collection_icon -%}
+          {% comment %}
+    Render collection icon next to a collection mame in the dropdown menu
+
+    Accepts:
+      - childlink.url: {String}
+{% endcomment %}
+
+{%- liquid
+    assign iconWidth = section.settings.collection_icon_width
+    assign inlineStyle = 'width: Wpx' | replace: 'W', iconWidth
+    assign inlineStyle = inlineStyle | append: ';margin-right:0.25rem;'
+    assign iconWidth_2x = iconWidth | times: 2
+    assign iconSizes = iconWidth | append: 'px'
+    assign iconWidths = iconWidth | append: ', ' | append: iconWidth_2x    
+    assign icon_rendered = false    
+-%}
+
+{%- if section.settings.collection_icon -%}
+  {%- unless icon_rendered -%}
+    {% assign icon_rendered = true %}
+    {{ section.settings.collection_icon |
+        image_url: width: iconWidth |
+        image_tag:
+          class: 'collection__item-image',
+          loading: 'lazy',
+          sizes: iconSizes,
+          widths: iconWidths,
+          style: inlineStyle
+    }}
+  {%- endunless -%}
+{% else -%}    
+    {%- liquid 
+        assign collection_handle = childlink.url | split: '/' | last | downcase 
+        #verify if collection exists (prevent js error for the product links or pages)
+        assign collection_object = collections[collection_handle].id
+        assign is_exist = false
+        unless collection_object == blank
+            assign is_exist = true
+        endunless
+    -%}    
+    {%- if is_exist %}
+    <collection-icon class="collection-icon"
+     data-collection-handle="{{ collection_handle }}"
+     data-collection-icon-width="{{ iconWidth }}"     
+    ></collection-icon>
+    {% endif -%}
+{%- endif -%}
+          {%- endif -%}
+          {{ childlink.title | escape }}
+          <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret"><use href="#icon-caret" /></svg>
+        </a>
+      </summary>
+      <ul class="childlist-menu--disclosure list-menu motion-reduce{% if section.settings.show_collection_image %} grandchild--with__collection-image{% endif %}" data-type-menu="{{ typeDropdownMenu }}">
+        {%- for grandchildlink in childlink.links -%}
+          <li>
+            <a href="{{ grandchildlink.url }}"
+              class="header__menu-item list-menu__item link--text focus-inset{% if grandchildlink.current %} list-menu__item--active{% endif %}"
+              {% if grandchildlink.current %} aria-current="page"{% endif %}
+            >
+              {%- if section.settings.show_collection_image -%}
+                {% comment %}
+    Render collection image in the third level menu
+
+    Accepts:
+        - grandchildlink.url: {String}
+{% endcomment %}
+{%- liquid
+  assign imageWidth = '140'
+  assign imageHeight =  imageWidth
+  assign isCollectionHasImage = false
+  assign grandchildlink_url = grandchildlink.url | split: '/' | last | downcase    
+  assign target_collection = collections[grandchildlink_url]
+-%}
+    
+{%- unless grandchildlink_url == '/' -%}
+  {%- if target_collection and target_collection.featured_image != blank and isCollectionHasImage == false -%}
+    {% assign isCollectionHasImage = true %}
+    {{ target_collection.featured_image 
+      | image_url: width: imageWidth, height: imageHeight 
+      | image_tag: class: 'collection-image' 
+    }}
+  {%- endif -%}
+{%- endunless -%}
+
+{%- unless isCollectionHasImage -%}
+  {%- if section.settings.collection_image -%}
+    {{ section.settings.collection_image 
+      | image_url: width: imageWidth, height: imageHeight 
+      | image_tag: class: 'collection-image' 
+    }}
+  {%- else -%}
+    {{ 'product-1' 
+      | placeholder_svg_tag: 'collection-image' 
+      | width: imageWidth, height: imageHeight 
+    }}
+  {%- endif -%}
+{%- endunless -%}
+
+<span class="grandchildlink-title">
+  {{ grandchildlink.title | escape }}
+</span>
+
+
+              {% else -%}
+                {{ grandchildlink.title | escape }}
+              {% endif -%}
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </details>
+  {%- endif -%}
+</li>
+{%- endfor -%}
+      </ul>
+    {% unless forloop.first %}</div>{% endunless %}
+  </details>
+</details-disclosure>
+{%- else -%}
+<a href="{{ link.url }}" class="header__menu-item header__menu-item-top {% if bgHighlightedItem %}header__menu-item-{{ forloop.index }}-highlighted{% else %}header__menu-item-{{ forloop.index }}{% endif %} {% if link.current %}header__active-menu-item{% endif %} list-menu__item focus-inset"{% if link.current %} aria-current="page"{% endif %}>
+  <span>{{ link.title | escape }}</span>
+</a>
+{%- endif -%}
+          </li>
+{% # Render dropdown menu of selected type: Megamenu or Small  %}
+        {%- else -%}
+          {%- assign typeDropdownMenu = section.settings.second_level_menu_width -%}
+
+        <li {% if typeDropdownMenu == 'small' and forloop.first %}data-main-item-menu="true"{% else %}data-items-menu{% endif%}
+          item-index="{{ indexItemMenu }}"
+          class="{% if link.current and bgHighlightedItem == false %}top__menu-item-active{% endif %}"
+          {% if forloop.first %}data-link-highlighted="{{ bgHighlightedItem }}"{% endif %}
+        >
+          {%- if link.links != blank -%}
+            <details-disclosure>
+              <details>
+                <summary class="header__menu-item header__menu-item-top {% if bgHighlightedItem %}header__menu-item-{{ forloop.index }}-highlighted{% else %}header__menu-item-{{ forloop.index }}{% endif %} {% if link.child_active %}header__active-menu-item{% endif %} {{ typeDropdownMenu }} list-menu__item focus-inset">
+                  {%- if forloop.first and settings.current_presets == 'default' -%}{% render 'icons-charge', name: 'summary' %}{%- endif -%}
+                  <a href="{{ link.url }}" class="menu-item-top list-menu__item focus-inset{% if link.current %} list-menu__item--active{% endif %}"{% if link.current %} aria-current="page"{% endif %}>
+                    <span>{{ link.title | escape }}</span>
+                      <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret"><use href="#icon-caret" /></svg>
+                  </a>
+                </summary>
+                {%- unless forloop.first and typeDropdownMenu == 'small' -%}
+                  <div class="dropdown-inner {{ section.settings.second_level_menu_width }}"{% if showOverlay %} data-megamenu-use-overlay="{{ showOverlay }}"{% endif %}>
+                {%- endunless -%}
+                {%- assign itemsSize = link.links.size -%}
+
+                {%- if section.blocks.size > 0 -%}
+                  {%- for block in section.blocks -%}
+                    {% if indexItemMenu == block.settings.item_menu_index and block.settings.disable_menu_links %}
+                      <span class="item_image_link" data-item-image-index="{{ block.settings.item_menu_index }}" hidden></span>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+
+                {%- if typeDropdownMenu == 'full-width' -%}
+                  <div class="container--grid {% if section.settings.full_width %}full--width{% else %}dynamic-page-width{% endif %}"{% if showOverlay %} data-megamenu-use-overlay="{{ showOverlay }}"{% endif %}>
+                  <div class="col-items" data-item-index="{{ indexItemMenu }}">
+                {%- endif -%}
+                  <ul class="header__submenu list-menu list-menu--disclosure motion-reduce {% if itemsSize > 4 %}row-2{% endif %}" role="list" tabindex="-1" data-links-size="{{ itemsSize }}">
+
+                    {%- if typeDropdownMenu == 'small' -%}
+                      {%- for childlink in link.links -%}
+<li>{%- if childlink.links == blank -%}
+    <a href="{{ childlink.url }}" class="header__menu-item list-menu__item link--text focus-inset{% if childlink.current %} list-menu__item--active{% endif %}"{% if childlink.current %} aria-current="page"{% endif %}>
+      {%- if section.settings.show_collection_icon -%}
+        {% comment %}
+    Render collection icon next to a collection mame in the dropdown menu
+
+    Accepts:
+      - childlink.url: {String}
+{% endcomment %}
+
+{%- liquid
+    assign iconWidth = section.settings.collection_icon_width
+    assign inlineStyle = 'width: Wpx' | replace: 'W', iconWidth
+    assign inlineStyle = inlineStyle | append: ';margin-right:0.25rem;'
+    assign iconWidth_2x = iconWidth | times: 2
+    assign iconSizes = iconWidth | append: 'px'
+    assign iconWidths = iconWidth | append: ', ' | append: iconWidth_2x    
+    assign icon_rendered = false    
+-%}
+
+{%- if section.settings.collection_icon -%}
+  {%- unless icon_rendered -%}
+    {% assign icon_rendered = true %}
+    {{ section.settings.collection_icon |
+        image_url: width: iconWidth |
+        image_tag:
+          class: 'collection__item-image',
+          loading: 'lazy',
+          sizes: iconSizes,
+          widths: iconWidths,
+          style: inlineStyle
+    }}
+  {%- endunless -%}
+{% else -%}    
+    {%- liquid 
+        assign collection_handle = childlink.url | split: '/' | last | downcase 
+        #verify if collection exists (prevent js error for the product links or pages)
+        assign collection_object = collections[collection_handle].id
+        assign is_exist = false
+        unless collection_object == blank
+            assign is_exist = true
+        endunless
+    -%}    
+    {%- if is_exist %}
+    <collection-icon class="collection-icon"
+     data-collection-handle="{{ collection_handle }}"
+     data-collection-icon-width="{{ iconWidth }}"     
+    ></collection-icon>
+    {% endif -%}
+{%- endif -%}
+      {%- endif -%}
+      {{ childlink.title | escape }}
+    </a>
+  {%- else -%}
+    <details>
+      <summary class="header__menu-item menu-childitem link--text list-menu__item {% if childlink.child_active %}list-menu__item--active{% endif %} focus-inset">
+        <a {% if section.settings.activate_top_level_menu == 'on_hover' %}href="{{ childlink.url }}"{% endif %}
+          class="header__menu-item list-menu__item link--text focus-inset{% if childlink.current %} list-menu__item--active{% endif %}"{% if childlink.current %} aria-current="page"{% endif %}>
+          {%- if section.settings.show_collection_icon -%}
+          {% comment %}
+    Render collection icon next to a collection mame in the dropdown menu
+
+    Accepts:
+      - childlink.url: {String}
+{% endcomment %}
+
+{%- liquid
+    assign iconWidth = section.settings.collection_icon_width
+    assign inlineStyle = 'width: Wpx' | replace: 'W', iconWidth
+    assign inlineStyle = inlineStyle | append: ';margin-right:0.25rem;'
+    assign iconWidth_2x = iconWidth | times: 2
+    assign iconSizes = iconWidth | append: 'px'
+    assign iconWidths = iconWidth | append: ', ' | append: iconWidth_2x    
+    assign icon_rendered = false    
+-%}
+
+{%- if section.settings.collection_icon -%}
+  {%- unless icon_rendered -%}
+    {% assign icon_rendered = true %}
+    {{ section.settings.collection_icon |
+        image_url: width: iconWidth |
+        image_tag:
+          class: 'collection__item-image',
+          loading: 'lazy',
+          sizes: iconSizes,
+          widths: iconWidths,
+          style: inlineStyle
+    }}
+  {%- endunless -%}
+{% else -%}    
+    {%- liquid 
+        assign collection_handle = childlink.url | split: '/' | last | downcase 
+        #verify if collection exists (prevent js error for the product links or pages)
+        assign collection_object = collections[collection_handle].id
+        assign is_exist = false
+        unless collection_object == blank
+            assign is_exist = true
+        endunless
+    -%}    
+    {%- if is_exist %}
+    <collection-icon class="collection-icon"
+     data-collection-handle="{{ collection_handle }}"
+     data-collection-icon-width="{{ iconWidth }}"     
+    ></collection-icon>
+    {% endif -%}
+{%- endif -%}
+          {%- endif -%}
+          {{ childlink.title | escape }}
+          <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret"><use href="#icon-caret" /></svg>
+        </a>
+      </summary>
+      <ul class="childlist-menu--disclosure list-menu motion-reduce{% if section.settings.show_collection_image %} grandchild--with__collection-image{% endif %}" data-type-menu="{{ typeDropdownMenu }}">
+        {%- for grandchildlink in childlink.links -%}
+          <li>
+            <a href="{{ grandchildlink.url }}"
+              class="header__menu-item list-menu__item link--text focus-inset{% if grandchildlink.current %} list-menu__item--active{% endif %}"
+              {% if grandchildlink.current %} aria-current="page"{% endif %}
+            >
+              {%- if section.settings.show_collection_image -%}
+                {% comment %}
+    Render collection image in the third level menu
+
+    Accepts:
+        - grandchildlink.url: {String}
+{% endcomment %}
+{%- liquid
+  assign imageWidth = '140'
+  assign imageHeight =  imageWidth
+  assign isCollectionHasImage = false
+  assign grandchildlink_url = grandchildlink.url | split: '/' | last | downcase    
+  assign target_collection = collections[grandchildlink_url]
+-%}
+    
+{%- unless grandchildlink_url == '/' -%}
+  {%- if target_collection and target_collection.featured_image != blank and isCollectionHasImage == false -%}
+    {% assign isCollectionHasImage = true %}
+    {{ target_collection.featured_image 
+      | image_url: width: imageWidth, height: imageHeight 
+      | image_tag: class: 'collection-image' 
+    }}
+  {%- endif -%}
+{%- endunless -%}
+
+{%- unless isCollectionHasImage -%}
+  {%- if section.settings.collection_image -%}
+    {{ section.settings.collection_image 
+      | image_url: width: imageWidth, height: imageHeight 
+      | image_tag: class: 'collection-image' 
+    }}
+  {%- else -%}
+    {{ 'product-1' 
+      | placeholder_svg_tag: 'collection-image' 
+      | width: imageWidth, height: imageHeight 
+    }}
+  {%- endif -%}
+{%- endunless -%}
+
+<span class="grandchildlink-title">
+  {{ grandchildlink.title | escape }}
+</span>
+
+
+              {% else -%}
+                {{ grandchildlink.title | escape }}
+              {% endif -%}
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </details>
+  {%- endif -%}
+</li>
+{%- endfor -%}
+                    {%- else -%}
+                      {%- for childlink in link.links -%}
+<li>
+  {%- if section.settings.collection_icon_possition == 'center'and section.settings.show_collection_icon %}   
+  <a href="{{ childlink.url }}" class="list-menu--collection-icon collection-icon__center{% if section.settings.collection_icon != blank %} collection--custom-icon{% endif %}" style="width:{{ section.settings.collection_icon_width }}px">
+    {% comment %}
+    Render collection icon next to a collection mame in the dropdown menu
+
+    Accepts:
+      - childlink.url: {String}
+{% endcomment %}
+
+{%- liquid
+    assign iconWidth = section.settings.collection_icon_width
+    assign inlineStyle = 'width: Wpx' | replace: 'W', iconWidth
+    assign inlineStyle = inlineStyle | append: ';margin-right:0.25rem;'
+    assign iconWidth_2x = iconWidth | times: 2
+    assign iconSizes = iconWidth | append: 'px'
+    assign iconWidths = iconWidth | append: ', ' | append: iconWidth_2x    
+    assign icon_rendered = false    
+-%}
+
+{%- if section.settings.collection_icon -%}
+  {%- unless icon_rendered -%}
+    {% assign icon_rendered = true %}
+    {{ section.settings.collection_icon |
+        image_url: width: iconWidth |
+        image_tag:
+          class: 'collection__item-image',
+          loading: 'lazy',
+          sizes: iconSizes,
+          widths: iconWidths,
+          style: inlineStyle
+    }}
+  {%- endunless -%}
+{% else -%}    
+    {%- liquid 
+        assign collection_handle = childlink.url | split: '/' | last | downcase 
+        #verify if collection exists (prevent js error for the product links or pages)
+        assign collection_object = collections[collection_handle].id
+        assign is_exist = false
+        unless collection_object == blank
+            assign is_exist = true
+        endunless
+    -%}    
+    {%- if is_exist %}
+    <collection-icon class="collection-icon"
+     data-collection-handle="{{ collection_handle }}"
+     data-collection-icon-width="{{ iconWidth }}"     
+    ></collection-icon>
+    {% endif -%}
+{%- endif -%}
+  </a>  
+  {% endif -%}
+  <details open>
+    <summary class="header__menu-item menu-childitem link--text list-menu__item {% if childlink.child_active %}list-menu__item--active{% endif %} focus-inset">
+      <a href="{{ childlink.url }}" class="header__menu-item list-menu__item link--text focus-inset{% if section.settings.center_collection_title %} center--collection-title{% endif %}"{% if childlink.current %} aria-current="page"{% endif %}>
+        {%- if section.settings.collection_icon_possition == 'normal' and section.settings.show_collection_icon -%}
+          {% comment %}
+    Render collection icon next to a collection mame in the dropdown menu
+
+    Accepts:
+      - childlink.url: {String}
+{% endcomment %}
+
+{%- liquid
+    assign iconWidth = section.settings.collection_icon_width
+    assign inlineStyle = 'width: Wpx' | replace: 'W', iconWidth
+    assign inlineStyle = inlineStyle | append: ';margin-right:0.25rem;'
+    assign iconWidth_2x = iconWidth | times: 2
+    assign iconSizes = iconWidth | append: 'px'
+    assign iconWidths = iconWidth | append: ', ' | append: iconWidth_2x    
+    assign icon_rendered = false    
+-%}
+
+{%- if section.settings.collection_icon -%}
+  {%- unless icon_rendered -%}
+    {% assign icon_rendered = true %}
+    {{ section.settings.collection_icon |
+        image_url: width: iconWidth |
+        image_tag:
+          class: 'collection__item-image',
+          loading: 'lazy',
+          sizes: iconSizes,
+          widths: iconWidths,
+          style: inlineStyle
+    }}
+  {%- endunless -%}
+{% else -%}    
+    {%- liquid 
+        assign collection_handle = childlink.url | split: '/' | last | downcase 
+        #verify if collection exists (prevent js error for the product links or pages)
+        assign collection_object = collections[collection_handle].id
+        assign is_exist = false
+        unless collection_object == blank
+            assign is_exist = true
+        endunless
+    -%}    
+    {%- if is_exist %}
+    <collection-icon class="collection-icon"
+     data-collection-handle="{{ collection_handle }}"
+     data-collection-icon-width="{{ iconWidth }}"     
+    ></collection-icon>
+    {% endif -%}
+{%- endif -%}
+        {%- endif -%}
+        <span>{{ childlink.title | escape }}</span>
+        {%- if childlink.links != blank -%}<svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret"><use href="#icon-caret" /></svg>{%- endif -%}
+      </a>
+    </summary>
+    {%- if childlink.links != blank -%}
+      <ul class="childlist-menu--disclosure list-menu motion-reduce" data-type-menu="{{ typeDropdownMenu }}">
+      {%- if section.settings.second_dropdown_limit_qty_categories == 0 -%}
+      {%- for grandchildlink in childlink.links -%}
+        <li>
+          <a href="{{ grandchildlink.url }}" class="header__menu-item list-menu__item link--text focus-inset"{% if grandchildlink.current %} aria-current="page"{% endif %}>
+            {{ grandchildlink.title | escape }}
+          </a>
+        </li>
+      {%- endfor -%}
+      {%- else -%}
+      {%- for grandchildlink in childlink.links limit: section.settings.second_dropdown_limit_qty_categories -%}
+        <li>
+          <a href="{{ grandchildlink.url }}" class="header__menu-item list-menu__item link--text focus-inset"{% if grandchildlink.current %} aria-current="page"{% endif %}>
+            {{ grandchildlink.title | escape }}
+          </a>
+        </li>
+      {%- endfor -%}
+      {%- if childlink.links.size > section.settings.second_dropdown_limit_qty_categories -%}
+        <li>
+          <a href="{{ childlink.url }}" class="header__menu-item list-menu__item link--text focus-inset link_shop-all">
+            <span>{{ section.settings.second_dropdown_limit_qty_categories_link | escape }}</span>
+          </a>
+        </li>
+      {%- endif -%}
+      {%- endif -%}
+      </ul>
+    {%- endif-%}
+  </details>
+</li>
+{%- endfor -%}
+                    {%- endif -%}
+
+                  </ul>
+                {%- if typeDropdownMenu == 'full-width' -%}</div>{%- endif -%}
+                {%- unless typeDropdownMenu == 'small' -%}
+                {%- if section.blocks.size > 0 -%}
+{%- for block in section.blocks -%}
+  {% case block.type %}
+{% comment %}Render image and Collection list in the dropdown content{% endcomment %}
+    {% when 'image_item_menu' %}
+      {% render 'header__dropdown--content_banner_collections'
+        block: block
+        blockOrder: forloop.index
+        parent_item_index: indexItemMenu
+      %}
+{% comment %}Render Product list in the dropdown content{% endcomment %}
+    {% when 'list_product_items' %}
+      {% render 'header__dropdown--list_product_items'
+        block: block
+        blockOrder: forloop.index
+        parent_item_index: indexItemMenu
+      %}
+{% comment %}Render Custom Liquid in the dropdown content{% endcomment %}
+    {% when 'custom_liquid' %}
+      {% render 'header__dropdown--custom_liquid'
+        block: block
+        blockOrder: forloop.index
+        parent_item_index: indexItemMenu
+      %}
+{% comment %}Render Custom Liquid in the dropdown content{% endcomment %}
+    {% when 'banner' %}
+      {% render 'header__dropdown--banner'
+        block: block
+        blockOrder: forloop.index
+        parent_item_index: indexItemMenu
+      %}
+  {% endcase %}
+{%- endfor -%}
+{%- endif -%}
+                {%- endunless -%}
+                {%- if typeDropdownMenu == 'full-width' -%}</div>{%- endif -%}
+                {%- unless forloop.first and typeDropdownMenu == 'small' -%}</div>{%- endunless -%}
+              </details>
+            </details-disclosure>
+          {%- else -%}            
+            {%- assign title = link.title | downcase -%}
+            {%- if selected_item_menu_as_phone_link == title %}
+            <a href="tel:{{ section.settings.phone_number | default: '1 888 222 2222' }}" class="header__menu-item header__menu-item-top {% if bgHighlightedItem %}header__menu-item-{{ forloop.index }}-highlighted{% else %}header__menu-item-{{ forloop.index }}{% endif %} {% if link.current %}header__active-menu-item{% endif %} list-menu__item focus-inset"{% if link.current %} aria-current="page"{% endif %} style="background: {{ section.settings.phone_number_menu_background_gradient | default: section.settings.phone_number_menu_background }};">
+              {%- if section.settings.use_default_phone_icon %}
+                {% render 'icons-solid', name: 'phone', css_class: 'menu-item__phone' %}
+              {% else %}
+              {% unless section.settings.phone_icon == blank %}
+              <span class="phone-icon">
+                {{ section.settings.phone_icon | image_url: width: phone_number_icon_width | image_tag }}
+              </span>
+              {% endunless %}
+              {% endif -%}
+              <span style="color: {{ section.settings.phone_number_menu_foreground | default: 'currentColor' }}">{{ link.title | escape }}</span>
+            </a>
+            {% else %}
+            <a href="{{ link.url }}" class="header__menu-item header__menu-item-top {% if bgHighlightedItem %}header__menu-item-{{ forloop.index }}-highlighted{% else %}header__menu-item-{{ forloop.index }}{% endif %} {% if link.current %}header__active-menu-item{% endif %} list-menu__item focus-inset"{% if link.current %} aria-current="page"{% endif %}>
+              <span>{{ link.title | escape }}</span>
+            </a>
+            {% endif %}
+          {%- endif -%}
+        </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </nav>
+</header-menu>
+      {% endunless -%}
+    {% endif -%}
+
+  </header>
+{% endcapture -%}
+
+{%- if section.settings.enable_sticky_header -%}
+    <sticky-header class="header-wrapper{% if section.settings.add_border_bottom %} sticky-header__box-shadow{% endif %}">
+        {{- header_html -}}
+    </sticky-header>
+{%- else -%}
+    <div class="header-wrapper">{{ header_html }}</div>
+{%- endif -%}
+<div class="header-menu__overlay-element"></div>
+
+{%- unless settings.current_presets == 'garage' %}
+    <noscript>{{ 'component-menu-drawer__slideout.css' | asset_url | stylesheet_tag }}</noscript>
+{% endunless -%}
+
+{%- if settings.current_presets == 'garage' %}
+    {{ 'component-menu-drawer__garage.css' | asset_url | stylesheet_tag }}
+{% endif -%}
+
+{%- if section.settings.enable_dropdown_menu_animation -%}
+    {{ 'component-menu-dropdown-animation.css' | asset_url | stylesheet_tag }}
+{%- endif -%}
+
+{%- if request.locale.iso_code contains 'ar' -%}
+    {{ 'navigation-menu-drawer-rtl.css' | asset_url | stylesheet_tag }}
+    <noscript>{{ 'navigation-menu-drawer-rtl.css' | asset_url | stylesheet_tag }}</noscript>
+    {%- unless current_type_menu == 'navigation' -%}
+        {{ 'navigation-slideout-rtl.css' | asset_url | stylesheet_tag }}
+        <noscript>{{ 'navigation-slideout-rtl.css' | asset_url | stylesheet_tag }}</noscript>
+    {%- endunless -%}
+{%- else -%}
+    <noscript>{{ 'navigation-menu-drawer.css' | asset_url | stylesheet_tag }}</noscript>
+    {%- unless current_type_menu == 'navigation' -%}
+        {{ 'navigation-slideout.css' | asset_url | stylesheet_tag }}
+        <noscript>{{ 'navigation-slideout.css' | asset_url | stylesheet_tag }}</noscript>
+    {%- endunless -%}
+{%- endif -%}
+
+{%- unless searchLayout == 'expanded' -%}
+    {{ 'component-searchlayout-icon.css' | asset_url | stylesheet_tag }}
+    <noscript>{{ 'component-searchlayout-icon.css' | asset_url | stylesheet_tag }}</noscript>
+{%- endunless -%}
+
+<noscript>
+    {{ 'section-navigation-megamenu.css' | asset_url | stylesheet_tag }}
+    {{ 'section-navigation-smallmenu.css' | asset_url | stylesheet_tag }}
+    {{ 'component-list-menu.css' | asset_url | stylesheet_tag }}
+    {{ 'component-search.css' | asset_url | stylesheet_tag }}
+    {{ 'component-menu-drawer.css' | asset_url | stylesheet_tag }}
+    {{ 'component-menu-dropdown-animation.css' | asset_url | stylesheet_tag }}
+    {{ 'disclosure.css' | asset_url | stylesheet_tag }}
+</noscript>
+
+<script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "name": {{ shop.name | json }},
+      {% if section.settings.logo %}
+        {% assign image_size = section.settings.logo.width | append: 'x' %}
+        "logo": {{ section.settings.logo | image_url: image_size | prepend: "https:" | json }},
+      {% endif %}
+      "sameAs": [
+        {{ settings.social_twitter_link | json }},
+        {{ settings.social_facebook_link | json }},
+        {{ settings.social_pinterest_link | json }},
+        {{ settings.social_instagram_link | json }},
+        {{ settings.social_tumblr_link | json }},
+        {{ settings.social_snapchat_link | json }},
+        {{ settings.social_youtube_link | json }},
+        {{ settings.social_vimeo_link | json }}
+      ],
+      "url": {{ shop.url | append: page.url | json }}
+    }
+</script>
+
+{%- if request.page_type == 'index' -%}
+    {% assign potential_action_target = shop.url | append: routes.search_url | append: '?q={search_term_string}' %}
+    <script type="application/ld+json">
+        {
+          "@context": "http://schema.org",
+          "@type": "WebSite",
+          "name": {{ shop.name | json }},
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {{ potential_action_target | json }},
+            "query-input": "required name=search_term_string"
+          },
+          "url": {{ shop.url | append: page.url | json }}
+        }
+    </script>
+{%- endif -%}
+
+<script src="{{ 'details-disclosure.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'details-modal.js' | asset_url }}" defer="defer"></script>
+
+{% if section.settings.enable_sticky_header %}
+    <script src="{{ 'sticky-header.js' | asset_url }}" defer="defer"></script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "t:sections.header.name",
+  "class": "section-header-transition",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "t:sections.header.settings.full_width.label",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "header_max_width",
+      "label": "t:sections.header.settings.header_max_width.label",
+      "min": 980,
+      "max": 1400,
+      "step": 20,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "t:sections.header.settings.logo.label"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 50,
+      "max": 250,
+      "step": 10,
+      "default": 100,
+      "unit": "t:sections.header.settings.logo_width.unit",
+      "label": "t:sections.header.settings.logo_width.label"
+    },
+    {
+      "type": "range",
+      "id": "mobile_logo_width",
+      "min": 50,
+      "max": 250,
+      "step": 10,
+      "default": 100,
+      "unit": "t:sections.header.settings.mobile_logo_width.unit",
+      "label": "t:sections.header.settings.mobile_logo_width.label"
+    },
+    {
+      "type": "select",
+      "id": "justify_logo",
+      "options": [
+        {
+          "value": "start",
+          "label": "t:sections.header.settings.justify_logo.options.start"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.header.settings.justify_logo.options.center"
+        },
+        {
+          "value": "end",
+          "label": "t:sections.header.settings.justify_logo.options.end"
+        }
+      ],
+      "default": "center",
+      "label": "t:sections.header.settings.justify_logo.label",
+      "info": "t:sections.header.settings.justify_logo.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "center_logo_on_mobile",
+      "label": "t:sections.header.settings.center_logo_on_mobile.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_drawer_label_on_mobile",
+      "label": "t:sections.header.settings.show_drawer_label_on_mobile.label",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "dislay_shopname_on_mobile",
+      "label": "t:sections.header.settings.dislay_shopname_on_mobile.label",
+      "info": "t:sections.header.settings.dislay_shopname_on_mobile.info",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.header_0.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky_header",
+      "default": true,
+      "label": "t:sections.header.settings.enable_sticky_header.label",
+      "info": "t:sections.header.settings.enable_sticky_header.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "add_border_searchfield",
+      "default": false,
+      "label": "t:sections.header.settings.add_border_searchfield.label",
+      "info": "t:sections.header.settings.add_border_searchfield.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "add_menu_dividers",
+      "label": "t:sections.header.settings.add_menu_dividers.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "add_border_bottom",
+      "default": false,
+      "label": "t:sections.header.settings.add_border_bottom.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_drawer_show_social_media",
+      "default": false,
+      "label": "t:sections.header.settings.mobile_drawer_show_social_media.label",
+      "info": "t:sections.header.settings.mobile_drawer_show_social_media.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_header_line_divider",
+      "label": "t:sections.header.settings.show_header_line_divider.label",
+      "info": "t:sections.header.settings.show_header_line_divider.info",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_icons_line_divider",
+      "label": "t:sections.header.settings.show_icons_line_divider.label",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.header_1.content"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "default": "main-menu",
+      "label": "t:sections.header.settings.menu.label"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_2",
+      "label": "t:sections.header.settings.menu_2.label",
+      "info": "t:sections.header.settings.menu_2.info"
+    },
+    {
+      "type": "select",
+      "id": "type_menu",
+      "options": [
+        {
+          "value": "navigation",
+          "label": "t:sections.header.settings.type_menu.options.navigation"
+        },
+        {
+          "value": "slideout",
+          "label": "t:sections.header.settings.type_menu.options.slideout"
+        },
+        {
+          "value": "combined",
+          "label": "t:sections.header.settings.type_menu.options.combined"
+        }
+      ],
+      "default": "navigation",
+      "label": "t:sections.header.settings.type_menu.label",
+    },
+    {
+      "type": "select",
+      "id": "second_level_menu_width",
+      "options": [
+        {
+          "value": "full-width",
+          "label": "t:sections.header.settings.second_level_menu_width.options__2"
+        },
+        {
+          "value": "small",
+          "label": "t:sections.header.settings.second_level_menu_width.options__4"
+        }
+      ],
+      "default": "full-width",
+      "label": "t:sections.header.settings.second_level_menu_width.label"
+    },
+    {
+      "type": "text",
+      "id": "megamenu_items",
+      "label": "t:sections.header.settings.megamenu_items.label",
+      "info": "t:sections.header.settings.megamenu_items.info"
+    },
+    {
+      "type": "text",
+      "id": "smallmenu_items",
+      "label": "t:sections.header.settings.smallmenu_items.label",
+      "info": "t:sections.header.settings.smallmenu_items.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "megamenu_items_use_layout_width",
+      "label": "t:sections.header.settings.megamenu_items_use_layout_width.label",
+      "info": "t:sections.header.settings.megamenu_items_use_layout_width.info",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_menu_items_uppercase",
+      "label": "t:sections.header.settings.enable_menu_items_uppercase.label",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "activate_top_level_menu",
+      "options": [
+        {
+          "value": "on_hover",
+          "label": "t:sections.header.settings.activate_top_level_menu.on_hover"
+        },
+        {
+          "value": "on_click",
+          "label": "t:sections.header.settings.activate_top_level_menu.on_click"
+        }
+      ],
+      "default": "on_hover",
+      "label": "t:sections.header.settings.activate_top_level_menu.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "first_item_bg_highlighted",
+      "label": "t:sections.header.settings.first_item_bg_highlighted.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_dropdown_menu_animation",
+      "label": "t:sections.header.settings.enable_dropdown_menu_animation.label",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overlay",
+      "label": "t:sections.header.settings.show_overlay.label",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.header_collection_icon.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_icon",
+      "label": "t:sections.header.settings.show_collection_icon.label",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "collection_icon",
+      "label": "t:sections.header.settings.collection_icon.label",
+      "info": "t:sections.header.settings.collection_icon.info"
+    },
+    {
+      "type":"range",
+      "id": "collection_icon_width",
+      "min": 20,
+      "max": 150,
+      "step": 5,
+      "default": 30,
+      "unit": "t:sections.header.settings.logo_width.unit",
+      "label": "t:sections.header.settings.collection_icon_width.label"
+    },
+    {
+      "type": "select",
+      "id": "collection_icon_possition",
+      "options": [
+        {
+          "value": "normal",
+          "label": "t:sections.header.blocks.settings.alignment.options.default"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.header.blocks.settings.alignment.options.center"
+        }
+      ],
+      "default": "center",
+      "label": "t:sections.header.blocks.settings.alignment.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "center_collection_title",
+      "label": "t:sections.header.blocks.settings.center_collection_title.label",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.header_3.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_image",
+      "label": "t:sections.header.settings.show_collection_image.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "collection_image",
+      "label": "t:sections.header.settings.collection_image.label",
+      "info": "t:sections.header.settings.collection_image.info"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.header_2.content"
+    },
+    {
+      "type": "range",
+      "id": "main_items_per_row",
+      "min": 3,
+      "max":  6,
+      "step": 1,
+      "default": 4,
+      "label": "t:sections.header.settings.main_items_per_row.label"
+    },
+    {
+      "type": "text",
+      "id": "second_dropdown_limit_qty_categories_link",
+      "label": "t:sections.header.settings.second_dropdown_limit_qty_categories_link.label",
+      "default": "Shop All"
+    },
+    {
+      "type": "number",
+      "id": "second_dropdown_limit_qty_categories",
+      "label": "t:sections.header.settings.second_dropdown_limit_qty_categories.label",
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.header_item_menu_link_as_phone.content"
+    },
+    {
+      "type": "text",
+      "id": "item_menu_name",
+      "label": "t:sections.header.settings.item_menu_name.label"
+    },
+    {
+      "type": "text",
+      "id": "phone_number",
+      "label": "t:sections.header.settings.phone_number.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_default_phone_icon",
+      "label": "t:sections.header.settings.use_default_phone_icon.label",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "phone_icon",
+      "label": "t:sections.header.settings.phone_icon.label",
+      "info": "t:sections.header.settings.phone_icon.info"
+    },
+    {
+      "type": "color",
+      "id": "phone_number_menu_foreground",
+      "label": "t:sections.header.settings.phone_number_menu_foreground.label"
+    },
+    {
+      "type": "color",
+      "id": "phone_number_menu_background",
+      "label": "t:sections.header.settings.phone_number_menu_background.label"
+    },
+    {
+      "type": "color_background",
+      "id": "phone_number_menu_background_gradient",
+      "label": "t:sections.header.settings.phone_number_menu_background_gradient.label"
+    }
+  ],
+  "max_blocks": 20,
+  "blocks": [
+    {
+  "type": "image_item_menu",
+  "name": "t:sections.header.blocks.name",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enabled",
+      "label": "t:sections.header.blocks.settings.enabled.label",
+      "info": "t:sections.header.blocks.settings.enabled.info",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_block_on_mobile",
+      "label": "t:sections.header.blocks.settings.show_block_on_mobile.label",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "disable_menu_links",
+      "label": "t:sections.header.blocks.settings.disable_menu_links.label",
+      "info": "You can remove menu items and show the Image banner or Collection list in the dropdown.",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.blocks.settings.header_1.content"
+    },
+    {
+      "type": "image_picker",
+      "id": "item_image",
+      "label": "t:sections.header.blocks.settings.item_image"
+    },
+    {
+      "type":"range",
+      "id": "banner_width",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "default": 100,
+      "unit": "t:sections.header.blocks.settings.banner_width.unit",
+      "label": "t:sections.header.blocks.settings.banner_width.label"
+    },
+    {
+      "type": "number",
+      "id": "item_menu_index",
+      "label": "t:sections.header.blocks.settings.item_menu_index.label",
+      "info": "t:sections.header.blocks.settings.item_menu_index.info",
+      "default": 1
+    },
+    {
+      "type": "url",
+      "id": "image_link",
+      "label": "t:sections.header.blocks.settings.image_link"
+    },
+    {
+      "type": "text",
+      "id": "image_title",
+      "label": "t:sections.header.blocks.settings.image_title"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.blocks.settings.header_2.content"
+    },
+    {
+      "type": "collection_list",
+      "id": "collections",
+      "label": "t:sections.header.blocks.settings.collections"
+    },
+    {
+      "type": "url",
+      "id": "collection_url",
+      "label": "t:sections.our-list-collections.settings.collection_url.label"
+    },
+    {
+      "type": "select",
+      "id": "view_all_appearance",
+      "options": [
+        {
+          "value": "button",
+          "label": "t:sections.featured-collection.settings.view_all_appearance.options.button"
+        },
+        {
+          "value": "link",
+          "label": "t:sections.featured-collection.settings.view_all_appearance.options.link"
+        }
+      ],
+      "default": "button",
+      "label": "t:sections.featured-collection.settings.view_all_appearance.label"
+    },
+    {
+      "type":"range",
+      "id": "collection_items_width",
+      "min": 10,
+      "max": 50,
+      "step": 2,
+      "default": 20,
+      "unit": "t:sections.header.blocks.settings.collection_items_width.unit",
+      "label": "t:sections.header.blocks.settings.collection_items_width.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_outline_border",
+      "label": "t:sections.header.blocks.settings.show_outline_border.label",
+      "default": true
+    }
+  ]
+},
+    {
+  "type": "list_product_items",
+  "name": "t:sections.header.blocks.list_product_items.name",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "disable_menu_links",
+      "label": "t:sections.header.blocks.settings.disable_menu_links.label",
+      "info": "t:sections.header.blocks.settings.disable_menu_links.info",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_block_on_mobile",
+      "label": "t:sections.header.blocks.settings.show_block_on_mobile.label",
+      "default": false
+    },
+    {
+      "type": "collection",
+      "id": "product_list",
+      "label": "t:sections.header.blocks.settings.product_list"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 5,
+      "label": "t:sections.featured-collection.settings.products_to_show.label"
+    },
+    {
+      "type":"range",
+      "id": "items_width",
+      "min": 10,
+      "max": 50,
+      "step": 2,
+      "default": 18,
+      "unit": "t:sections.header.blocks.settings.items_width.unit",
+      "label": "t:sections.header.blocks.settings.items_width.label"
+    },
+    {
+      "type": "number",
+      "id": "item_menu_index",
+      "label": "t:sections.header.blocks.settings.item_menu_index.label",
+      "info": "t:sections.header.blocks.settings.item_menu_index.info",
+      "default": 1
+    },
+    {
+      "type": "url",
+      "id": "collection_url",
+      "label": "t:sections.our-list-collections.settings.collection_url.label"
+    },
+    {
+      "type": "select",
+      "id": "view_all_appearance",
+      "options": [
+        {
+          "value": "button",
+          "label": "t:sections.featured-collection.settings.view_all_appearance.options.button"
+        },
+        {
+          "value": "link",
+          "label": "t:sections.featured-collection.settings.view_all_appearance.options.link"
+        }
+      ],
+      "default": "button",
+      "label": "t:sections.featured-collection.settings.view_all_appearance.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.collage.blocks.video.settings.header__3.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_price",
+      "label": "t:sections.header.blocks.settings.show_product_price.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "t:sections.header.blocks.settings.show_badge.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "t:sections.header.blocks.settings.show_description.label",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_outline_border",
+      "label": "t:sections.header.blocks.settings.show_outline_border.label",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:sections.slider.settings.header__2.content"
+    },
+    {
+      "type": "color",
+      "id": "product_list_foreground",
+      "label": "t:sections.header.blocks.settings.product_list_foreground.label",
+      "default": "#000000"
+    }
+  ]
+},
+    {
+    "type": "custom_liquid",
+    "name": "t:sections.custom-liquid.name",
+    "settings": [
+        {
+            "type": "checkbox",
+            "id": "disable_menu_links",
+            "label": "t:sections.header.blocks.settings.disable_menu_links.label",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "show_block_on_mobile",
+            "label": "t:sections.header.blocks.settings.show_block_on_mobile.label",
+            "default": false
+        },
+        {
+            "type": "liquid",
+            "id": "custom_liquid",
+            "label": "t:sections.custom-liquid.settings.custom_liquid.label"
+        },
+        {
+            "type": "number",
+            "id": "item_menu_index",
+            "label": "t:sections.header.blocks.settings.item_menu_index.label",
+            "info": "t:sections.header.blocks.settings.item_menu_index.info",
+            "default": 1
+        },
+        {
+            "type": "url",
+            "id": "link",
+            "label": "t:sections.announcement-bar.blocks.announcement.settings.link.label"
+        },
+        {
+            "type": "select",
+            "id": "view_all_appearance",
+            "options": [
+                {
+                    "value": "button",
+                    "label": "t:sections.featured-collection.settings.view_all_appearance.options.button"
+                },
+                {
+                    "value": "link",
+                    "label": "t:sections.featured-collection.settings.view_all_appearance.options.link"
+                }
+            ],
+            "default": "button",
+            "label": "t:sections.featured-collection.settings.view_all_appearance.label"
+        }
+    ]
+},
+    {
+  "type": "banner",
+  "name": "t:sections.header.blocks.banner.name",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "disable_menu_links",
+      "label": "t:sections.header.blocks.settings.disable_menu_links.label",
+      "info": "You can remove menu items and show the Image banner or Collection list in the dropdown.",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_block_on_mobile",
+      "label": "t:sections.header.blocks.settings.show_block_on_mobile.label",
+      "default": false
+    },
+    {
+      "type": "number",
+      "id": "item_menu_index",
+      "label": "t:sections.header.blocks.settings.item_menu_index.label",
+      "info": "t:sections.header.blocks.settings.item_menu_index.info",
+      "default": 1
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "default":"Banner Title",
+      "label": "t:sections.multicolumn.blocks.column.settings.title.label"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "sub_title",
+      "default": "Up to 50% off",
+      "label": "t:sections.multicolumn.blocks.column.settings.sub_title.label"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "default": "<p>Describe a product, make announcements.</p>",
+      "label": "t:sections.multicolumn.blocks.column.settings.text.label"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "t:sections.multicolumn.blocks.column.settings.link.label"
+    },
+    {
+      "type": "select",
+      "id": "link_appearance",
+      "options": [
+        {
+          "value": "button",
+          "label": "t:sections.multicolumn.blocks.column.settings.link_appearance.options.button"
+        },
+        {
+          "value": "button_secondary",
+          "label": "t:sections.multicolumn.blocks.column.settings.link_appearance.options.button_secondary"
+        }
+      ],
+      "default": "button",
+      "label": "t:sections.multicolumn.blocks.column.settings.link_appearance.label"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "t:sections.multicolumn.blocks.column.settings.button_label.label",
+      "info": "t:sections.multicolumn.blocks.column.settings.button_label.info",
+      "default": "Shop now"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_enabled",
+      "label": "t:sections.multicolumn.blocks.column.settings.image_enabled.label",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.multicolumn.blocks.column.settings.image.label"
+    },
+    {
+      "type":"range",
+      "id": "banner_width",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "default": 100,
+      "unit": "t:sections.header.blocks.settings.banner_width.unit",
+      "label": "t:sections.header.blocks.settings.banner_width.label",
+      "info": "t:sections.header.blocks.settings.banner_width.info"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "options": [
+        {
+          "value": "contain",
+          "label": "t:sections.multicolumn.blocks.column.settings.image_position.options.contain"
+        },
+        {
+          "value": "cover",
+          "label": "t:sections.multicolumn.blocks.column.settings.image_position.options.cover"
+        },
+        {
+          "value": "column",
+          "label": "t:sections.multicolumn.blocks.column.settings.image_position.options.column"
+        }
+      ],
+      "default": "contain",
+      "label": "t:sections.multicolumn.blocks.column.settings.image_position.label",
+      "info": "t:sections.multicolumn.blocks.column.settings.image_position.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_outline",
+      "label": "t:sections.multicolumn.settings.show_outline.label",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:sections.multicolumn.blocks.column.settings.header.name"
+    },
+    {
+      "type": "checkbox",
+      "id": "add_cover",
+      "label": "t:sections.multicolumn.blocks.column.settings.add_cover.label",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "cover_background",
+      "label": "t:sections.multicolumn.blocks.column.settings.cover_background.label",
+      "default": "#101824"
+    },
+    {
+      "type": "color_background",
+      "id": "cover_background_gradient",
+      "label": "t:sections.multicolumn.blocks.column.settings.cover_background_gradient.label"
+    },
+    {
+      "type": "color",
+      "id": "color_title",
+      "label": "t:sections.multicolumn.blocks.column.settings.color_title.label",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "color_text",
+      "label": "t:sections.multicolumn.blocks.column.settings.color_text.label",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "bg_color_subtitle",
+      "label": "t:sections.multicolumn.blocks.column.settings.bg_color_subtitle.label",
+      "default": "#E13124"
+    },
+    {
+      "type": "color_background",
+      "id": "subtitle_background_gradient",
+      "label": "t:sections.multicolumn.blocks.column.settings.subtitle_background_gradient.label"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 1.5,
+      "step": 0.1,
+      "default": 0,
+      "unit": "rem",
+      "label": "t:sections.multicolumn.blocks.column.settings.border_radius.label"
+    }
+  ]
+}
+  ],
+  "presets": [
+    {
+      "name": "t:sections.header.presets.name"
+    }
+  ],
+  "enabled_on": {
+    "groups": ["header"]
+  }
+}
+{% endschema %}

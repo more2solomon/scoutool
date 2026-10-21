@@ -1,0 +1,9 @@
+{%- comment -%}
+    Render Recently Viewed items
+{%- endcomment -%}
+
+{%- assign limit = settings.recently_viewed_limit_to_show -%}
+
+<recently-viewed data-recently-viewed-limit="{{ limit }}"></recently-viewed>
+
+{{ 'section-recently-viewed.css' | asset_url | stylesheet_tag }}

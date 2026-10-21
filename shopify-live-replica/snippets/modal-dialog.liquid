@@ -1,0 +1,47 @@
+{%- comment -%}
+    Render dialog modal
+
+    Accepts:
+    - aria_label   {String}
+    - color_scheme {String}
+    - content      {String}
+    - id           {String}
+    - no_padding   {Boolean}
+    - title        {String}
+{%- endcomment -%}
+
+{%- assign no_padding = no_padding | default: false -%}
+{%- assign color_scheme = color_scheme | default: 'background-1' -%}
+{% style %}
+    :where(popup-banner) {
+      --popup-banner-background: {{ block.settings.popup_background }};
+      --popup-banner-foreground: {{ block.settings.popup_foreground }};
+    }
+{% endstyle %}
+<modal-dialog id="PopupModal-{{ id }}" class="popup-modal color-{{ color_scheme }}">
+    <div
+        role="dialog"
+        aria-label="{{ aria_label }}"
+        aria-modal="true"
+        class="popup-modal__content{% unless no_padding %} popup-modal__content-padding{% endunless %}{% if settings.cut_button_corners %} border--with-cut-corners{% endif %}"
+        tabindex="-1"
+    >
+        <button
+            id="ModalClose-{{ id }}"
+            type="button"
+            class="button--secondary popup-modal__toggle modal__close-button"
+            title="{{ 'accessibility.close' | t }}"
+        >
+            <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-close">
+                <use href="#icon-close" />
+            </svg>
+        </button>
+
+        <div class="popup-modal__content-info">
+            {% unless title == blank %}
+                <h2 class="h2{% if settings.show_uppercase_heading %} uppercase{% endif %}">{{ title }}</h2>
+            {% endunless %}
+            {{ content }}
+        </div>
+    </div>
+</modal-dialog>

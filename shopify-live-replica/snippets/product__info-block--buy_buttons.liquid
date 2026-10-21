@@ -1,0 +1,197 @@
+{%- comment -%}
+    Render product "Add to cart" and other buy buttons block based on block settings
+
+    Accepts:
+     - block:      {Object}
+     - blockOrder: {Number}
+     - sectionId:  {String}
+     - product:    {Object}
+{%- endcomment -%}
+
+{%- liquid
+    assign preorderEnabled = block.settings.set_up_preorder
+    # get variant inventory QTY
+    assign configurableProduct = false
+    if product.variants.size > 1
+        # configurable products
+        assign configurableProduct = true
+    endif
+
+    assign button_class = 'product-form__submit button button--primary'
+    if settings.show_button_ring_on_hover
+        assign button_class = button_class | append: ' border--outline'
+    endif
+    if settings.cut_button_corners
+        assign button_class = button_class | append: ' border--with-cut-corners'
+    endif
+-%}
+{% unless preorderEnabled == false %}
+    {%- if configurableProduct -%}
+        {% for variant in product.variants %}
+            <input
+                type="hidden"
+                class="options--data"
+                data-variant-id="{{ variant.id }}"
+                data-variant-qty="{{ variant.inventory_quantity }}"
+            >
+        {% endfor %}
+    {%- else -%}
+        {% assign variant = product.variants | first %}
+        <input
+            type="hidden"
+            class="options--data"
+            data-variant-id="{{ variant.id }}"
+            data-variant-qty="{{ variant.inventory_quantity }}"
+        >
+    {%- endif -%}
+{% endunless %}
+
+<div
+    class="product__info-block product__info-block--buy_buttons reveal-item"
+    style="order: {{ blockOrder }}"
+    {{ block.shopify_attributes }}
+>
+    {%- if block.settings.show_dynamic_checkout -%}
+        {%- assign colorScheme = block.settings.dynamic_checkout_color_scheme -%}
+        {% style %}
+            product-form .shopify-payment-button__button {
+                {% case colorScheme %}
+                    {% when 'accent-1' or 'accent-2'%}
+                        --color-button-background: var(--color-base-{{ colorScheme }});
+                        --color-button-border: var(--color-base-{{ colorScheme }});
+                        --color-button-text: var(--color-base-{{ colorScheme }}-inverse);
+                    {% when 'background-1' or 'background-2'%}
+                        --color-button-background: var(--color-base-{{ colorScheme }});
+                        --color-button-border: var(--color-base-{{ colorScheme }});
+                        --color-button-text: var(--color-base-text);
+                    {% when 'inverse'%}
+                      --color-button-background: var(--color-base-text);
+                      --color-button-border: var(--color-base-text);
+                      --color-button-text: var(--color-base-background-1);
+                {% endcase %}
+            }
+
+            #product-form-{{ sectionId }} .shopify-payment-button__button--unbranded:hover:not([disabled]) {
+                background-color: var(--color-button-background);
+                --outline-color: var(--color-button-background);
+            }
+        {% endstyle %}
+    {%- endif -%}
+
+    {%- if product != blank -%}
+        {%- assign productFormId = 'product-form-' | append: sectionId | append: '-' | append: product.id -%}
+
+        <product-form class="product-form">
+            <div class="message-wrapper" role="alert" hidden>
+                {% render 'message-error' %}
+            </div>
+
+            {% form 'product',
+                product,
+                id: productFormId,
+                class: 'form',
+                novalidate: 'novalidate',
+                data-type: 'add-to-cart-form'
+            %}
+                <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+
+                {%- if block.settings.gift_card_show_recipient_form and product.gift_card? -%}
+                    {%- render 'gift-card__recipient-form', product: product, form: form, section: sectionId -%}
+                {%- endif -%}
+
+                <div class="product-form__buttons">
+                    <button
+                        type="submit"
+                        name="add"
+                        class="{{ button_class }}"
+                        {% if settings.minicart_enabled %}
+                            data-cart-toggle-button
+                        {% endif %}
+                        {% if product.selected_or_first_available_variant.available == false %}
+                            disabled
+                        {% endif %}
+                    >
+                        {%- if preorderEnabled
+                            and product.selected_or_first_available_variant.available
+                            and product.selected_or_first_available_variant.inventory_quantity > 0
+                        -%}
+                            {% comment %}
+                                {% render 'icons-charge' name: 'cart' css_class: 'icon-cart' %}
+                            {% endcomment %}
+                            <span class="text">{{ 'products.product.add_to_cart' | t }}</span>
+                        {% elsif preorderEnabled
+                            and product.selected_or_first_available_variant.available
+                            and product.selected_or_first_available_variant.inventory_quantity <= 0
+                        %}
+                            <span class="text">{{ 'products.product.pre_sale' | t }}</span>
+                        {% elsif preorderEnabled == false and product.selected_or_first_available_variant.available %}
+                            <span class="text">{{ 'products.product.add_to_cart' | t }}</span>
+                        {%- else -%}
+                            <span class="text">{{ 'products.product.sold_out' | t }}</span>
+                        {%- endif -%}
+                        {%- if block.settings.show_cart_icon %}
+                            {% render 'icons-charge', name: 'cart', css_class: 'icon-cart' %}
+                        {% endif -%}
+                    </button>
+                    {% unless preorderEnabled
+                        and product.selected_or_first_available_variant.available
+                        and product.selected_or_first_available_variant.inventory_quantity <= 0
+                    %}
+                        {%- if block.settings.show_dynamic_checkout -%}
+                            {{ form | payment_button }}
+                        {%- endif -%}
+                    {% endunless %}
+                </div>
+            {% endform %}
+        </product-form>
+
+    {%- else -%}
+        <div class="product-form">
+            <div class="product-form__buttons">
+                <button
+                    type="submit"
+                    name="add"
+                    class="{{ button_class }}"
+                    disabled
+                >
+                    {{ 'products.product.sold_out' | t }}
+                </button>
+            </div>
+        </div>
+    {%- endif -%}
+</div>
+{%- if settings.compare_products -%}
+    <div
+        class="product__info-block product__info-block--compare reveal-item"
+        style="order: {{ block.settings.compare_button_order }};"
+    >
+        <compare-add-button>
+            <button
+                type="button"
+                name="{{ "sections.compare.link_title" | t }}"
+                class="compare-add-button button button--tertiary button--small"
+                data-product-id="{{ product.id }}"
+                aria-label="{{ 'sections.compare.add_to_compare' | t }}"
+                onclick="document.querySelector('compare-popup')?.popupContent?.();return false;"
+            >
+                <span class="compare-icon">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="2"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                    >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                    </svg>
+
+                    <span class="compare-checkmark">
+                        {% render 'icons-outline', name: 'check', css_class: 'icon icon-checkmark hidden' %}
+                    </span>
+                </span>
+                <span class="label">{{ 'sections.compare.add_to_compare' | t }}</span>
+            </button>
+        </compare-add-button>
+    </div>
+{%- endif -%}

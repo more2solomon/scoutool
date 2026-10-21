@@ -1,0 +1,3871 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+    "settings_schema": {
+        "general": {
+            "name": "Allgemein",
+            "settings": {
+                "current_presets": {
+                    "label": "Aktueller Themensstil",
+                    "info": "* - Ändern Sie diese Option nicht! Um den Themenstil zu ändern, gehen Sie zu der Option \"Themenstil\"",
+                    "options": {
+                        "default": "Standard",
+                        "light": "Hell"
+                    }
+                },
+                "favicon": {
+                    "label": "Favicon-Bild",
+                    "info": "Wird auf 32 x 32 px skaliert"
+                },
+                "price_superscript_decimals": {
+                    "label": "Preis-Cents als Hochzeichen anzeigen"
+                },
+                "show_swatch_colors": {
+                    "label": "Farbenvorschau aktivieren",
+                    "info": "Nur im Abschnitt der vorgestellten Kollektion"
+                },
+                "scroll_top_enabled": {
+                    "label": "Button „Nach oben scrollen“ anzeigen"
+                },
+                "animation_on_reveal": {
+                    "label": "Animationseffekte beim Scrollen aktivieren",
+                    "info": "Steuern Sie die Animationseffekte beim Scrollen über die Abschnittseinstellungen."
+                }
+            }
+        },
+        "header": {
+            "name": "Kopfzeile",
+            "settings": {
+                "logo_position": {
+                    "label": "Logo-Position",
+                    "options": {
+                        "left": "Links",
+                        "middle": "Mitte"
+                    }
+                },
+                "show_search_icon_only": {
+                    "label": "Nur Suchsymbol anzeigen"
+                },
+                "show_login_icon_on_mobile": {
+                    "label": "Login-Symbol auf mobilen Geräten anzeigen"
+                },
+                "show_switcher_language_flag": {
+                    "label": "Sprachumschalter-Flagge anzeigen"
+                }
+            },
+            "presets": {
+                "name": "Kopfzeile"
+            }
+        },
+        "colors": {
+            "name": "Farben",
+            "settings": {
+                "colors_accent_1": {
+                    "label": "Akzent 1",
+                    "info": "Hauptakzentfarbe (Text und Rand der sekundären Schaltfläche, Akzent der Kopfzeile, usw.)."
+                },
+                "colors_accent_1_gradient": {
+                    "label": "Akzent 1 Verlauf"
+                },
+                "colors_accent_1_inverse": {
+                    "label": "Akzent 1 Vordergrund",
+                    "info": "Invertierte Hauptakzentfarbe"
+                },
+                "colors_accent_2": {
+                    "label": "Akzent 2"
+                },
+                "colors_accent_2_inverse": {
+                    "label": "Akzent 2 Vordergrund"
+                },
+                "header__1": {
+                    "content": "Primärfarben"
+                },
+                "header__2": {
+                    "content": "Elementfarben"
+                },
+                "colors_text": {
+                    "label": "Text",
+                    "info": "Wird als Vordergrundfarbe auf Hintergrundfarben verwendet."
+                },
+                "colors_link": {
+                    "label": "Textlinks"
+                },
+                "colors_final_price": {
+                    "label": "Endpreis des Produkts"
+                },
+                "colors_background_1": {
+                    "label": "Hintergrund"
+                },
+                "colors_background_2": {
+                    "label": "Hintergrund 2"
+                },
+                "colors_background_gradient": {
+                    "label": "Hintergrund-Verlauffarbe"
+                },
+                "header__3": {
+                    "content": "Kopfzeilenfarben"
+                },
+                "colors_header_text": {
+                    "label": "Textfarbe"
+                },
+                "colors_header_background": {
+                    "label": "Hintergrundfarbe"
+                },
+                "colors_header_dd_background": {
+                    "label": "Dropdown-Hintergrundfarbe"
+                },
+                "colors_header_dd_text": {
+                    "label": "Dropdown-Textfarbe"
+                },
+                "colors_header_background_gradient": {
+                    "label": "Hintergrund-Verlauffarbe"
+                },
+                "colors_header_dd_third_level_background": {
+                    "label": "Hintergrundfarbe der dritten Ebene"
+                },
+                "colors_header_dd_third_level_text": {
+                    "label": "Textfarbe der dritten Ebene"
+                },
+                "header__4": {
+                    "content": "Fußzeilenfarben"
+                },
+                "colors_footer_background": {
+                    "label": "Hintergrundfarbe"
+                },
+                "colors_footer_contacts_background_gradient": {
+                    "label": "Hintergrund-Verlauffarbe",
+                    "info": "Hintergrundfarbe der Fußzeile Kontakte"
+                },
+                "colors_footer_background_gradient": {
+                    "label": "Hintergrund-Verlauffarbe",
+                    "info": "Hintergrundfarbe der Fußzeile"
+                },
+                "colors_footer_foreground": {
+                    "label": "Textfarbe"
+                },
+                "header__5": {
+                    "content": "Farben der Produktabzeichen"
+                },
+                "colors_badge_custom_background": {
+                    "label": "Benutzerdefiniertes Abzeichen-Hintergrund"
+                },
+                "colors_badge_custom_foreground": {
+                    "label": "Benutzerdefiniertes Abzeichen-Vordergrund"
+                },
+                "colors_badge_sale_background": {
+                    "label": "Verkaufsabzeichen-Hintergrund"
+                },
+                "colors_badge_sale_foreground": {
+                    "label": "Verkaufsabzeichen-Vordergrund"
+                },
+                "colors_badge_sale_background_gradient": {
+                    "label": "Verkaufsabzeichen-Verlaufshintergrundfarbe"
+                },
+                "colors_badge_soldout_background": {
+                    "label": "Ausverkauft-Abzeichen-Hintergrund"
+                },
+                "colors_badge_soldout_foreground": {
+                    "label": "Ausverkauft-Abzeichen-Vordergrund"
+                },
+                "colors_badge_soldout_background_gradient": {
+                    "label": "Ausverkauft-Abzeichen-Verlaufshintergrundfarbe"
+                },
+                "header__6": {
+                    "content": "Farben der Produktbestandskennzeichnungen"
+                },
+                "in_stock_label_color": {
+                    "label": "In Stock Kennzeichnungsfarbe"
+                },
+                "out_of_stock_label_color": {
+                    "label": "Out of Stock Kennzeichnungsfarbe"
+                },
+                "colors_badge_new__background_color": {
+                    "label": "\"Neu\" Abzeichen Hintergrund"
+                },
+                "colors_badge_new__background_gradient": {
+                    "label": "\"Neu\" Abzeichen Hintergrund-Verlauf"
+                },
+                "colors_badge_new__foreground_color": {
+                    "label": "\"Neu\" Abzeichen Vordergrund"
+                },
+                "colors_badge_preorder__background_color": {
+                    "label": "\"Vorbestellung\" Abzeichen Hintergrund"
+                },
+                "colors_badge_preorder__background_gradient": {
+                    "label": "\"Vorbestellung\" Abzeichen Hintergrund-Verlauf"
+                },
+                "colors_badge_preorder__foreground_color": {
+                    "label": "\"Vorbestellung\" Abzeichen Vordergrund"
+                },
+                "header__7": {
+                    "content": "Produktkarte"
+                },
+                "grid_item_bg_color": {
+                    "label": "Hintergrund der Rasterelemente"
+                }
+            }
+        },
+        "product-card": {
+            "settings": {
+                "product_card_rating": {
+                    "label": "Bewertung anzeigen",
+                    "info": "Erfordert die Installation der [Judgeme Reviews](https://apps.shopify.com/judgeme)-App."
+                },
+                "enable_currency_paddings": {
+                    "label": "Währungsabstände aktivieren"
+                },
+                "price_label": {
+                    "label": "Preisbezeichnung anzeigen"
+                },
+                "compare_products": {
+                    "label": "Produkte vergleichen aktivieren"
+                },
+                "enable_quick_view": {
+                    "label": "Schnellansicht aktivieren"
+                },
+                "product_card_hover_effect": {
+                    "label": "Hover-Effekt aktivieren"
+                },
+                "control_items_height": {
+                    "label": "Höhe der Rasterelemente steuern",
+                    "info": "Verfügbar, wenn die Konfiguration „Hover-Effekt“ aktiviert ist"
+                },
+                "item_height": {
+                    "label": "Höhe des Artikel-Kartenelements",
+                    "unit": "px"
+                }
+            }
+        },
+        "typography": {
+            "name": "Typografie",
+            "settings": {
+                "type_header_font": {
+                    "label": "Schriftart",
+                    "info": "Die Auswahl einer anderen Schriftart kann die Geschwindigkeit Ihres Shops beeinflussen. [Erfahren Sie mehr über Systemschriftarten.](https://help.shopify.com/en/manual/online-store/os/store-speed/improving-speed#fonts)"
+                },
+                "header__1": {
+                    "content": "Überschriften"
+                },
+                "header__2": {
+                    "content": "Textkörper"
+                },
+                "header__3": {
+                    "content": "Layout"
+                },
+                "font_heading_size": {
+                    "label": "Bereich der Schriftgröße der Überschrift"
+                },
+                "type_body_font": {
+                    "label": "Schriftart",
+                    "info": "Die Auswahl einer anderen Schriftart kann die Geschwindigkeit Ihres Shops beeinflussen. [Erfahren Sie mehr über Systemschriftarten.](https://help.shopify.com/en/manual/online-store/os/store-speed/improving-speed#fonts)"
+                },
+                "bold_first_heading_word": {
+                    "label": "Überschriftenstil aktivieren",
+                    "info": "Wenn diese Option deaktiviert ist, werden alle Überschriften fett angezeigt."
+                },
+                "type_layout_max_width": {
+                    "label": "Containerbreite",
+                    "info": "Steuern Sie die maximale Layoutbreite (px)"
+                }
+            }
+        },
+        "social-media": {
+            "name": "Soziale Medien",
+            "settings": {
+                "share_facebook": {
+                    "label": "Auf Facebook teilen"
+                },
+                "share_twitter": {
+                    "label": "Auf Twitter twittern"
+                },
+                "share_pinterest": {
+                    "label": "Auf Pinterest anheften"
+                },
+                "header__1": {
+                    "content": "Soziale Sharing-Optionen"
+                },
+                "header__2": {
+                    "content": "Soziale Konten"
+                },
+                "social_twitter_link": {
+                    "label": "Twitter",
+                    "info": "https://twitter.com/shopify"
+                },
+                "social_facebook_link": {
+                    "label": "Facebook",
+                    "info": "https://facebook.com/shopify"
+                },
+                "social_pinterest_link": {
+                    "label": "Pinterest",
+                    "info": "https://pinterest.com/shopify"
+                },
+                "social_instagram_link": {
+                    "label": "Instagram",
+                    "info": "http://instagram.com/shopify"
+                },
+                "social_tiktok_link": {
+                    "label": "TikTok",
+                    "info": "https://tiktok.com/@shopify"
+                },
+                "social_tumblr_link": {
+                    "label": "Tumblr",
+                    "info": "https://shopify.tumblr.com"
+                },
+                "social_snapchat_link": {
+                    "label": "Snapchat",
+                    "info": "https://www.snapchat.com/add/shopify"
+                },
+                "social_youtube_link": {
+                    "label": "YouTube",
+                    "info": "https://www.youtube.com/shopify"
+                },
+                "social_vimeo_link": {
+                    "label": "Vimeo",
+                    "info": "https://vimeo.com/shopify"
+                },
+                "social_linkedin_link": {
+                    "label": "LinkedIn",
+                    "info": "https://www.linkedin.com/"
+                },
+                "social_whatsapp_link": {
+                    "label": "Whatsapp",
+                    "info": "https://web.whatsapp.com/"
+                }
+            }
+        },
+        "contact": {
+            "name": "Kontaktinformationen",
+            "settings": {
+                "contact_phone": {
+                    "label": "Kontakt-Telefonnummer"
+                },
+                "contact_email": {
+                    "label": "Kontakt-E-Mail"
+                }
+            }
+        },
+        "predictive-search": {
+            "name": "Vorausschauende Suchergebnisse",
+            "settings": {
+                "predictive_search_enabled": {
+                    "label": "Vorausschauende Suche aktivieren"
+                },
+                "predictive_search_show_stock": {
+                    "label": "Produktbestand anzeigen"
+                },
+                "predictive_search_min_query_length": {
+                    "label": "Minimale Abfragedauer",
+                    "info": "* Bezieht sich auf die Anzahl der Zeichen, die in der Suchleiste eingegeben werden."
+                },
+                "predictive_search_show_collections": {
+                    "label": "Sammlungen anzeigen"
+                },
+                "predictive_search_show_pages": {
+                    "label": "Seiten anzeigen"
+                },
+                "predictive_search_show_articles": {
+                    "label": "Blogs anzeigen"
+                },
+                "predictive_search_view_all_button": {
+                    "label": "Alle anzeigen Button anzeigen"
+                }
+            }
+        },
+        "placeholder": {
+            "name": "Platzhalterbild",
+            "settings": {
+                "placeholder_image": {
+                    "label": "Name",
+                    "info": "Siehe Platzhalter [Namen](https://www.shopify.com/partners/blog/placeholder-images)"
+                },
+                "use_same_placeholder_on_listing": {
+                    "label": "Platzhalter auf der Angebotsseite verwenden",
+                    "info": "Das standardmäßig festgelegte einzigartige Platzhalterbild."
+                },
+                "use_gallery_placeholder": {
+                    "label": "Galerie-Platzhalter aktivieren",
+                    "info": "Nützlich, wenn ein Produkt kein festgelegtes Bild hat."
+                }
+            }
+        },
+        "cart": {
+            "name": "Minicart",
+            "settings": {
+                "minicart_enabled": {
+                    "label": "Minicart aktivieren"
+                },
+                "minicart_type": {
+                    "label": "Minicart-Typ",
+                    "drawer": "Schublade",
+                    "dropdown": "Dropdown"
+                },
+                "minicart_show_sku": {
+                    "label": "Produkt-SKU anzeigen"
+                },
+                "minicart_link_to_cart": {
+                    "label": "Link zum Warenkorb anzeigen"
+                },
+                "minicart_overlay_enabled": {
+                    "label": "Overlay aktivieren",
+                    "info": "Nützlich mit dem Minicart-Typ Schublade."
+                }
+            }
+        },
+        "badge": {
+            "name": "Produktabzeichen",
+            "position": {
+                "none": "Keins",
+                "top_left": "Oben links",
+                "top_right": "Oben rechts",
+                "bottom_right": "Unten rechts",
+                "bottom_left": "Unten links"
+            },
+            "settings": {
+                "header__0": {
+                    "content": "Benutzerdefinierte Abzeichen"
+                },
+                "header__1": {
+                    "content": "Verkaufsabzeichen"
+                },
+                "header__2": {
+                    "content": "Ausverkauft Abzeichen"
+                },
+                "header__3": {
+                    "content": "Neu Abzeichen"
+                },
+                "header__4": {
+                    "content": "Vorbestellungsabzeichen"
+                },
+                "badge_custom__text": {
+                    "label": "Abzeichen Text"
+                },
+                "badge_custom__position": {
+                    "label": "Abzeichen Position"
+                },
+                "badge_onsale__text": {
+                    "label": "Abzeichen Text"
+                },
+                "badge_onsale__position": {
+                    "label": "Abzeichen Position"
+                },
+                "show_sale_badge_discount": {
+                    "label": "Rabatt im Verkaufsabzeichen anzeigen"
+                },
+                "badge_soldout__text": {
+                    "label": "Abzeichen Text"
+                },
+                "badge_soldout__position": {
+                    "label": "Abzeichen Position"
+                },
+                "badge_new__text": {
+                    "label": "Abzeichen Text"
+                },
+                "badge_new__position": {
+                    "label": "Abzeichen Position"
+                },
+                "badge_preorder__text": {
+                    "label": "Abzeichen Text"
+                },
+                "badge_preorder__position": {
+                    "label": "Abzeichen Position"
+                },
+                "header__5": {
+                    "content": "Rahmenradius"
+                },
+                "badges_border_radius_value": "Wert"
+            }
+        },
+        "overlay": {
+            "name": "Overlay",
+            "settings": {
+                "overlay_transparenty": {
+                    "label": "Transparenzwert"
+                },
+                "enable_overlay_blur": {
+                    "label": "Unschärfe Overlay aktivieren"
+                },
+                "overlay_blur": {
+                    "label": "Unschärfe-Wert"
+                }
+            }
+        },
+        "elements_design": {
+            "name": "Rahmenradius",
+            "settings": {
+                "use_elements_border_radius": "Aktivieren",
+                "paragraph__1": {
+                    "content": "Schaltflächen"
+                },
+                "button_border_radius_value": "Wert",
+                "paragraph__2": {
+                    "content": "Farbproben"
+                },
+                "swatches_border_radius_value": "Wert"
+            }
+        },
+        "color_swatches": {
+            "name": "Farbproben",
+            "settings": {
+                "use_color_swatches_list": {
+                    "label": "Farbprobenliste verwenden"
+                },
+                "color_swatches_list": {
+                    "label": "Liste",
+                    "info": "Komma-Trennzeichen. Diese Werte sind nur ein Beispiel: colorName:#HEX"
+                }
+            }
+        },
+        "buttons": {
+            "name": "Schaltflächen",
+            "settings": {
+                "show_icon_arrow": {
+                    "label": "Pfeil-Symbol anzeigen"
+                },
+                "button_paddings_y": {
+                    "label": "Y-Abstände"
+                },
+                "button_paddings_x": {
+                    "label": "X-Abstände"
+                },
+                "show_button_ring_on_hover": {
+                    "label": "Schaltflächenkonturring anzeigen",
+                    "info": "Aktiviert den Ring beim Hover über die Schaltfläche."
+                }
+            }
+        },
+        "tax": {
+            "name": "Steuereinstellungen",
+            "settings": {
+                "show_tax_info": {
+                    "label": "Steuerinformationen anzeigen"
+                },
+                "header__1": {
+                    "content": "Einstellungen ohne Steuern"
+                },
+                "header__2": {
+                    "content": "Einstellungen inklusive Steuern"
+                },
+                "show_tax_info_in_grid_item": {
+                    "label": "Steuerinformationen im Produktgitter anzeigen"
+                },
+                "show_tax_info_on_product_page": {
+                    "label": "Steuerinformationen auf der Produktseite anzeigen"
+                },
+                "excluding_tax_rating": {
+                    "label": "Bewertung ohne Steuern"
+                },
+                "including_tax_rating": {
+                    "label": "Bewertung inklusive Steuern"
+                }
+            }
+        }
+    },
+    "sections": {
+        "all": {
+            "alignments": {
+                "top": {
+                    "label": "Oben"
+                },
+                "center": {
+                    "label": "Zentriert"
+                },
+                "bottom": {
+                    "label": "Unten"
+                }
+            },
+            "colors": {
+                "accent_1": {
+                    "label": "Akzent 1"
+                },
+                "accent_2": {
+                    "label": "Akzent 2"
+                },
+                "background_1": {
+                    "label": "Hintergrund 1"
+                },
+                "background_2": {
+                    "label": "Hintergrund 2"
+                },
+                "inverse": {
+                    "label": "Invertiert"
+                },
+                "label": "Farbschema",
+                "has_cards_info": "Um das Farbschema der Karten zu ändern, aktualisieren Sie die Einstellungen Ihres Themes.",
+                "info": "Deaktiviert bei \"Zweispaltigem Layout\""
+            },
+            "product-card": {
+                "badge_size": {
+                    "label": "Abzeichen Größe",
+                    "options__1": {
+                        "label": "Extra klein"
+                    },
+                    "options__2": {
+                        "label": "Klein"
+                    },
+                    "options__3": {
+                        "label": "Mittel"
+                    },
+                    "options__4": {
+                        "label": "Groß"
+                    }
+                },
+                "header": "Produktkarte",
+                "image_ratio": {
+                    "label": "Bildverhältnis",
+                    "options": {
+                        "default": "Theme Standard",
+                        "native": "Natürliche Bildverhältnis",
+                        "1_by_1": "Quadratisch (1:1)",
+                        "16_by_9": "Kinematisch (16:9)",
+                        "2_by_1": "Univisium (2:1)",
+                        "3_by_1": "Panorama (3:1)",
+                        "4_by_5": "Porträt (4:5)",
+                        "contain": "Anpassen"
+                    }
+                },
+                "use_media_transparent": {
+                    "label": "Transparente Medien aktivieren"
+                },
+                "image_ratio_default": {
+                    "label": "Bildverhältnis (Standard)"
+                },
+                "show_description": {
+                    "label": "Beschreibung anzeigen"
+                },
+                "show_vendor": {
+                    "label": "Anbieter anzeigen"
+                },
+                "show_secondary_image": {
+                    "label": "Zweites Bild bei Hover anzeigen"
+                },
+                "show_swatch_options_color": {
+                    "label": "\"Farbproben\" anzeigen"
+                },
+                "show_to_cart_button": {
+                    "label": "\"In den Warenkorb\" anzeigen"
+                }
+            },
+            "button_style_secondary": {
+                "label": "Sekundäre Schaltflächenstile verwenden"
+            },
+            "preload_images": {
+                "label": "Produktbilder vorladen"
+            },
+            "promote_random": {
+                "label": "\"Zufällige\" Produkte aktivieren, wenn nichts zu bewerben ist"
+            },
+            "promote_source": {
+                "label": "Zu bewerbende Produkte",
+                "info": "Wir empfehlen, das Produkt-Metafeld als Quelle für zu bewerbende Artikel zu verwenden. Das Metafeld muss den Inhaltstyp \"Produkt - Liste von Produkten\" haben."
+            },
+            "settings": {
+                "animation_on_reveal": {
+                    "label": "Animation bei Aufruf aktivieren"
+                }
+            }
+        },
+        "announcement-bar": {
+            "name": "Ankündigungsleiste",
+            "blocks": {
+                "announcement": {
+                    "name": "Ankündigung",
+                    "settings": {
+                        "text": {
+                            "label": "Text"
+                        },
+                        "color_scheme": {
+                            "label": "Farbschema"
+                        },
+                        "link": {
+                            "label": "Link"
+                        },
+                        "link_target": {
+                            "label": "Link in neuem Fenster öffnen",
+                            "_yes": "Ja",
+                            "_no": "Nein"
+                        }
+                    }
+                }
+            }
+        },
+        "apps": {
+            "name": "Apps",
+            "settings": {
+                "include_margins": {
+                    "label": "Abschnittsränder wie im Theme machen"
+                }
+            },
+            "presets": {
+                "name": "Apps"
+            }
+        },
+        "collage": {
+            "name": "Collage",
+            "settings": {
+                "heading": {
+                    "label": "Überschrift"
+                },
+                "heading_size": {
+                    "label": "Überschrift Größe",
+                    "options": {
+                        "h1": "H1",
+                        "h2": "H2",
+                        "h3": "H3"
+                    }
+                },
+                "desktop_layout": {
+                    "label": "Desktop Layout",
+                    "info": "Es müssen mehr als ein Block verfügbar sein.",
+                    "options__1": {
+                        "label": "Großer Block links"
+                    },
+                    "options__2": {
+                        "label": "Großer Block rechts"
+                    }
+                },
+                "mobile_layout": {
+                    "label": "Mobile Layout",
+                    "info": "Es müssen mehr als ein Block verfügbar sein.",
+                    "options__1": {
+                        "label": "Collage"
+                    },
+                    "options__2": {
+                        "label": "Spalte"
+                    }
+                },
+                "enable_card_border": {
+                    "label": "Rahmen für Karte aktivieren"
+                }
+            },
+            "blocks": {
+                "image": {
+                    "name": "Bild",
+                    "settings": {
+                        "image": {
+                            "label": "Bild"
+                        },
+                        "color_scheme": {
+                            "info": "Wählen Sie den Bildabstand, um die Farbe sichtbar zu machen."
+                        },
+                        "inner_padding": {
+                            "label": "Innenabstand"
+                        }
+                    }
+                },
+                "product": {
+                    "name": "Produkt",
+                    "settings": {
+                        "product": {
+                            "label": "Produkt"
+                        },
+                        "secondary_background": {
+                            "label": "Sekundären Hintergrund anzeigen"
+                        },
+                        "second_image": {
+                            "label": "Zweites Bild bei Hover anzeigen"
+                        }
+                    }
+                },
+                "collection": {
+                    "name": "Kollektion",
+                    "settings": {
+                        "collection": {
+                            "label": "Kollektion"
+                        }
+                    }
+                },
+                "video": {
+                    "name": "Video",
+                    "settings": {
+                        "cover_image": {
+                            "label": "Cover-Bild"
+                        },
+                        "cover_text": {
+                            "label": "Cover-Text"
+                        },
+                        "internal_video_link": {
+                            "label": "Interner Video-Link"
+                        },
+                        "video_width": {
+                            "label": "Interne Video-Breite steuern"
+                        },
+                        "autoplay_internal_video": {
+                            "label": "Autoplay aktivieren",
+                            "info": "Verfügbar für die interne Videoquelle"
+                        },
+                        "video_url": {
+                            "label": "Link",
+                            "info": "Videos werden in einem Pop-up abgespielt, wenn der Abschnitt andere Blöcke enthält.",
+                            "placeholder": "Verwenden Sie einen YouTube- oder Vimeo-Link"
+                        },
+                        "header_1": {
+                            "content": "Inhaltsstile"
+                        },
+                        "content_position": {
+                            "label": "Inhaltsposition",
+                            "options": {
+                                "left": "Links",
+                                "right": "Rechts"
+                            }
+                        },
+                        "button_size": {
+                            "label": "Schaltflächen-Größe",
+                            "info": "Nur für Desktop-Bildschirme"
+                        },
+                        "text_font_size": {
+                            "label": "Schriftgröße",
+                            "info": "Nur für Desktop-Bildschirme"
+                        },
+                        "text_color": {
+                            "label": "Textfarbe"
+                        },
+                        "content_background": {
+                            "label": "Cover-Hintergrund"
+                        },
+                        "content_background_opacity": {
+                            "label": "Hintergrund-Opazität"
+                        },
+                        "inner_paddings": {
+                            "label": "Innere Abstände",
+                            "info": "Nur für Desktop-Bildschirme"
+                        }
+                    }
+                }
+            },
+            "presets": {
+                "name": "Collage"
+            }
+        },
+        "collection-list": {
+            "name": "Kollektionsliste",
+            "settings": {
+                "title": {
+                    "label": "Überschrift"
+                },
+                "image_ratio": {
+                    "label": "Bildverhältnis",
+                    "options__1": {
+                        "label": "An Bild anpassen"
+                    },
+                    "options__2": {
+                        "label": "Porträt"
+                    },
+                    "options__3": {
+                        "label": "Quadratisch"
+                    },
+                    "info": "Um Bilder hinzuzufügen, [bearbeiten Sie Ihre Kollektionen](https://help.shopify.com/en/manual/products/collections)"
+                },
+                "swipe_on_mobile": {
+                    "label": "Wischen auf Mobilgeräten aktivieren"
+                },
+                "image_padding": {
+                    "label": "Bildabstand hinzufügen"
+                },
+                "show_view_all": {
+                    "label": "\"Alle anzeigen\" Button aktivieren, wenn die Liste mehr Kollektionen enthält als angezeigt"
+                }
+            },
+            "blocks": {
+                "featured_collection": {
+                    "name": "Kollektion",
+                    "settings": {
+                        "collection": {
+                            "label": "Kollektion"
+                        }
+                    }
+                }
+            },
+            "presets": {
+                "name": "Kollektionsliste"
+            }
+        },
+        "contact-form": {
+            "name": "Kontaktformular",
+            "blocks": {
+                "contact_us": {
+                    "name": "Kontaktieren Sie uns"
+                },
+                "settings": {
+                    "title": {
+                        "label": "Überschrift"
+                    },
+                    "title_size": {
+                        "label": "Überschriftgröße",
+                        "options": {
+                            "h1": "H1",
+                            "h2": "H2",
+                            "h3": "H3"
+                        }
+                    },
+                    "subtitle": {
+                        "label": "Unterüberschrift"
+                    },
+                    "company_info": {
+                        "label": "Überschrift Unternehmensinfo"
+                    },
+                    "contact_info": {
+                        "label": "Überschrift Kontaktinfo"
+                    },
+                    "show_social_icons": {
+                        "label": "Soziale Icons anzeigen"
+                    },
+                    "social_heading": {
+                        "label": "Überschrift"
+                    }
+                },
+                "location": {
+                    "name": "Standort auf der Karte",
+                    "settings": {
+                        "api_key": {
+                            "label": "Google Maps API-Schlüssel"
+                        },
+                        "header": {
+                            "content": "Standortparameter",
+                            "info": "* - erforderliche Felder. Bei leeren Koordinaten wird der Standardort angezeigt."
+                        },
+                        "position_latitude": {
+                            "label": "Breitengrad *",
+                            "info": "z. B. 30.2672"
+                        },
+                        "position_longitude": {
+                            "label": "Längengrad *",
+                            "info": "z. B. -97.7431"
+                        },
+                        "street_address": {
+                            "label": "Straßenadresse",
+                            "info": "z. B. FifthAve Street 31"
+                        },
+                        "postcode": {
+                            "label": "Postleitzahl",
+                            "info": "z. B. 10009"
+                        },
+                        "city": {
+                            "label": "Stadt",
+                            "info": "z. B. New York"
+                        },
+                        "region_id": {
+                            "label": "Region"
+                        },
+                        "country_id": {
+                            "label": "Land",
+                            "info": "z. B. - USA"
+                        },
+                        "phone": {
+                            "label": "Telefon",
+                            "info": "z. B. +01 122 334 566"
+                        },
+                        "email": {
+                            "label": "E-Mail",
+                            "info": "z. B. kontakt@firma.com"
+                        }
+                    }
+                }
+            },
+            "presets": {
+                "name": "Kontaktformular"
+            }
+        },
+        "faqs-page": {
+            "name": "FAQ-Seiteninhalt",
+            "settings": {
+                "faqs_subtitle": {
+                    "label": "FAQ-Unterüberschrift",
+                    "info": "Erstellen Sie Seiten-Metafelder im \"JSON-Format\" mit dem Bezeichner \"page.metafields.custom.faqs\" [Erfahren Sie mehr](https://help.shopify.com/en/manual/custom-data/metafields/using-metafields)"
+                }
+            }
+        },
+        "custom-liquid": {
+            "name": "Custom Liquid",
+            "settings": {
+                "title": {
+                    "label": "Titel"
+                },
+                "title_size": {
+                    "label": "Titelgröße",
+                    "options": {
+                        "h1": "H1",
+                        "h2": "H2",
+                        "h3": "H3"
+                    }
+                },
+                "custom_liquid": {
+                    "label": "Custom Liquid"
+                }
+            },
+            "presets": {
+                "name": "Custom Liquid"
+            }
+        },
+        "featured-blog": {
+            "name": "Blog-Beiträge",
+            "settings": {
+                "heading": {
+                    "label": "Überschrift"
+                },
+                "heading_size": {
+                    "label": "Überschriftgröße",
+                    "options": {
+                        "h1": "H1",
+                        "h2": "H2",
+                        "h3": "H3"
+                    }
+                },
+                "blog": {
+                    "label": "Blog"
+                },
+                "post_limit": {
+                    "label": "Blog-Beiträge"
+                },
+                "show_view_all": {
+                    "label": "Die Schaltfläche \"Alle anzeigen\" anzeigen"
+                },
+                "show_image": {
+                    "label": "Das hervorgehobene Bild anzeigen",
+                    "info": "Für bessere Ergebnisse verwenden Sie ein Bild mit einem Seitenverhältnis von 2:3."
+                },
+                "soft_background": {
+                    "label": "Sekundären Hintergrund anzeigen"
+                }
+            },
+            "blocks": {
+                "title": {
+                    "name": "Titel",
+                    "settings": {
+                        "title_size": {
+                            "label": "Titelgröße",
+                            "unit": "px"
+                        },
+                        "show_date": {
+                            "label": "Datum anzeigen"
+                        },
+                        "date_format": {
+                            "label": "Datumsformat",
+                            "options": {
+                                "day_month_year": "DMY",
+                                "year_month_day": "YMD",
+                                "month_year": "MY"
+                            }
+                        },
+                        "show_icon_calendar": {
+                            "label": "Kalendersymbol anzeigen"
+                        },
+                        "show_author": {
+                            "label": "Autor anzeigen"
+                        }
+                    }
+                },
+                "summary": {
+                    "name": "Zusammenfassung",
+                    "settings": {
+                        "truncate_words": "Wörter kürzen"
+                    }
+                },
+                "link": {
+                    "name": "Link"
+                }
+            },
+            "presets": {
+                "name": "Blog-Beiträge"
+            }
+        },
+        "featured-collection": {
+            "name": "Ausgewählte Sammlung",
+            "settings": {
+                "title": {
+                    "label": "Überschrift"
+                },
+                "heading_size": {
+                    "label": "Überschriftgröße",
+                    "options": {
+                        "h2": "H2",
+                        "h3": "H3",
+                        "h4": "H4",
+                        "h5": "H5",
+                        "h6": "H6"
+                    }
+                },
+                "subtitle": {
+                    "label": "Unterüberschrift"
+                },
+                "collection": {
+                    "label": "Sammlung"
+                },
+                "products_to_show": {
+                    "label": "Maximale Anzahl an Produkten, die angezeigt werden"
+                },
+                "products_per_row": {
+                    "label": "Produkte pro Reihe"
+                },
+                "show_view_all": {
+                    "label": "\"Alle anzeigen\" anzeigen"
+                },
+                "show_box_shadow": {
+                    "label": "Box-Schatten anzeigen"
+                },
+                "view_all_appearance": {
+                    "label": "\"Alle anzeigen\" Darstellung",
+                    "options": {
+                        "button": "Button",
+                        "button_secondary": "Sekundärer Button",
+                        "link": "Textlink"
+                    }
+                },
+                "view_all_position": {
+                    "label": "\"Alle anzeigen\" Position",
+                    "options": {
+                        "title": "In der Nähe der Überschrift",
+                        "bottom": "Am unteren Rand"
+                    }
+                },
+                "swipe_on_mobile": {
+                    "label": "Wischen auf Mobilgeräten aktivieren"
+                },
+                "show_mobile_scrollbar": {
+                    "label": "Slideshow-Schaltflächen anzeigen"
+                },
+                "slideshow_ui_type": {
+                    "label": "UI-Typ",
+                    "options": {
+                        "buttons": "Schaltflächen",
+                        "scrollbar": "Scrollbar"
+                    }
+                },
+                "header": {
+                    "button": "Alle anzeigen",
+                    "content": "Produktkarte",
+                    "cover": "Magazin-Cover"
+                },
+                "add_cover": {
+                    "label": "\"Magazin-Cover\" hinzufügen"
+                },
+                "image_position": {
+                    "label": "Bildposition",
+                    "options": {
+                        "contain": "Anpassen",
+                        "cover": "Abdeckung"
+                    }
+                },
+                "cover_text_color": {
+                    "label": "Textfarbe"
+                },
+                "cover_background": {
+                    "label": "Hintergrundfarbe"
+                },
+                "cover_background_gradient": {
+                    "label": "Hintergrund-Verlauf"
+                },
+                "cover_button_text_color": {
+                    "label": "Button-Textfarbe"
+                },
+                "cover_button_background": {
+                    "label": "Button-Hintergrund"
+                },
+                "cover_button_background_gradient": {
+                    "label": "Button-Hintergrund-Verlauf"
+                },
+                "cover_image": {
+                    "label": "Bild"
+                }
+            },
+            "blocks": {
+                "name": "Abschnitts-Titel",
+                "settings": {
+                    "title": {
+                        "label": "Titel"
+                    },
+                    "title_size": {
+                        "label": "Titelgröße",
+                        "options": {
+                            "h1": "H1",
+                            "h2": "H2",
+                            "h3": "H3"
+                        }
+                    }
+                }
+            },
+            "presets": {
+                "featured-collection": {
+                    "name": "Ausgewählte Sammlung"
+                },
+                "favourite-collection": {
+                    "name": "Favoriten-Sammlung"
+                }
+            }
+        },
+        "featured-product": {
+            "name": "Ausgewähltes Produkt",
+            "blocks": {
+                "text": {
+                    "name": "Text",
+                    "settings": {
+                        "text": {
+                            "label": "Text"
+                        },
+                        "text_style": {
+                            "label": "Textstil",
+                            "options__1": {
+                                "label": "Normal"
+                            },
+                            "options__2": {
+                                "label": "Untertitel"
+                            },
+                            "options__3": {
+                                "label": "Großbuchstaben"
+                            }
+                        }
+                    }
+                },
+                "title": {
+                    "name": "Titel"
+                },
+                "price": {
+                    "name": "Preis"
+                },
+                "quantity_selector": {
+                    "name": "Mengenwahl"
+                },
+                "variant_picker": {
+                    "name": "Variantenwahl",
+                    "settings": {
+                        "picker_type": {
+                            "label": "Typ",
+                            "options__1": {
+                                "label": "Dropdown"
+                            },
+                            "options__2": {
+                                "label": "Pillen"
+                            }
+                        }
+                    }
+                },
+                "buy_buttons": {
+                    "name": "Kaufen-Schaltflächen",
+                    "settings": {
+                        "show_dynamic_checkout": {
+                            "label": "Dynamische Checkout-Schaltflächen anzeigen",
+                            "info": "Mit den Zahlungsmethoden, die in Ihrem Shop verfügbar sind, sehen Kunden ihre bevorzugte Option wie PayPal oder Apple Pay. [Erfahren Sie mehr](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)"
+                        },
+                        "dynamic_checkout_color_scheme": {
+                            "label": "Farbpalette der dynamischen Checkout-Schaltflächen"
+                        }
+                    }
+                },
+                "description": {
+                    "name": "Beschreibung"
+                },
+                "share": {
+                    "name": "Teilen",
+                    "settings": {
+                        "text": {
+                            "label": "Text"
+                        },
+                        "featured_image_info": {
+                            "content": "Wenn Sie einen Link in sozialen Medien posten, wird das hervorgehobene Bild der Seite als Vorschaubild angezeigt. [Erfahren Sie mehr](https://help.shopify.com/en/manual/online-store/images/showing-social-media-thumbnail-images)"
+                        },
+                        "title_info": {
+                            "content": "Ein Shop-Titel und eine Beschreibung werden mit dem Vorschaubild angezeigt. [Erfahren Sie mehr](https://help.shopify.com/en/manual/promoting-marketing/seo/adding-keywords#set-a-title-and-description-for-your-online-store)"
+                        }
+                    }
+                },
+                "custom_liquid": {
+                    "name": "Custom Liquid",
+                    "settings": {
+                        "custom_liquid": {
+                            "label": "Custom Liquid"
+                        }
+                    }
+                },
+                "rating": {
+                    "name": "Produktbewertung",
+                    "settings": {
+                        "paragraph": {
+                            "content": "Um eine Bewertung anzuzeigen, fügen Sie eine Produktbewertungs-App hinzu. [Erfahren Sie mehr](https://help.shopify.com/manual/online-store/themes/os20/themes-by-shopify/dawn/sections#featured-product-rating)"
+                        }
+                    }
+                }
+            },
+            "settings": {
+                "full_width": {
+                    "label": "Abschnitt in voller Breite anzeigen"
+                },
+                "title": {
+                    "label": "Überschrift"
+                },
+                "heading_size": {
+                    "label": "Überschriftgröße",
+                    "options": {
+                        "h1": "H1",
+                        "h2": "H2",
+                        "h3": "H3"
+                    }
+                },
+                "product": {
+                    "label": "Produkt"
+                },
+                "show_thumbs_images": {
+                    "label": "Miniaturbilder anzeigen"
+                },
+                "separate_with_border": {
+                    "label": "Info mit Rand trennen"
+                },
+                "inverse_border_color": {
+                    "label": "Randfarbe invertieren"
+                },
+                "image_bg_color": {
+                    "label": "Hintergrundfarbe des Bildes"
+                },
+                "secondary_background": {
+                    "label": "Sekundären Hintergrund anzeigen"
+                },
+                "header": {
+                    "content": "Medien",
+                    "info": "Erfahren Sie mehr über [Medientypen](https://help.shopify.com/manual/products/product-media)"
+                },
+                "hide_variants": {
+                    "label": "Nicht ausgewählte Variantenmedien auf Desktop ausblenden"
+                },
+                "enable_video_looping": {
+                    "label": "Video-Schleifen aktivieren"
+                }
+            },
+            "presets": {
+                "name": "Ausgewähltes Produkt"
+            }
+        },
+        "section_separator": {
+            "name": "Abschnittsgrenzseparator",
+            "settings": {
+                "border_height": {
+                    "label": "Randhöhe"
+                },
+                "border_color": {
+                    "label": "Randfarbe"
+                }
+            },
+            "presets": {
+                "name": "Abschnittsgrenzseparator"
+            }
+        },
+        "footer": {
+            "name": "Fußzeile",
+            "blocks": {
+                "link_list": {
+                    "name": "Menü",
+                    "settings": {
+                        "heading": {
+                            "label": "Überschrift",
+                            "info": "Eine Überschrift ist erforderlich, um das Menü anzuzeigen."
+                        },
+                        "menu": {
+                            "label": "Menü",
+                            "info": "Zeigt nur die oberen Menüelemente an."
+                        },
+                        "line_height": {
+                            "label": "Steuere die Zeilenhöhe"
+                        }
+                    }
+                },
+                "text": {
+                    "name": "Text",
+                    "settings": {
+                        "heading": {
+                            "label": "Überschrift"
+                        },
+                        "subtext": {
+                            "label": "Untertext"
+                        },
+                        "line_height": {
+                            "label": "Steuere die Zeilenhöhe"
+                        }
+                    }
+                },
+                "contancts": {
+                    "name": "Fußzeilenkontakte",
+                    "settings": {
+                        "color_background": "Hintergrund",
+                        "color_foreground": "Vordergrund",
+                        "image": {
+                            "label": "Supportbild"
+                        },
+                        "image_show": "Supportbild anzeigen",
+                        "image_width": "Breite des Supportbildes",
+                        "image_align": "Ausrichtung des Supportbildes",
+                        "address": "Adresse",
+                        "show_email": "Kontakt-E-Mail anzeigen",
+                        "show_phone": "Kontakttelefon anzeigen",
+                        "show_newsletter": "Newsletter-Formular anzeigen"
+                    }
+                },
+                "newsletter": {
+                    "name": "Newsletter-Formular",
+                    "settings": {
+                        "heading": {
+                            "label": "Überschrift"
+                        },
+                        "subtext": {
+                            "label": "Untertext"
+                        }
+                    }
+                },
+                "custom_liquid": {
+                    "name": "Benutzerdefiniertes Liquid",
+                    "settings": {
+                        "custom_liquid_code": {
+                            "label": "Benutzerdefiniertes Liquid"
+                        },
+                        "position": {
+                            "label": "Inhaltsposition",
+                            "options": {
+                                "left": "Links",
+                                "center": "Zentriert",
+                                "right": "Rechts"
+                            }
+                        }
+                    }
+                }
+            },
+            "settings": {
+                "full_width": {
+                    "label": "Zeige die Fußzeile im vollen Breitenformat"
+                },
+                "color_background": "Hintergrundfarbe",
+                "color_text": "Textfarbe",
+                "color_title": "Titel-Farbe",
+                "newsletter_enable": {
+                    "label": "E-Mail-Anmeldung anzeigen"
+                },
+                "newsletter_heading": {
+                    "label": "Überschrift"
+                },
+                "header__1": {
+                    "content": "Newsletter",
+                    "info": "Abonnenten, die zur „akzeptierten Marketing“-Liste hinzugefügt wurden. [Kundendaten verwalten.](https://help.shopify.com/en/manual/customers/manage-customers)"
+                },
+                "header__2": {
+                    "content": "Social Media-Icons",
+                    "info": "Um Ihre Social-Media-Konten anzuzeigen, verlinken Sie diese in Ihren Theme-Einstellungen."
+                },
+                "show_social": {
+                    "label": "Social Media-Icons anzeigen"
+                },
+                "header__3": {
+                    "content": "Land/Region auswählen"
+                },
+                "header__4": {
+                    "info": "Um ein Land/eine Region hinzuzufügen, gehen Sie zu Ihren [Zahlungseinstellungen.](/admin/settings/payments)"
+                },
+                "enable_country_selector": {
+                    "label": "Land/Region auswählen aktivieren"
+                },
+                "header__5": {
+                    "content": "Sprachauswahl"
+                },
+                "header__6": {
+                    "info": "Um eine Sprache hinzuzufügen, gehen Sie zu Ihren [Spracheinstellungen.](/admin/settings/languages)"
+                },
+                "enable_language_selector": {
+                    "label": "Sprachauswahl aktivieren"
+                },
+                "header__7": {
+                    "content": "Zahlungsmethoden"
+                },
+                "payment_enable": {
+                    "label": "Zahlungsicons anzeigen"
+                },
+                "custom_payment_icon": {
+                    "label": "Zahlungsicons auflisten",
+                    "info": "z.B. - mastercard.jpg, visa.jpg, apple.png; Durch Komma getrennt."
+                },
+                "control_icon_width": {
+                    "label": "Icon-Breite steuern"
+                },
+                "show_policy": {
+                    "label": "Richtlinien anzeigen",
+                    "info": "Die Richtlinien müssen in Ihren [Shopify-Richtlinieneinstellungen](/admin/settings/legal) erstellt oder angepasst werden."
+                },
+                "follow_on_shop": {
+                    "label": "Follow On Shop aktivieren",
+                    "info": "Zeigen Sie die Follow-Schaltfläche für Ihr Schaufenster an. [Mehr erfahren](https://help.shopify.com/en/manual/online-store/themes/customizing-themes/follow-on-shop)"
+                }
+            },
+            "presets": {
+                "name": "Fußzeile"
+            }
+        },
+        "compare": {
+            "name": "Produkte vergleichen",
+            "settings": {
+                "sticky_table_header": {
+                    "label": "Fixierte Kopfzeile aktivieren"
+                },
+                "show_add_to_cart": {
+                    "label": "In den Warenkorb hinzufügen anzeigen"
+                },
+                "show_product_description": {
+                    "label": "Produktbeschreibung anzeigen"
+                },
+                "show_product_vendor": {
+                    "label": "Produktanbieter anzeigen"
+                },
+                "show_product_sku": {
+                    "label": "Produkt SKU anzeigen"
+                },
+                "show_product_rating": {
+                    "label": "Produktbewertung anzeigen"
+                },
+                "link_bg_color": {
+                    "label": "Link Hintergrundfarbe"
+                },
+                "link_color": {
+                    "label": "Linkfarbe"
+                },
+                "truncate_product_description": {
+                    "label": "Beschreibung kürzen"
+                }
+            },
+            "presets": {
+                "name": "Produkte vergleichen"
+            }
+        },
+        "quick-view": {
+            "name": "Schnellansicht",
+            "settings": {
+                "show_product_description": {
+                    "label": "Produktbeschreibung anzeigen"
+                },
+                "show_product_vendor": {
+                    "label": "Produktanbieter anzeigen"
+                },
+                "show_product_sku": {
+                    "label": "Produkt SKU anzeigen"
+                },
+                "show_product_rating": {
+                    "label": "Produktbewertung anzeigen"
+                }
+            },
+            "presets": {
+                "name": "Schnellansicht"
+            }
+        },
+        "gift_card": {
+            "name": "Geschenkkarte",
+            "settings": {
+                "image": {
+                    "label": "Kartenbild"
+                },
+                "image_width": {
+                    "label": "Bildbreite (px)"
+                }
+            }
+        },
+        "header_top": {
+            "name": "Oberste Kopfzeile",
+            "settings": {
+                "full_width": {
+                    "label": "Zeige die oberste Kopfzeile im vollen Breitenformat"
+                },
+                "message": {
+                    "label": "Ankündigungsnachricht"
+                },
+                "show_phone": {
+                    "label": "Kontakttelefon anzeigen"
+                },
+                "show_email": {
+                    "label": "Kontakt-E-Mail anzeigen"
+                },
+                "add_border_bottom": {
+                    "label": "Zeige die untere Grenze an"
+                }
+            }
+        },
+        "header": {
+            "name": "Kopfzeile",
+            "settings": {
+                "full_width": {
+                    "label": "Zeige die Kopfzeile in voller Breite"
+                },
+                "logo": {
+                    "label": "Logo-Bild"
+                },
+                "logo_width": {
+                    "unit": "px",
+                    "label": "Benutzerdefinierte Logo-Breite"
+                },
+                "dislay_shopname_on_mobile": {
+                    "label": "Shop-Name auf kleinen Bildschirmen anzeigen",
+                    "info": "Das Logo-Bild wird ausgeblendet"
+                },
+                "header_1": {
+                    "content": "Navigation"
+                },
+                "header_2": {
+                    "content": "Megamenu-Einstellungen"
+                },
+                "header_3": {
+                    "content": "Einstellungen für kleines Menü"
+                },
+                "menu": {
+                    "label": "Menü"
+                },
+                "use_slideout_menu": {
+                    "label": "Slideout-Menü verwenden"
+                },
+                "second_level_menu_width": {
+                    "label": "Dropdown-Menü-Typ",
+                    "options__1": "Vollbild",
+                    "options__2": "Megamenu",
+                    "options__3": "Mittel",
+                    "options__4": "Kleines Menü"
+                },
+                "megamenu_items": {
+                    "label": "Megamenu-Elemente",
+                    "info": "* Komma-getrennt. Um Dropdown-Inhalte für ein Element anzuzeigen, das kein Untermenü hat, geben Sie den Namen ein und fügen Sie einen Header-Block hinzu."
+                },
+                "smallmenu_items": {
+                    "label": "Kleine Menü-Elemente",
+                    "info": "* Komma-getrennt"
+                },
+                "activate_top_level_menu": {
+                    "label": "Top-Level-Menü aktivieren",
+                    "on_hover": "Beim Hover",
+                    "on_click": "Bei Klick"
+                },
+                "main_items_per_row": {
+                    "label": "Hauptmenü-Elemente pro Reihe",
+                    "info": "Hilfreich bei Dropdown-Megamenüs."
+                },
+                "show_line_separator": {
+                    "label": "Trennlinie anzeigen"
+                },
+                "enable_sticky_header": {
+                    "label": "Sticky Header aktivieren",
+                    "info": "Die Kopfzeile wird angezeigt, wenn Kunden nach oben scrollen."
+                },
+                "add_border_bottom": {
+                    "label": "Box-Schatten am unteren Rand anzeigen"
+                },
+                "add_border_searchfield": {
+                    "label": "Rand für Suchfeld anzeigen",
+                    "info": "Für das Such-Icon deaktiviert"
+                },
+                "second_dropdown_limit_qty_categories_link": {
+                    "label": "Link 'Alle anzeigen' anzeigen"
+                },
+                "second_dropdown_limit_qty_categories": {
+                    "label": "Die Anzahl der anzuzeigenden Kategorien begrenzen.",
+                    "info": "Ermöglicht es, das zweite Dropdown-Level-Menü für den Typ 'Megamenu' zu begrenzen."
+                },
+                "first_item_bg_highlighted": {
+                    "label": "Das erste Menüelement auf Desktop-Geräten dauerhaft hervorheben"
+                },
+                "enable_dropdown_menu_animation": {
+                    "label": "Dropdown-Menü-Animation aktivieren"
+                },
+                "show_collection_image": {
+                    "label": "Sammlungsbild anzeigen"
+                },
+                "collection_image": {
+                    "label": "Bild auswählen",
+                    "info": "Setzen Sie das Sammlungsbild, falls es leer ist."
+                },
+                "show_collection_icon": {
+                    "label": "Sammlungs-Icon anzeigen"
+                },
+                "collection_icon": {
+                    "label": "Icon auswählen",
+                    "info": "* Verwenden Sie dasselbe Icon für jedes Sammlungsmenü-Element"
+                },
+                "collection_icon_width": {
+                    "label": "Breite des Sammlungs-Icons"
+                },
+                "show_switcher_country": {
+                    "label": "Land-Auswahl anzeigen"
+                },
+                "show_switcher_currency": {
+                    "label": "Währungs-Auswahl anzeigen",
+                    "info": "Stellen Sie sicher, dass Ihr Shop in mehreren Währungen verkauft"
+                },
+                "show_switcher_language": {
+                    "label": "Sprach-Auswahl anzeigen",
+                    "info": "Verfügbar, wenn der Shop mindestens zwei veröffentlichte Sprachen hat"
+                },
+                "show_overlay": {
+                    "label": "Overlay anzeigen"
+                }
+            },
+            "blocks": {
+                "name": "Dropdown-Inhalt",
+                "list_product_items": {
+                    "name": "Produktliste"
+                },
+                "settings": {
+                    "enabled": {
+                        "label": "Aktiviert",
+                        "info": "Verfügbar für 'Megamenu' Dropdown-Typ."
+                    },
+                    "header_1": {
+                        "content": "Banner"
+                    },
+                    "header_2": {
+                        "content": "Sammlungen"
+                    },
+                    "item_image": "Bild(er) auswählen",
+                    "collections": "Sammlungen auswählen",
+                    "product_list": "Sammlungsprodukte auswählen",
+                    "show_product_price": {
+                        "label": "Produktpreis anzeigen"
+                    },
+                    "show_badge": {
+                        "label": "Badge anzeigen"
+                    },
+                    "show_outline_border": {
+                        "label": "Randumriss anzeigen"
+                    },
+                    "item_menu_index": {
+                        "label": "Index des übergeordneten Menüs (Top-Level-Menü)",
+                        "info": "Nur ein Bild-Element pro übergeordnetem Element ist verfügbar"
+                    },
+                    "disable_menu_links": {
+                        "label": "Menü-Links entfernen",
+                        "info": "Sie können Menüelemente entfernen und das Bildbanner oder die Sammlungsliste im Dropdown anzeigen."
+                    },
+                    "alignment": {
+                        "label": "Element-Ausrichtung",
+                        "info": "Nützlich, wenn der Dropdown-Inhalt nur das Banner-Bild und die Sammlungsliste anzeigt.",
+                        "options": {
+                            "default": "Normal",
+                            "center": "Zentriert"
+                        }
+                    },
+                    "banner_width": {
+                        "label": "Bildbreite, %",
+                        "unit": "%"
+                    },
+                    "image_link": "Bild-Link",
+                    "image_title": "Bild-Titel",
+                    "items_width": {
+                        "label": "Elementbreite, %",
+                        "unit": "%"
+                    },
+                    "collection_items_width": {
+                        "label": "Sammlungs-Elementbreite, %",
+                        "unit": "%"
+                    }
+                }
+            }
+        },
+        "breadcrumbs": {
+            "name": "Brotkrümelnavigation",
+            "settings": {
+                "show_breadcrumbs_on_mobile": {
+                    "label": "Brotkrümelnavigation auf mobilen Bildschirmen anzeigen"
+                }
+            }
+        },
+        "image-banner": {
+            "name": "Bildbanner",
+            "settings": {
+                "image": {
+                    "label": "Erstes Bild"
+                },
+                "image_2": {
+                    "label": "Zweites Bild"
+                },
+                "desktop_text_box_position": {
+                    "label": "Textposition auf dem Desktop"
+                },
+                "desktop_text_box_position_hiorizontal": {
+                    "label": "Horizontale Textposition auf dem Desktop",
+                    "options": {
+                        "flex-start": {
+                            "label": "Links"
+                        },
+                        "center": {
+                            "label": "Zentriert"
+                        },
+                        "flex-end": {
+                            "label": "Rechts"
+                        }
+                    }
+                },
+                "stack_images_on_mobile": {
+                    "label": "Bilder auf Mobilgeräten stapeln"
+                },
+                "adapt_height_first_image": {
+                    "label": "Abschnitthöhe an erste Bildgröße anpassen"
+                },
+                "full_width": {
+                    "label": "Abschnitt in voller Breite anzeigen"
+                },
+                "header_0": {
+                    "content": "Einstellungen"
+                },
+                "header_font_size": {
+                    "label": "Schriftgröße des Titels"
+                }
+            },
+            "blocks": {
+                "heading": {
+                    "name": "Überschrift",
+                    "settings": {
+                        "heading": {
+                            "label": "Überschrift"
+                        }
+                    }
+                },
+                "text": {
+                    "name": "Text",
+                    "settings": {
+                        "text": {
+                            "label": "Beschreibung"
+                        }
+                    }
+                },
+                "buttons": {
+                    "name": "Schaltflächen",
+                    "settings": {
+                        "button_label_1": {
+                            "label": "Bezeichnung der ersten Schaltfläche",
+                            "info": "Lassen Sie das Feld leer, um die Schaltfläche auszublenden."
+                        },
+                        "button_link_1": {
+                            "label": "Link der ersten Schaltfläche"
+                        },
+                        "button_style_secondary_1": {
+                            "label": "Sekundären Schaltflächenstil verwenden"
+                        },
+                        "button_label_2": {
+                            "label": "Bezeichnung der zweiten Schaltfläche",
+                            "info": "Lassen Sie das Feld leer, um die Schaltfläche auszublenden."
+                        },
+                        "button_link_2": {
+                            "label": "Link der zweiten Schaltfläche"
+                        },
+                        "button_style_secondary_2": {
+                            "label": "Sekundären Schaltflächenstil verwenden"
+                        }
+                    }
+                }
+            },
+            "presets": {
+                "name": "Bildbanner"
+            }
+        },
+        "image-with-text": {
+            "name": "Bild mit Text",
+            "settings": {
+                "full_width": {
+                    "label": "Mache den Abschnitt vollflächig"
+                },
+                "two_column_layout": {
+                    "label": "Im Zwei-Spalten-Layout anzeigen"
+                },
+                "image": {
+                    "label": "Bild"
+                },
+                "layout": {
+                    "options__1": {
+                        "label": "Bild zuerst"
+                    },
+                    "options__2": {
+                        "label": "Text zuerst"
+                    },
+                    "label": "Layout",
+                    "info": "Deaktiviert bei \"Zwei-Spalten-Layout\""
+                },
+                "enable_image_transform_scale": {
+                    "label": "Bild bei Hover skalieren"
+                },
+                "text_align": {
+                    "option__1": {
+                        "label": "Links (standardmäßig)"
+                    },
+                    "option__2": {
+                        "label": "Zentriert (deaktiviert bei \"Zwei-Spalten-Layout\")"
+                    },
+                    "option__3": {
+                        "label": "Rechts"
+                    },
+                    "label": "Ausrichtung"
+                },
+                "cover_text_color": {
+                    "label": "Textfarbe"
+                },
+                "cover_background": {
+                    "label": "Hintergrundfarbe"
+                },
+                "cover_background_gradient": {
+                    "label": "Hintergrundverlauf"
+                },
+                "image_height": {
+                    "label": "Bildhöhe",
+                    "info": "Für beste Ergebnisse verwenden Sie ein Bild mit einem Seitenverhältnis von 3:2. [Mehr erfahren](https://help.shopify.com/manual/shopify-admin/productivity-tools/image-editor#understanding-image-aspect-ratio)",
+                    "options__1": "An Bild anpassen",
+                    "options__2": "Klein",
+                    "options__3": "Mittel",
+                    "options__4": "Groß"
+                },
+                "header_1": {
+                    "content": "Spotlight-Einstellungen"
+                },
+                "spotlight_products": {
+                    "label": "Spotlight-Produkte auswählen"
+                },
+                "show_product_image": {
+                    "label": "Produktbild anzeigen"
+                },
+                "show_vendor": {
+                    "label": "Anbieter anzeigen"
+                },
+                "show_price": {
+                    "label": "Preis anzeigen"
+                },
+                "show_description": {
+                    "label": "Beschreibung anzeigen"
+                }
+            },
+            "blocks": {
+                "heading": {
+                    "name": "Überschrift",
+                    "settings": {
+                        "heading": {
+                            "label": "Überschrift"
+                        },
+                        "heading_font_size": {
+                            "label": "Schriftgröße"
+                        }
+                    }
+                },
+                "text": {
+                    "name": "Text",
+                    "settings": {
+                        "text": {
+                            "label": "Beschreibung"
+                        }
+                    }
+                },
+                "button": {
+                    "name": "Button",
+                    "settings": {
+                        "button_label": {
+                            "label": "Button-Label",
+                            "info": "Lassen Sie das Label leer, um den Button auszublenden."
+                        },
+                        "button_link": {
+                            "label": "Button-Link"
+                        }
+                    }
+                },
+                "spotlight": {
+                    "name": "Spotlight",
+                    "settings": {
+                        "header_1": {
+                            "content": "Stellen Sie sicher, dass die Produkte ausgewählt sind."
+                        },
+                        "spot_position_left": "Spot-Position links",
+                        "spot_position_top": "Spot-Position oben"
+                    }
+                }
+            },
+            "presets": {
+                "name": "Bild mit Text"
+            }
+        },
+        "main-article": {
+            "name": "Blogbeitrag",
+            "blocks": {
+                "title": {
+                    "name": "Nächste Blogs lesen",
+                    "settings": {
+                        "blog_show_author": {
+                            "label": "Autor anzeigen"
+                        }
+                    }
+                },
+                "content": {
+                    "name": "Inhalt",
+                    "settings": {
+                        "social_sharing": {
+                            "label": "Soziale Icons anzeigen"
+                        }
+                    }
+                },
+                "comments": {
+                    "name": "Kundenkommentare",
+                    "settings": {
+                        "comment_icon": {
+                            "label": "Wählen Sie das Icon-Bild aus",
+                            "info": "Passende Icon-Größe: 64x64 (px)"
+                        }
+                    }
+                }
+            }
+        },
+        "main-blog": {
+            "name": "Blog-Beiträge",
+            "settings": {
+                "show_image": {
+                    "label": "Vorschaubild anzeigen",
+                    "info": "Für bessere Ergebnisse verwenden Sie ein Bild im Seitenverhältnis 2:3."
+                },
+                "paragraph": {
+                    "content": "Um Auszüge zu ändern, bearbeiten Sie Ihre [Blog-Beiträge.](https://help.shopify.com/en/manual/online-store/blogs/writing-blogs#display-an-excerpt-from-a-blog-post)"
+                },
+                "show_filter_articles": {
+                    "label": "Verwenden Sie den Blog-Filter",
+                    "info": "Fügen Sie Ihren Blog-Beiträgen Tags hinzu, um sie nach Kategorie oder Thema zu organisieren und zu filtern."
+                },
+                "items_per_page": {
+                    "label": "Elemente pro Seite"
+                },
+                "items_per_row": {
+                    "label": "Elemente pro Reihe"
+                },
+                "content_position": {
+                    "label": "Inhaltsposition",
+                    "options": {
+                        "left": "Links",
+                        "center": "Zentriert",
+                        "right": "Rechts"
+                    }
+                },
+                "use_outline": {
+                    "label": "Umriss anzeigen"
+                },
+                "pagination_type": {
+                    "label": "Pagination-Typ",
+                    "options": {
+                        "pagination_list": "Paginierungs-Liste",
+                        "infinity_scroll": "Unendliches Scrollen",
+                        "load_more_button": "Mehr laden Button"
+                    }
+                },
+                "image_content_width": {
+                    "label": "Verwenden Sie die Bildbreite als Inhaltsbreite"
+                },
+                "use_top_spacing": {
+                    "label": "Verwenden Sie oberen Abstand"
+                },
+                "header": {
+                    "content": "Tags Hintergrundabdeckungen"
+                },
+                "tag_1_background_cover": {
+                    "label": "Tag 1"
+                },
+                "tag_2_background_cover": {
+                    "label": "Tag 2"
+                },
+                "tag_3_background_cover": {
+                    "label": "Tag 3"
+                },
+                "tag_4_background_cover": {
+                    "label": "Tag 4"
+                }
+            },
+            "blocks": {
+                "title": {
+                    "name": "Titel",
+                    "settings": {
+                        "show_date": {
+                            "label": "Datum anzeigen"
+                        },
+                        "show_author": {
+                            "label": "Autor anzeigen"
+                        }
+                    }
+                },
+                "summary": {
+                    "name": "Auszug",
+                    "settings": {
+                        "truncate_words": {
+                            "label": "Wörter kürzen",
+                            "unit": "w"
+                        }
+                    }
+                },
+                "link": {
+                    "name": "Link",
+                    "settings": {
+                        "show_link_read_more": {
+                            "label": "Link 'Mehr lesen' anzeigen"
+                        }
+                    }
+                }
+            }
+        },
+        "main-cart-footer": {
+            "name": "Zwischensumme",
+            "settings": {
+                "show_cart_note": {
+                    "label": "Warenkorb-Notiz aktivieren"
+                }
+            },
+            "blocks": {
+                "subtotal": {
+                    "name": "Zwischensummenpreis"
+                },
+                "buttons": {
+                    "name": "Zur Kasse Button"
+                }
+            }
+        },
+        "main-cart-items": {
+            "name": "Warenkorb",
+            "settings": {
+                "show_vendor": {
+                    "label": "Anbieter anzeigen"
+                }
+            }
+        },
+        "main-list-collections": {
+            "name": "Sammlungs-Liste Seite",
+            "settings": {
+                "title": {
+                    "label": "Überschrift"
+                },
+                "heading_size": {
+                    "label": "Überschriftgröße",
+                    "options": {
+                        "h1": "H1",
+                        "h2": "H2",
+                        "h3": "H3"
+                    }
+                },
+                "sort": {
+                    "label": "Sammlungen sortieren nach:",
+                    "options__1": {
+                        "label": "Alphabetisch, A-Z"
+                    },
+                    "options__2": {
+                        "label": "Alphabetisch, Z-A"
+                    },
+                    "options__3": {
+                        "label": "Datum, neueste zuerst"
+                    },
+                    "options__4": {
+                        "label": "Datum, älteste zuerst"
+                    },
+                    "options__5": {
+                        "label": "Produktanzahl, hoch bis niedrig"
+                    },
+                    "options__6": {
+                        "label": "Produktanzahl, niedrig bis hoch"
+                    }
+                },
+                "pagination_type": {
+                    "label": "Paginierungs-Typ",
+                    "options": {
+                        "pagination_list": "Paginierungs-Liste",
+                        "infinity_scroll": "Unendliches Scrollen",
+                        "load_more_button": "Mehr laden Button"
+                    }
+                },
+                "image_ratio": {
+                    "label": "Bildverhältnis",
+                    "adapt_to_image": {
+                        "label": "An Bild anpassen"
+                    },
+                    "portrait": {
+                        "label": "Hochformat"
+                    },
+                    "circle": {
+                        "label": "Kreis"
+                    }
+                },
+                "items_per_page": {
+                    "label": "Sammlungen pro Seite"
+                },
+                "grid": {
+                    "label": "Spalten"
+                },
+                "heading_size": {
+                    "label": "Sammlungsüberschrift Größe",
+                    "options": {
+                        "h1": "H1",
+                        "h2": "H2",
+                        "h3": "H3"
+                    }
+                },
+                "collection_title_size": {
+                    "label": "Sammlungs-Titelgröße"
+                },
+                "show_descriptions_on_desktop": {
+                    "label": "Beschreibungen auf Desktop anzeigen",
+                    "info": "Deaktiviert bei \"Kreis\" Bildverhältnis."
+                },
+                "qty_words_to_show": {
+                    "label": "Anzahl der anzuzeigenden Wörter kürzen (HTML-Tags entfernen)",
+                    "info": "\"0\" oder leer zeigt die vollständige Sammlungbeschreibung an."
+                },
+                "hide_images_on_mobile": {
+                    "label": "Sammlungsbilder auf Mobilgeräten ausblenden",
+                    "info": "Verfügbar für Bildverhältnis: An Bild anpassen und Hochformat. (Kann für bessere mobile Leistung nützlich sein)"
+                }
+            }
+        },
+        "our-list-collections": {
+            "name": "Sammlungs-Liste",
+            "settings": {
+                "heading": "Überschrift",
+                "heading_size": {
+                    "label": "Überschriftgröße",
+                    "options": {
+                        "h1": "H1",
+                        "h2": "H2",
+                        "h3": "H3"
+                    }
+                },
+                "collection_list": {
+                    "label": "Sammlungen auswählen",
+                    "info": "Zeige standardmäßig alle Sammlungen"
+                },
+                "collection_url": {
+                    "label": "Link zur Sammlungsliste",
+                    "info": "Standardlink zu Alle Sammlungen"
+                },
+                "grid": "Zu zeigende Sammlungen",
+                "collections_per_row": "Sammlungen pro Reihe",
+                "show_item_border": "Rand anzeigen",
+                "title_cover_background": "Titel Hintergrund",
+                "image_position": {
+                    "label": "Bildposition",
+                    "options": {
+                        "contain": "Anzeigen",
+                        "cover": "Decken"
+                    }
+                },
+                "swipe_on_desktop": "Als Diashow auf Desktop anzeigen"
+            },
+            "presets": {
+                "name": "Sammlungs-Liste"
+            }
+        },
+        "overlay": {
+            "name": "Overlay",
+            "blocks": {
+                "popup": {
+                    "name": "Popup",
+                    "settings": {
+                        "text": {
+                            "label": "Text"
+                        },
+                        "header_image": {
+                            "content": "Bild"
+                        },
+                        "image": {
+                            "label": "Bild"
+                        },
+                        "image_url": {
+                            "label": "Link"
+                        },
+                        "header_behavior": {
+                            "content": "Verhalten"
+                        },
+                        "showup_when": {
+                            "label": "Popup anzeigen",
+                            "option": {
+                                "immediately": "Sofort",
+                                "exit_intent": "Bei Exit-Absicht"
+                            }
+                        },
+                        "showup_frequency": {
+                            "label": "Häufigkeit",
+                            "option": {
+                                "daily": "Einmal pro Tag",
+                                "weekly": "Einmal pro Woche"
+                            }
+                        },
+                        "subscribe_newsletter": {
+                            "label": "Formular 'Zum Newsletter anmelden' anzeigen"
+                        }
+                    }
+                }
+            }
+        },
+        "main-page": {
+            "name": "Seiteninhalt",
+            "settings": {
+                "layout_max_width": {
+                    "label": "Maximale Seiteninhalt-Breite",
+                    "info": "Steuere die maximale Layoutbreite (px)"
+                }
+            },
+            "presets": {
+                "name": "Seiteninhalt"
+            }
+        },
+        "page-with-image": {
+            "name": "Seite mit Bild",
+            "settings": {
+                "full_width": {
+                    "label": "Das Bild in voller Breite anzeigen."
+                },
+                "image": {
+                    "label": "Bild hinzufügen",
+                    "info": "Verwenden Sie separate Bilder, die auf der Seite angezeigt werden."
+                },
+                "link": {
+                    "label": "Bildlink"
+                }
+            },
+            "blocks": {
+                "heading": {
+                    "name": "Bildüberschrift",
+                    "settings": {
+                        "heading": {
+                            "label": "Bildüberschrift verwenden"
+                        }
+                    }
+                },
+                "text": {
+                    "name": "Bilduntertitel",
+                    "settings": {
+                        "text": {
+                            "label": "Bilduntertitel verwenden"
+                        }
+                    }
+                }
+            },
+            "presets": {
+                "name": "Seite mit Bild"
+            }
+        },
+        "scrolling_text": {
+            "name": "Scrollender Text",
+            "settings": {
+                "text_font_family": {
+                    "label": "Schriftart"
+                },
+                "text_font_size": {
+                    "label": "Schriftgröße"
+                },
+                "text_animation_duration": {
+                    "label": "Animationsdauer"
+                },
+                "text_color": {
+                    "label": "Textfarbe"
+                },
+                "text_color_gradient": {
+                    "label": "Textfarbverlauf"
+                },
+                "cover_background_color": {
+                    "label": "Hintergrundfarbe"
+                },
+                "cover_background_gradient": {
+                    "label": "Hintergrundverlauf"
+                },
+                "use_box_shadow": {
+                    "label": "Container-Schatten anzeigen"
+                }
+            },
+            "blocks": {
+                "content": {
+                    "name": "Text",
+                    "settings": {
+                        "scrolling_text": {
+                            "label": "Inhalt"
+                        }
+                    },
+                    "icon_separator": {
+                        "label": "Icon-Trenner",
+                        "options": {
+                            "space": "Raum",
+                            "dot": "Punkt",
+                            "dash": "Strich",
+                            "sim": "Sim"
+                        }
+                    }
+                }
+            },
+            "presets": {
+                "name": "Scrollender Text"
+            }
+        },
+        "main-collection": {
+            "name": "Sammlung",
+            "blocks": {
+                "all": {
+                    "settings": {
+                        "position": {
+                            "label": "Position auf Desktop",
+                            "info": "Bildschirme ab 990px Breite",
+                            "options": {
+                                "left": "Links daneben",
+                                "left_open": "Links daneben (zuerst geöffnet)",
+                                "main": "Hauptinhalt",
+                                "right": "Rechts daneben",
+                                "right_open": "Rechts daneben (zuerst geöffnet)"
+                            }
+                        }
+                    }
+                },
+                "description": {
+                    "name": "Beschreibung",
+                    "settings": {
+                        "is_collapsed": {
+                            "label": "Zusammengeklappte Beschreibung aktivieren"
+                        },
+                        "initial_lines": {
+                            "label": "Sichtbare Zeilen beim Zusammenklappen"
+                        }
+                    }
+                },
+                "featured": {
+                    "name": "Produkte fördern",
+                    "settings": {
+                        "heading": {
+                            "label": "Überschrift"
+                        },
+                        "products_per_page": {
+                            "label": "Produktanzahl"
+                        },
+                        "columns": {
+                            "label": "Spalten"
+                        },
+                        "cover": {
+                            "header": "Magazin-Cover"
+                        },
+                        "cover_background": {
+                            "label": "Hintergrund"
+                        },
+                        "cover_image": {
+                            "label": "Bild"
+                        },
+                        "cover_text_color": {
+                            "label": "Textfarbe"
+                        }
+                    }
+                },
+                "filters": {
+                    "name": "Filter",
+                    "settings": {
+                        "subtitle": "Fügen Sie Ihre Store-Filter im Shopify-Adminbereich hinzu und aktualisieren Sie diese.",
+                        "show_colors_as_swatches": {
+                            "label": "Farben als Muster anzeigen",
+                            "info": "Basierend auf den Variantenbezeichnern wie: Farbe, Colour"
+                        },
+                        "show_color_swatch_labels": {
+                            "label": "Farbmustertags anzeigen"
+                        }
+                    }
+                },
+                "side_menu": {
+                    "name": "Seitliches Menü",
+                    "settings": {
+                        "title": {
+                            "label": "Titel"
+                        },
+                        "menu": {
+                            "label": "Menü"
+                        }
+                    }
+                },
+                "image": {
+                    "name": "Bild",
+                    "settings": {
+                        "image": {
+                            "info": "Verwenden Sie das hervorgehobene Bild der Sammlung, wenn nichts ausgewählt ist",
+                            "label": "Bild"
+                        }
+                    }
+                },
+                "products": {
+                    "name": "Produkte",
+                    "settings": {
+                        "columns": {
+                            "label": "Spalten",
+                            "info": "Diese Option hat nur Einfluss, wenn der Modus \"Grid\" aktiviert ist."
+                        },
+                        "mode": {
+                            "label": "Listenmodus",
+                            "options": {
+                                "grid": "Grid",
+                                "list": "Liste"
+                            }
+                        },
+                        "per_page": {
+                            "label": "Produkte pro Seite"
+                        },
+                        "show_mode": {
+                            "label": "Modus-Umschalter aktivieren"
+                        },
+                        "show_sorting": {
+                            "label": "Sortierung aktivieren"
+                        }
+                    }
+                },
+                "title": {
+                    "name": "Titel"
+                }
+            }
+        },
+        "main-password-footer": {
+            "name": "Passwort-Fußzeile",
+            "settings": {
+                "show_socials": {
+                    "label": "Social Links anzeigen"
+                },
+                "socials_heading": {
+                    "label": "Überschrift für Social Links"
+                }
+            }
+        },
+        "main-password-header": {
+            "name": "Passwortkopfzeile",
+            "settings": {
+                "logo": {
+                    "label": "Logo-Bild"
+                },
+                "logo_max_width": {
+                    "label": "Benutzerdefinierte Logo-Breite",
+                    "unit": "px"
+                }
+            }
+        },
+        "main-product": {
+            "name": "Produktinformationen",
+            "blocks": {
+                "all": {
+                    "settings": {
+                        "is_collapsed": {
+                            "label": "Zusammenklappen aktivieren"
+                        },
+                        "initial_lines": {
+                            "label": "Sichtbare Zeilen beim Zusammenklappen"
+                        },
+                        "no_spacing": {
+                            "label": "Unterem Abstand deaktivieren"
+                        }
+                    }
+                },
+                "text": {
+                    "name": "Text",
+                    "settings": {
+                        "text": {
+                            "label": "Text"
+                        },
+                        "text_style": {
+                            "label": "Textstil",
+                            "options__1": {
+                                "label": "Normal"
+                            },
+                            "options__2": {
+                                "label": "Untertitel"
+                            },
+                            "options__3": {
+                                "label": "Großbuchstaben"
+                            }
+                        }
+                    }
+                },
+                "brand": {
+                    "name": "Marke"
+                },
+                "gallery": {
+                    "name": "Mediengalerie",
+                    "settings": {
+                        "show_badges": {
+                            "label": "Produktabzeichen in der Galerie anzeigen"
+                        },
+                        "control_image_size": {
+                            "label": "Bildgröße steuern"
+                        }
+                    }
+                },
+                "title": {
+                    "name": "Titel",
+                    "settings": {
+                        "text_after": {
+                            "label": "Text nach der Überschrift"
+                        },
+                        "text_before": {
+                            "label": "Text vor der Überschrift"
+                        },
+                        "show_price": {
+                            "label": "Preis auf Desktop anzeigen",
+                            "info": "Bildschirme ab 990px Breite. Wenn aktiviert, wird dieser Block \"Preis und Ratenzahlung\" auf dem Desktop ausgeblendet."
+                        },
+                        "show_sku": {
+                            "label": "SKU anzeigen"
+                        },
+                        "show_rating": {
+                            "label": "Bewertung anzeigen",
+                            "info": "Benötigt die App [Judgeme Reviews](https://apps.shopify.com/judgeme)."
+                        },
+                        "show_badges": {
+                            "label": "Abzeichen auf Desktop anzeigen",
+                            "info": "Bildschirme ab 990px Breite."
+                        }
+                    }
+                },
+                "pickup": {
+                    "name": "Abholung vor Ort"
+                },
+                "price": {
+                    "name": "Preis und Ratenzahlung",
+                    "settings": {
+                        "notice": "Der Block ist möglicherweise nicht sichtbar, wenn der Block \"Titel\" die Option \"Abzeichen auf Desktop anzeigen\" aktiviert hat.",
+                        "show_badges": {
+                            "label": "Produktabzeichen anzeigen"
+                        },
+                        "show_tax_message": {
+                            "label": "Steuerinformation anzeigen",
+                            "info": "Der Preis mit oder ohne Steuern"
+                        }
+                    }
+                },
+                "quantity_selector": {
+                    "name": "Mengenwähler"
+                },
+                "variant_picker": {
+                    "name": "Variantenwähler",
+                    "settings": {
+                        "picker_type": {
+                            "label": "Typ",
+                            "options__1": {
+                                "label": "Dropdown"
+                            },
+                            "options__2": {
+                                "label": "Button"
+                            },
+                            "options__3": {
+                                "label": "Farbmuster"
+                            }
+                        },
+                        "mark_unavailable_variants": {
+                            "label": "Nicht verfügbare Varianten mit einer Randfarbe kennzeichnen"
+                        },
+                        "select_border_color": {
+                            "label": "Randfarbe auswählen"
+                        }
+                    }
+                },
+                "buy_buttons": {
+                    "name": "Kauf-Buttons",
+                    "settings": {
+                        "show_dynamic_checkout": {
+                            "label": "Dynamische Checkout-Buttons anzeigen",
+                            "info": "Verwenden Sie die in Ihrem Shop verfügbaren Zahlungsmethoden, Kunden sehen ihre bevorzugte Option, wie PayPal oder Apple Pay. [Mehr erfahren](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)"
+                        },
+                        "gift_card_show_recipient_form": {
+                            "label": "Empfängerformular anzeigen",
+                            "info": "Geschenkkartenprodukte können direkt an den Empfänger mit einer Nachricht gesendet werden."
+                        },
+                        "dynamic_checkout_color_scheme": {
+                            "label": "Farbschema des dynamischen Checkout-Buttons"
+                        },
+                        "set_up_preorder": {
+                            "label": "Vorbestellungs-Button-Bezeichnung",
+                            "info": "* Um die Button-Bezeichnung einzurichten, stellen Sie sicher, dass die Produktoptionen \"Weiterverkauf bei Nichtverfügbarkeit\" und \"Menge verfolgen\" aktiviert sind."
+                        },
+                        "compare_button_order": {
+                            "label": "Position der \"Zum Vergleichen hinzufügen\"-Schaltfläche festlegen",
+                            "info": "Die Position auf Mobilgeräten kann aufgrund des Theme-Layouts von der Desktop-Ansicht abweichen. Die Option wirkt sich nur aus, wenn die Bestellnummer sich von den Bestellnummern anderer Blöcke unterscheidet."
+                        }
+                    }
+                },
+                "manage_stock": {
+                    "name": "Bestand verwalten",
+                    "settings": {
+                        "stock_counter": {
+                            "label": "Nur X übrig Schwellenwert",
+                            "info": "Legen Sie den Bestandzählerwert fest. Wenn der Wert leer ist, wird der Bestandzähler nicht berechnet."
+                        },
+                        "show_social_sharing": {
+                            "label": "Social-Sharing-Icons anzeigen"
+                        }
+                    }
+                },
+                "pickup_availability": {
+                    "name": "Verfügbarkeit der Abholung"
+                },
+                "description": {
+                    "name": "Beschreibung"
+                },
+                "share": {
+                    "name": "Teilen",
+                    "settings": {
+                        "featured_image_info": {
+                            "content": "Wenn Sie einen Link in sozialen Medien-Posts einfügen, wird das hervorgehobene Bild der Seite als Vorschaubild angezeigt. [Mehr erfahren](https://help.shopify.com/en/manual/online-store/images/showing-social-media-thumbnail-images)."
+                        },
+                        "title_info": {
+                            "content": "Ein Titel und eine Beschreibung des Shops werden zusammen mit dem Vorschaubild angezeigt. [Mehr erfahren](https://help.shopify.com/en/manual/promoting-marketing/seo/adding-keywords#set-a-title-and-description-for-your-online-store)."
+                        }
+                    }
+                },
+                "message": {
+                    "name": "Nachricht hinterlassen",
+                    "settings": {
+                        "collection_name": {
+                            "label": "Sammlungsnamen",
+                            "info": "Für Produkte anzeigen, die zu einer bestimmten Sammlung gehören. Komma-getrennt. Wird standardmäßig für alle Produkte angezeigt."
+                        }
+                    }
+                },
+                "custom_liquid": {
+                    "name": "Benutzerdefiniertes Liquid",
+                    "settings": {
+                        "heading": {
+                            "label": "Überschrift"
+                        },
+                        "custom_liquid": {
+                            "label": "Benutzerdefiniertes Liquid"
+                        }
+                    }
+                },
+                "products_complementary": {
+                    "name": "Komplementärprodukte",
+                    "settings": {
+                        "heading": {
+                            "label": "Überschrift"
+                        },
+                        "use_as_collapsible": {
+                            "label": "Als ausklappbar anzeigen"
+                        },
+                        "products_per_page": {
+                            "label": "Max. Produkte anzeigen"
+                        },
+                        "use_as_slider": {
+                            "label": "Als Slider anzeigen"
+                        },
+                        "show_border_top": {
+                            "label": "Oberer Rand anzeigen"
+                        },
+                        "show_border_bottom": {
+                            "label": "Unterer Rand anzeigen"
+                        }
+                    }
+                },
+                "collapsible_tab": {
+                    "name": "Ausklappbarer Tab",
+                    "settings": {
+                        "heading": {
+                            "info": "Fügen Sie eine Überschrift hinzu, die den Inhalt erklärt.",
+                            "label": "Überschrift"
+                        },
+                        "content": {
+                            "label": "Tab-Inhalt"
+                        },
+                        "page": {
+                            "label": "Tab-Inhalt von Seite"
+                        },
+                        "icon": {
+                            "label": "Symbol",
+                            "options__1": {
+                                "label": "Keins"
+                            },
+                            "options__2": {
+                                "label": "Kasten"
+                            },
+                            "options__3": {
+                                "label": "Sprechblase"
+                            },
+                            "options__4": {
+                                "label": "Häkchen"
+                            },
+                            "options__5": {
+                                "label": "Trockner"
+                            },
+                            "options__6": {
+                                "label": "Auge"
+                            },
+                            "options__7": {
+                                "label": "Herz"
+                            },
+                            "options__8": {
+                                "label": "Eisen"
+                            },
+                            "options__9": {
+                                "label": "Blatt"
+                            },
+                            "options__10": {
+                                "label": "Leder"
+                            },
+                            "options__11": {
+                                "label": "Schloss"
+                            },
+                            "options__12": {
+                                "label": "Karten-Pin"
+                            },
+                            "options__13": {
+                                "label": "Hose"
+                            },
+                            "options__14": {
+                                "label": "Flughafen"
+                            },
+                            "options__15": {
+                                "label": "Preisschild"
+                            },
+                            "options__16": {
+                                "label": "Fragezeichen"
+                            },
+                            "options__17": {
+                                "label": "Rückgabe"
+                            },
+                            "options__18": {
+                                "label": "Lineal"
+                            },
+                            "options__19": {
+                                "label": "Hemd"
+                            },
+                            "options__20": {
+                                "label": "Schuhe"
+                            },
+                            "options__21": {
+                                "label": "Silhouette"
+                            },
+                            "options__22": {
+                                "label": "Stern"
+                            },
+                            "options__23": {
+                                "label": "Lkw"
+                            },
+                            "options__24": {
+                                "label": "Wäsche"
+                            }
+                        }
+                    }
+                },
+                "popup": {
+                    "name": "Popup",
+                    "settings": {
+                        "link_label": {
+                            "label": "Button-Bezeichnung"
+                        },
+                        "page": {
+                            "label": "Seite"
+                        }
+                    }
+                }
+            },
+            "settings": {
+                "header": {
+                    "content": "Medien",
+                    "info": "Erfahren Sie mehr über [Medientypen](https://help.shopify.com/manual/products/product-media)"
+                },
+                "enable_sticky_info": {
+                    "label": "Sticky-Produktinformationen auf großen Bildschirmen aktivieren"
+                },
+                "header": {
+                    "content__2": "Sticky Zum Warenkorb hinzufügen"
+                },
+                "enable_quick_add": {
+                    "label": "Aktivieren"
+                },
+                "show_product_variants": {
+                    "label": "Produktvarianten anzeigen"
+                },
+                "show_product_img": {
+                    "label": "Produktbild anzeigen"
+                }
+            }
+        },
+        "main-search": {
+            "name": "Suchergebnisse",
+            "blocks": {
+                "custom_liquid": {
+                    "name": "Benutzerdefiniertes Liquid"
+                },
+                "filters": {
+                    "name": "Filter"
+                },
+                "results": {
+                    "name": "Ergebnisse",
+                    "settings": {
+                        "per_page": {
+                            "label": "Produkte pro Seite"
+                        },
+                        "article_show_author": {
+                            "label": "Autor anzeigen"
+                        },
+                        "show_articles": "Artikel anzeigen",
+                        "show_pages": "Seiten anzeigen"
+                    }
+                },
+                "title": {
+                    "name": "Suchtitel"
+                }
+            }
+        },
+        "multicolumn": {
+            "name": "Mehrspaltig",
+            "settings": {
+                "title": {
+                    "label": "Überschrift"
+                },
+                "title_size": {
+                    "label": "Überschriftengröße",
+                    "options": {
+                        "h1": "H1",
+                        "h2": "H2",
+                        "h3": "H3"
+                    }
+                },
+                "image_width": {
+                    "label": "Bildbreite",
+                    "options__1": {
+                        "label": "Ein Drittel der Spaltenbreite"
+                    },
+                    "options__2": {
+                        "label": "Die Hälfte der Spaltenbreite"
+                    },
+                    "options__3": {
+                        "label": "Volle Spaltenbreite"
+                    }
+                },
+                "image_ratio": {
+                    "label": "Bildverhältnis",
+                    "options__1": {
+                        "label": "An das Bild anpassen"
+                    },
+                    "options__2": {
+                        "label": "Portrait"
+                    },
+                    "options__3": {
+                        "label": "Quadratisch"
+                    },
+                    "options__4": {
+                        "label": "Kreis"
+                    }
+                },
+                "column_alignment": {
+                    "label": "Spalten-Textausrichtung",
+                    "options__1": {
+                        "label": "Links"
+                    },
+                    "options__2": {
+                        "label": "Zentriert"
+                    }
+                },
+                "column_direction": {
+                    "label": "Anordnung des Spalteninhalts",
+                    "options__1": {
+                        "label": "Inline"
+                    },
+                    "options__2": {
+                        "label": "Inline (umgekehrt)"
+                    },
+                    "options__3": {
+                        "label": "Gestapelt"
+                    },
+                    "options__4": {
+                        "label": "Gestapelt (umgekehrt)"
+                    },
+                    "options__5": {
+                        "label": "Gestapelt (umgekehrt) nur auf mobilen Geräten"
+                    }
+                },
+                "button_label": {
+                    "label": "Button-Bezeichnung"
+                },
+                "button_link": {
+                    "label": "Button-Link"
+                },
+                "swipe_on_mobile": {
+                    "label": "Swipe auf mobilen Geräten aktivieren"
+                },
+                "content_animation": {
+                    "label": "Inhaltsanimation aktivieren"
+                }
+            },
+            "blocks": {
+                "column": {
+                    "name": "Spalte",
+                    "settings": {
+                        "link": {
+                            "label": "Link"
+                        },
+                        "image": {
+                            "label": "Bild"
+                        },
+                        "image_enabled": {
+                            "label": "Bild hinzufügen"
+                        },
+                        "image_spaced": {
+                            "label": "Bildabstand anzeigen"
+                        },
+                        "title": {
+                            "label": "Überschrift"
+                        },
+                        "sub_title": {
+                            "label": "Untertitel"
+                        },
+                        "text": {
+                            "label": "Beschreibung"
+                        },
+                        "link_appearance": {
+                            "label": "Linkdarstellung",
+                            "options": {
+                                "button": "Button",
+                                "button_secondary": "Sekundärer Button",
+                                "image_link": "Bild-Link"
+                            }
+                        },
+                        "button_label": {
+                            "label": "Button-Bezeichnung",
+                            "info": "Linkdarstellung 'Button'"
+                        },
+                        "image_position": {
+                            "label": "Bildposition",
+                            "options": {
+                                "contain": "Inhalt"
+                            }
+                        },
+                        "show_outline": {
+                            "label": "Rahmen anzeigen"
+                        },
+                        "header": {
+                            "name": "Farben"
+                        },
+                        "add_cover": {
+                            "label": "Hintergrund hinzufügen"
+                        },
+                        "cover_background": {
+                            "label": "Hintergrund"
+                        },
+                        "cover_background_gradient": {
+                            "label": "Hintergrund-Gradient"
+                        },
+                        "color_title": {
+                            "label": "Überschriftfarbe"
+                        },
+                        "color_text": {
+                            "label": "Textfarbe"
+                        },
+                        "bg_color_subtitle": {
+                            "label": "Untertitel Hintergrund"
+                        },
+                        "subtitle_background_gradient": {
+                            "label": "Untertitel Hintergrund-Gradient"
+                        },
+                        "use_bold_heading": {
+                            "label": "Fette Überschrift verwenden"
+                        }
+                    }
+                }
+            },
+            "presets": {
+                "name": "Mehrspaltig"
+            }
+        },
+        "newsletter": {
+            "name": "Newsletter",
+            "settings": {
+                "full_width": {
+                    "label": "Abschnitt auf volle Breite einstellen"
+                },
+                "cover_image": {
+                    "label": "Bild auswählen",
+                    "info": "Deckbild für Abschnitt"
+                },
+                "content_position": {
+                    "label": "Inhaltsposition",
+                    "info": "Verfügbar, wenn der Abschnitt mit einem Bild abgedeckt ist",
+                    "options": {
+                        "right": "Rechts",
+                        "left": "Links",
+                        "center": "Zentriert"
+                    }
+                },
+                "paragraph": {
+                    "content": "Wenn Kunden sich für E-Mails anmelden, werden Kundenkonten erstellt. [Mehr erfahren](https://help.shopify.com/en/manual/customers)"
+                }
+            },
+            "blocks": {
+                "heading": {
+                    "name": "Überschrift",
+                    "settings": {
+                        "heading": {
+                            "label": "Überschrift"
+                        },
+                        "enable_heading_style": {
+                            "label": "Überschriftstil aktivieren"
+                        }
+                    }
+                },
+                "maintenance_image": {
+                    "name": "Wartungsbild",
+                    "settings": {
+                        "title": "Wartungsbild",
+                        "image_position": {
+                            "label": "Bildposition",
+                            "option_1": {
+                                "label": "Oben"
+                            },
+                            "option_2": {
+                                "label": "Innen"
+                            },
+                            "option_3": {
+                                "label": "Unten"
+                            }
+                        }
+                    }
+                },
+                "paragraph": {
+                    "name": "Unterüberschrift",
+                    "settings": {
+                        "paragraph": {
+                            "label": "Beschreibung"
+                        }
+                    }
+                },
+                "email_form": {
+                    "name": "E-Mail-Formular",
+                    "settings": {
+                        "use_minimal_form": {
+                            "label": "Minimalformular anzeigen"
+                        }
+                    }
+                }
+            },
+            "presets": {
+                "name": "Newsletter"
+            }
+        },
+        "page": {
+            "name": "Seite",
+            "settings": {
+                "page": {
+                    "label": "Seite",
+                    "info": "Das Kontaktformular wird nicht angezeigt, wenn eine Kontaktseite ausgewählt ist!"
+                }
+            },
+            "presets": {
+                "name": "Seite"
+            }
+        },
+        "product-tabs": {
+            "name": "Produkt-Tabs",
+            "settings": {
+                "tabs_layout": {
+                    "label": "Layout",
+                    "option__1": {
+                        "label": "Zusammengeklappt"
+                    },
+                    "option__2": {
+                        "label": "Erweitert"
+                    }
+                }
+            },
+            "blocks": {
+                "all": {
+                    "settings": {
+                        "heading": {
+                            "label": "Tab-Überschrift"
+                        },
+                        "metafields_custom_data": {
+                            "label": "Benutzerdefinierte Daten",
+                            "info": "Nützlich, um den Wert der Metafelder anzuzeigen"
+                        }
+                    }
+                },
+                "description": {
+                    "name": "Produktbeschreibung"
+                },
+                "details": {
+                    "name": "Produktdetails",
+                    "settings": {
+                        "heading": {
+                            "label": "Details"
+                        },
+                        "details_position": {
+                            "label": "Position der Details",
+                            "details_in_list": {
+                                "label": "Produktdetails in der Liste anzeigen"
+                            },
+                            "details_in_row": {
+                                "label": "Produktdetails in einer Reihe anzeigen"
+                            },
+                            "hide_details": {
+                                "label": "Produktdetails ausblenden"
+                            }
+                        }
+                    }
+                },
+                "reviews": {
+                    "name": "Kundenbewertungen",
+                    "settings": {
+                        "heading": {
+                            "label": "Kundenbewertungen",
+                            "info": "Benötigt die [Judgeme Reviews](https://apps.shopify.com/judgeme)-App."
+                        }
+                    }
+                },
+                "faq": {
+                    "name": "FAQ",
+                    "settings": {
+                        "heading": {
+                            "label": "Titel",
+                            "info": "Wir empfehlen, Metafelder als Quelle für FAQs zu verwenden. Das Metafeld muss den Namen \"faq\" und den Inhaltstyp \"Json\" haben. {\"Frage?\": \"Antwort.\"} [Mehr erfahren](https://help.shopify.com/en/manual/metafields/displaying-metafields-on-your-online-store)"
+                        },
+                        "default_faqs": {
+                            "label": "Beispiel für FAQ",
+                            "info": "Dies ist ein Beispiel, um FAQs auf der Produktseite anzuzeigen. Verwenden Sie die Metafelder-Einstellungen, um FAQs zu erstellen."
+                        },
+                        "link_to_faq_page": {
+                            "label": "Link zur FAQ-Seite (Mehr lesen)"
+                        }
+                    }
+                },
+                "similar": {
+                    "name": "Upsell-Produkte",
+                    "settings": {
+                        "products_per_page": {
+                            "label": "Produkte pro Seite"
+                        }
+                    }
+                }
+            },
+            "presets": {
+                "collapsed": "Produkt-Tabs"
+            }
+        },
+        "product-bought-together": {
+            "name": "Cross-Sell-Produkte",
+            "settings": {
+                "heading": {
+                    "label": "Überschrift"
+                },
+                "enabled_language_total_number_formatting": {
+                    "label": "Sprachformattierung der Gesamtzahl aktivieren"
+                },
+                "heading_size": {
+                    "label": "Überschriftengröße",
+                    "options": {
+                        "h1": "H1",
+                        "h2": "H2",
+                        "h3": "H3"
+                    }
+                },
+                "products_per_page": {
+                    "label": "Produkte pro Seite"
+                },
+                "enable_slider_buttons": {
+                    "label": "Slideshow-Schaltflächen anzeigen",
+                    "info": "Verfügbar nur für mobile Geräte, um die Benutzererfahrung zu verbessern."
+                }
+            }
+        },
+        "product-recommendations": {
+            "name": "Produkteempfehlungen",
+            "settings": {
+                "heading": {
+                    "label": "Überschrift"
+                },
+                "heading_size": {
+                    "label": "Überschriftengröße",
+                    "options": {
+                        "h1": "H1",
+                        "h2": "H2",
+                        "h3": "H3"
+                    }
+                },
+                "products_per_page": {
+                    "label": "Produkte pro Seite"
+                },
+                "paragraph__1": {
+                    "content": "Dynamische Empfehlungen verwenden Bestell- und Produktinformationen, um sich im Laufe der Zeit zu ändern und zu verbessern. [Mehr erfahren](https://help.shopify.com/en/themes/development/recommended-products)"
+                },
+                "use_search_and_discovery_app": {
+                    "label": "Produkte mit der Shopify-App anzeigen",
+                    "info": "Verwenden Sie die Shopify Search & Discovery-App, um die Produktempfehlungen zu steuern. [Mehr erfahren](https://help.shopify.com/en/manual/online-store/search-and-discovery)"
+                },
+                "recommendations_products": {
+                    "label": "Produkte auswählen",
+                    "info": "Wählen Sie manuell Produkte als Empfehlungen aus, ohne Verlinkung zu Elternprodukten. Es können nur sechs Produkte festgelegt werden."
+                },
+                "swipe_on_mobile": {
+                    "label": "Swipe auf mobilen Geräten aktivieren"
+                }
+            }
+        },
+        "product-complementary": {
+            "name": "Komplementär-Produkte",
+            "settings": {
+                "heading": {
+                    "label": "Überschrift"
+                },
+                "heading_size": {
+                    "label": "Überschriftengröße",
+                    "options": {
+                        "h1": "H1",
+                        "h2": "H2",
+                        "h3": "H3"
+                    }
+                },
+                "products_per_page": {
+                    "label": "Produkte pro Seite"
+                },
+                "product_list": {
+                    "label": "Produkte auswählen",
+                    "info": "Wählen Sie manuell Komplementär-Produkte aus, ohne Verlinkung zu Elternprodukten. Die Produkte müssen auf Lager sein."
+                },
+                "use_search_and_discovery_app": {
+                    "label": "Produkte mit der Shopify-App anzeigen",
+                    "info": "Verwenden Sie die Shopify Search & Discovery-App, um die Komplementär-Produkte zu steuern. [Mehr erfahren](https://help.shopify.com/en/manual/online-store/search-and-discovery)"
+                },
+                "swipe_on_mobile": {
+                    "label": "Swipe auf mobilen Geräten aktivieren"
+                }
+            }
+        },
+        "rich-text": {
+            "name": "Rich Text",
+            "settings": {
+                "full_width": {
+                    "label": "Bereich in voller Breite anzeigen"
+                },
+                "content_width": {
+                    "label": "Inhaltsbreite",
+                    "unit": "rem"
+                },
+                "content_position": {
+                    "label": "Inhaltsposition",
+                    "options": {
+                        "left": "Links",
+                        "right": "Rechts",
+                        "center": "Zentriert"
+                    }
+                }
+            },
+            "blocks": {
+                "heading": {
+                    "name": "Überschrift",
+                    "settings": {
+                        "heading": {
+                            "label": "Überschrift"
+                        },
+                        "heading_size": {
+                            "options": {
+                                "h1": "H1",
+                                "h2": "H2",
+                                "h3": "H3"
+                            },
+                            "label": "Überschriftengröße"
+                        },
+                        "use_heading_style": {
+                            "label": "Überschriftstil verwenden"
+                        }
+                    }
+                },
+                "text": {
+                    "name": "Text",
+                    "settings": {
+                        "text": {
+                            "label": "Beschreibung"
+                        }
+                    }
+                },
+                "button": {
+                    "name": "Button",
+                    "settings": {
+                        "button_label": {
+                            "label": "Button-Beschriftung"
+                        },
+                        "button_link": {
+                            "label": "Button-Link"
+                        },
+                        "view_all_appearance": {
+                            "label": "\"Alle anzeigen\" Darstellung",
+                            "options": {
+                                "button": "Button",
+                                "button_secondary": "Sekundärer Button",
+                                "link": "Text-Link"
+                            }
+                        }
+                    }
+                }
+            },
+            "presets": {
+                "name": "Rich Text"
+            }
+        },
+        "slider": {
+            "name": "Slideshow",
+            "settings": {
+                "background_color": {
+                    "label": "Hintergrundfarbe"
+                },
+                "max_width": {
+                    "label": "Maximale Breite des Containers (px)"
+                },
+                "loop": {
+                    "label": "Kontinuierliche Schleife aktivieren"
+                },
+                "autoplay": {
+                    "label": "Autoplay aktivieren"
+                },
+                "transition_effect": {
+                    "label": "Übergangseffekt",
+                    "options": {
+                        "scroll": "Scrollen",
+                        "fade": "Verblassen",
+                        "zoom": "Zoom-in verblassen"
+                    }
+                },
+                "delay": {
+                    "label": "Verzögerung zwischen Übergängen (Sekunden)",
+                    "info": "Wird verwendet, wenn Autoplay aktiviert ist"
+                },
+                "slides_per_view": {
+                    "label": "Slides pro Ansicht"
+                },
+                "navigation": {
+                    "label": "Navigationsschaltflächen anzeigen"
+                },
+                "pagination": {
+                    "label": "Paginierung anzeigen"
+                },
+                "slider_content_animation": {
+                    "label": "Inhaltsanimation der Folie"
+                },
+                "slider_preload_first": {
+                    "label": "Erste Folie vorladen",
+                    "info": "Kann die Seitenladezeit und die Google-Leistungsbewertung verbessern, wenn die Slideshow oberhalb des Inhaltsbereichs angezeigt wird."
+                },
+                "show_top_border": {
+                    "label": "Oberer Rand anzeigen"
+                },
+                "show_bottom_border": {
+                    "label": "Unterer Rand anzeigen"
+                },
+                "header__1": {
+                    "content": "Navigationsstile"
+                },
+                "slider_btns_color": {
+                    "label": "Button-Farbe",
+                    "info": "* - Nicht verfügbar für die Seitenposition"
+                },
+                "slide_height": {
+                    "label": "Foliehöhe",
+                    "options__1": {
+                        "label": "An das erste Bild anpassen"
+                    },
+                    "options__2": {
+                        "label": "Klein"
+                    },
+                    "options__3": {
+                        "label": "Mittel"
+                    },
+                    "options__4": {
+                        "label": "Groß"
+                    },
+                    "options__5": {
+                        "label": "Auto"
+                    }
+                },
+                "scope_visibility": {
+                    "label": "Sichtbar auf:",
+                    "options": {
+                        "all_screens": "Alle Bildschirme",
+                        "desktop_only": "Nur Desktop",
+                        "mobile_only": "Nur Mobilgerät"
+                    }
+                },
+                "navigation_position": {
+                    "label": "Navigationsposition",
+                    "options": {
+                        "sides": "Seiten",
+                        "right": "Rechts",
+                        "left": "Links"
+                    }
+                }
+            },
+            "blocks": {
+                "image": {
+                    "name": "Bild",
+                    "settings": {
+                        "title": {
+                            "label": "Überschrift"
+                        },
+                        "image": {
+                            "label": "Bild"
+                        },
+                        "lazy": {
+                            "label": "Lazy Loading für Bilder"
+                        },
+                        "link": {
+                            "label": "Bild-Link"
+                        },
+                        "video_url": {
+                            "label": "Video-Link"
+                        },
+                        "internal_video_source": {
+                            "label": "Interne Videoquelle"
+                        },
+                        "header": {
+                            "name": "Slider-Inhalt"
+                        },
+                        "content_title": {
+                            "label": "Überschrift"
+                        },
+                        "content_title_size": {
+                            "label": "Überschriftengröße",
+                            "options": {
+                                "h1": "H1",
+                                "h2": "H2",
+                                "h3": "H3",
+                                "theme_appearance": "Themen-Darstellung",
+                                "custom_size": "Benutzerdefinierte Schriftgröße"
+                            }
+                        },
+                        "custom_title_font_size": {
+                            "label": "Benutzerdefinierte Schriftgröße für Überschrift"
+                        },
+                        "description": {
+                            "label": "Body-Text"
+                        },
+                        "button_link": {
+                            "label": "Button-Link"
+                        },
+                        "button_title": {
+                            "label": "Button-Beschriftung"
+                        },
+                        "slideshow_content_position": {
+                            "label": "Inhaltsposition",
+                            "option__1": {
+                                "label": "Links (Standard)"
+                            },
+                            "option__2": {
+                                "label": "Zentriert"
+                            },
+                            "option__3": {
+                                "label": "Rechts"
+                            }
+                        },
+                        "slideshow_content_background": {
+                            "label": "Hintergrund"
+                        },
+                        "slideshow_content_background_opacity": {
+                            "label": "Hintergrund-Opazität"
+                        },
+                        "slideshow_content_foreground": {
+                            "label": "Text"
+                        },
+                        "slideshow_content_button_background": {
+                            "label": "Button-Hintergrund"
+                        },
+                        "slideshow_content_button_foreground": {
+                            "label": "Button-Beschriftung"
+                        }
+                    }
+                }
+            },
+            "presets": {
+                "name": "Slideshow"
+            }
+        },
+        "icons_bar": {
+            "name": "Icons-Leiste",
+            "settings": {
+                "border": {
+                    "label": "Rand anzeigen"
+                },
+                "shadow": {
+                    "label": "Schatten anzeigen"
+                },
+                "separator": {
+                    "label": "Trennzeichen anzeigen"
+                },
+                "visibility": {
+                    "label": "Sichtbar",
+                    "info": "Der Bildschirm für mobile Geräte hat eine Breite von bis zu 768px. Andere Bildschirme sind Desktop-Größe.",
+                    "options": {
+                        "all": {
+                            "label": "Immer"
+                        },
+                        "desktop": {
+                            "label": "Nur Desktop"
+                        },
+                        "mobile": {
+                            "label": "Nur Mobilgerät"
+                        }
+                    }
+                },
+                "control_vertical_margins": {
+                    "label": "Vertikale Ränder steuern",
+                    "unit": "rem"
+                },
+                "alignment_items_inside_flexbox": {
+                    "label": "Ausrichtung der Elemente innerhalb eines Flexbox",
+                    "options": {
+                        "center": "Zentriert",
+                        "baseline": "Grundlinie"
+                    }
+                }
+            },
+            "blocks": {
+                "icon": {
+                    "name": "Icon mit Text",
+                    "settings": {
+                        "icon": {
+                            "label": "Icon"
+                        },
+                        "custom_icon": {
+                            "label": "Benutzerdefiniertes Icon"
+                        },
+                        "text": {
+                            "label": "Text"
+                        },
+                        "text_position": {
+                            "label": "Textposition",
+                            "options": {
+                                "top": "Oben",
+                                "bottom": "Unten",
+                                "left": "Links",
+                                "right": "Rechts"
+                            }
+                        }
+                    }
+                }
+            },
+            "presets": {
+                "name": "Icons-Leiste"
+            }
+        },
+        "price_plan": {
+            "name": "Preisplan",
+            "settings": {
+                "heading": {
+                    "label": "Überschrift"
+                },
+                "full_width": {
+                    "label": "Abschnitt in voller Breite anzeigen"
+                },
+                "animation_reveal": {
+                    "label": "Animation beim Einblenden aktivieren"
+                }
+            },
+            "blocks": {
+                "price_option": {
+                    "name": "Preisplan",
+                    "settings": {
+                        "subtitle": {
+                            "label": "Untertitel"
+                        },
+                        "price": {
+                            "label": "Preis"
+                        },
+                        "period": {
+                            "label": "Abonnementzeitraum angeben"
+                        },
+                        "link": {
+                            "label": "Button-Link"
+                        },
+                        "button_background": {
+                            "label": "Button-Hintergrund"
+                        },
+                        "button_text_color": {
+                            "label": "Button-Vordergrund"
+                        },
+                        "block_background": {
+                            "label": "Hintergrundfarbe"
+                        },
+                        "text_color": {
+                            "label": "Vordergrundfarbe"
+                        },
+                        "button_label": {
+                            "label": "Button-Beschriftung"
+                        },
+                        "plan_description": {
+                            "label": "Planbeschreibung",
+                            "info": "Bitte Optionen einzeln angeben, durch Kommas getrennt"
+                        },
+                        "header__1": {
+                            "content": "Stile"
+                        },
+                        "custom_font": {
+                            "label": "Schriftart"
+                        },
+                        "text_position": {
+                            "label": "Textposition",
+                            "options": {
+                                "flex-start": {
+                                    "label": "Links"
+                                },
+                                "center": {
+                                    "label": "Zentriert"
+                                },
+                                "flex-end": {
+                                    "label": "Rechts"
+                                }
+                            }
+                        },
+                        "description_marker": {
+                            "label": "Beschreibungsmarker",
+                            "options": {
+                                "none": {
+                                    "label": "Keiner"
+                                },
+                                "dot": {
+                                    "label": "Punkt"
+                                },
+                                "check": {
+                                    "label": "Haken"
+                                },
+                                "hyphen": {
+                                    "label": "Bindestrich"
+                                },
+                                "star": {
+                                    "label": "Stern"
+                                }
+                            }
+                        },
+                        "title": {
+                            "label": "Titel"
+                        },
+                        "frame": {
+                            "label": "Trennlinie oben aktivieren"
+                        },
+                        "frame_color": {
+                            "label": "Trennlinie Farbe"
+                        }
+                    }
+                }
+            }
+        },
+        "dynamic-slideshow": {
+            "name": "Dynamische Diashow",
+            "settings": {
+                "header": {
+                    "label": "Überschrift"
+                },
+                "full_width": {
+                    "label": "Abschnitt in voller Breite anzeigen"
+                },
+                "is_preload": {
+                    "label": "Bild-Vorladen"
+                }
+            },
+            "blocks": {
+                "image": {
+                    "name": "Bild",
+                    "settings": {
+                        "image": {
+                            "label": "Bild"
+                        },
+                        "description": {
+                            "label": "Bildbeschreibung"
+                        },
+                        "card_description_position": {
+                            "label": "Position der Beschreibung",
+                            "options": {
+                                "flex-start": "Links",
+                                "center": "Zentriert",
+                                "flex-end": "Rechts"
+                            }
+                        },
+                        "link": {
+                            "label": "Link"
+                        }
+                    }
+                },
+                "video": {
+                    "name": "Video",
+                    "settings": {
+                        "description": {
+                            "label": "Videobeschreibung"
+                        },
+                        "video_description_position": {
+                            "label": "Position der Beschreibung",
+                            "options": {
+                                "flex-start": "Links",
+                                "center": "Zentriert",
+                                "flex-end": "Rechts"
+                            }
+                        },
+                        "video_link": {
+                            "label": "Videolink"
+                        }
+                    }
+                }
+            }
+        },
+        "compare-table": {
+            "name": "Vergleichenstabelle",
+            "settings": {
+                "header": {
+                    "content": "Optionen"
+                }
+            }
+        },
+        "frequently-asked-questions": {
+            "name": "Häufig gestellte Fragen",
+            "settings": {
+                "heading": {
+                    "label": "Überschrift"
+                },
+                "full_width": {
+                    "label": "Vollbildmodus der Sektion aktivieren"
+                },
+                "can_open_multiple": {
+                    "label": "Gleichzeitiges Erweitern aktivieren",
+                    "info": "Mehrere Fragen können gleichzeitig geöffnet werden."
+                },
+                "image_position": {
+                    "label": "Bildposition",
+                    "info": "Nur für Desktop aktiviert",
+                    "options": {
+                        "left": "Links",
+                        "right": "Rechts"
+                    }
+                },
+                "title_position": {
+                    "label": "Titelposition",
+                    "options": {
+                        "left": "Links",
+                        "center": "Zentriert",
+                        "right": "Rechts"
+                    }
+                },
+                "questions_limit": {
+                    "label": "Fragenlimit",
+                    "info": "Verfügbar, wenn die FAQ-Seite angewendet wird. * - max. sichtbare Elemente sind 20."
+                },
+                "header": {
+                    "content": "Stile"
+                },
+                "background_color": {
+                    "label": "Hintergrundfarbe"
+                }
+            },
+            "blocks": {
+                "image": {
+                    "name": "Bild",
+                    "settings": {
+                        "image_picker": {
+                            "label": "Bild auswählen"
+                        },
+                        "enabled_inner_paddings": {
+                            "label": "Innere Abstände aktivieren"
+                        },
+                        "is_preload": {
+                            "label": "Bild vorladen aktivieren"
+                        }
+                    }
+                },
+                "faq": {
+                    "name": "FAQ",
+                    "settings": {
+                        "question": {
+                            "label": "Frage"
+                        },
+                        "answer": {
+                            "label": "Antwort"
+                        }
+                    }
+                }
+            },
+            "presets": {
+                "name": "Häufig gestellte Fragen"
+            }
+        }
+    }
+}

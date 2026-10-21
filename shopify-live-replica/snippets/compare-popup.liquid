@@ -1,0 +1,33 @@
+{%- comment -%}
+    Render Compare products list popup
+
+    Accepts:
+    -heading_html:        {String}
+    -sticky_table_header: {Bool}
+    -show_add_to_cart:    {Bool}
+    -show_description:    {Bool}
+    -show_vendor:         {Bool}
+    -show_sku:            {Bool}
+    -show_rating:         {Bool}
+    -description_size:    {Numb}
+{%- endcomment -%}
+
+<compare-popup id="compare-popup" hidden>
+    {{- heading_html -}}
+    <div class="compare-popup__results hidden">
+        <div class="modal-results no-js-hidden">
+            <div class="compare-products-list">
+                {% render 'compare-products-list',
+                    products: search.results,
+                    use_sticky_header: sticky_table_header,
+                    show_product_add_to_cart: show_add_to_cart,
+                    show_product_description: show_description,
+                    show_product_vendor: show_vendor,
+                    show_product_sku: show_sku,
+                    show_product_rating: show_rating,
+                    product_description_size: description_size
+                %}
+            </div>
+        </div>
+    </div>
+</compare-popup>

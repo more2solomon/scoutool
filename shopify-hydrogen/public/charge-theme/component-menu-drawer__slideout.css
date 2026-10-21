@@ -1,0 +1,37 @@
+@media all and (min-width: 990px) {
+  .menu-drawer__menu .menu-drawer__submenu {
+    position: absolute;
+    top: 0;
+    width: var(--max-width);
+    height: 100vh;
+    background: var(--header--dropdown-third--level-background);
+    padding-left: 0;
+    transform: translateX(0);
+    z-index: 1;
+  }
+
+  .menu-drawer__menu [open] .menu-drawer__submenu {
+    transform: translateX(var(--transform_x));
+    animation: slideOut .35s linear;
+  }
+
+  .menu-drawer__submenu > ul,
+  .menu-drawer__menu .menu-drawer__inner-submenu {
+    margin-top: 3.5rem;
+  }
+
+  .menu-drawer__menu .menu-drawer__submenu {
+    box-shadow: 8px 0 1rem var(--color-foreground-50);
+  }
+
+  @keyframes slideOut {
+    0% {
+      opacity: 0;
+      transform: translateX(0);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(var(--transform_x));
+    }
+  }
+}

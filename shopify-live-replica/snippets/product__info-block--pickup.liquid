@@ -1,0 +1,43 @@
+{%- comment -%}
+    Render product pickup information using block settings
+
+    Accepts:
+     - block:      {Object}
+     - blockOrder: {Number}
+     - sectionId:  {String}
+     - product:    {Object}
+{%- endcomment -%}
+
+<div
+    class="product__info-block product__info-block--pickup reveal-item"
+    style="order: {{ blockOrder }}"
+    {{ block.shopify_attributes }}
+>
+    {%- assign pick_up_availabilities = product.selected_or_first_available_variant.store_availabilities
+        | where: 'pick_up_enabled', true
+    -%}
+
+    <pickup-availability
+        class="product__pickup-availabilities no-js-hidden"
+        {% if product.selected_or_first_available_variant.available and pick_up_availabilities.size > 0 %}
+            available
+        {% endif %}
+        data-base-url="{{ routes.root_url }}"
+        data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+        data-has-only-default-variant="{{ product.has_only_default_variant }}"
+    >
+        <template>
+            <pickup-availability-preview class="pickup-availability-preview">
+                <div class="pickup-availability-info w-full">
+                    <p class="form__message--error form__message">
+                        {% render 'icons-outline', name: 'x-circle' %}
+                        {{ 'products.product.pickup_availability.unavailable' | t }}
+                    </p>
+                    <button class="pickup-availability-button button--small button--tertiary">
+                        {{ 'products.product.pickup_availability.refresh' | t }}
+                    </button>
+                </div>
+            </pickup-availability-preview>
+        </template>
+    </pickup-availability>
+</div>

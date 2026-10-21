@@ -1,0 +1,45 @@
+{%- comment -%}
+    Render collapsible (accordion) tab based on block settings
+
+    Accepts:
+     - block:      {Object}
+     - blockOrder: {Number}
+     - sectionId:  {String}
+     - product:    {Object}
+{%- endcomment -%}
+
+<div
+    class="product__info-block product__info-block--collapsible_tab product__accordion accordion reveal-item"
+    style="order: {{ blockOrder }}"
+    {{ block.shopify_attributes }}
+>
+    <details>
+        <summary>
+            <div class="summary__title">
+                {% liquid
+                    unless block.settings.icon == 'none'
+                        assign css_class = 'icon-accordion color-foreground-' | append: settings.accent_icons
+                        if block.settings.icon == 'warning'
+                            render 'icon-warning', css_class: css_class
+                        else
+                            render 'icon-accordion', name: block.settings.icon, css_class: css_class
+                        endif
+                    endunless
+                %}
+                <h2 class="accordion__title">{{ block.settings.heading | default: block.settings.page.title }}</h2>
+            </div>
+            <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+                <use href="#icon-caret" />
+            </svg>
+        </summary>
+        <div class="accordion__content rte">
+            {{ block.settings.content }}
+            {{ block.settings.page.content }}
+            {% comment %} add download link using page metafields {% endcomment %}
+            {% assign file = block.settings.page.metafields.custom.file %}
+            {% unless file == null %}
+                <a href="{{ file | file_url }}" download="">{{ block.settings.page.title }}</a>
+            {% endunless %}
+        </div>
+    </details>
+</div>

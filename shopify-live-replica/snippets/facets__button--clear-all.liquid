@@ -1,0 +1,24 @@
+{%- comment -%}
+    Render filter "clear all" button.
+
+    Accepts:
+     - collection: {Object}
+{%- endcomment -%}
+
+{%- liquid
+    assign sortBy = collection.sort_by | default: collection.default_sort_by
+
+    if collection.url
+        assign url = collection.url
+    else
+        assign terms = collection.terms | escape
+        assign url = '?q=' | append: terms | append: '&sort_by=' | append: sortBy
+    endif
+-%}
+
+<a
+    href="{{ url }}"
+    class="active-facets__item active-facets__item--clear-all js-facet-remove button button--secondary button--small"
+>
+    {{- 'sections.collection_template.clear_all' | t -}}
+</a>

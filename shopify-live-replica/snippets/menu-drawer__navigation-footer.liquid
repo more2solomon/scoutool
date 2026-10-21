@@ -1,0 +1,18 @@
+{%- comment -%}
+    Render Drawer menu Footer
+{%- endcomment -%}
+
+<div class="menu-drawer__navigation-footer">
+    {%- if settings.contact_phone != blank -%}
+        <a href="tel:{{ settings.contact_phone }}" title="{{ 'header_top.contact_phone.title' | t }}">
+            {% render 'icons-solid', name: 'phone' %}
+            {{ settings.contact_phone }}
+        </a>
+    {%- endif -%}
+    {%- if settings.contact_email != blank -%}
+        <a href="mailto:{{ settings.contact_email }}" title="{{ 'header_top.contact_email.title' | t }}">
+            {% render 'icons-solid', name: 'mail' %}
+            {{ settings.contact_email }}
+        </a>
+    {%- endif -%}
+</div>

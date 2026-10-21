@@ -103,6 +103,108 @@ input {
   width: 100px;
 }
 
+.gmailStatus {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 12px;
+  border: 1px solid #d9e3e1;
+  border-radius: 8px;
+  background: #f6faf9;
+  font-size: 13px;
+}
+
+.gmailStatus a {
+  color: #08786f;
+  font-weight: 700;
+}
+
+.subtle {
+  margin: 0;
+  color: #70807d;
+  font-size: 13px;
+}
+
+.connectionBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 11px;
+  border-radius: 18px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.connectionBadge.connected {
+  background: #e5f6ef;
+  color: #177653;
+}
+
+.connectionBadge.disconnected {
+  background: #f4e9e7;
+  color: #9a4038;
+}
+
+.connectionBadge .dot {
+  width: 8px;
+  height: 8px;
+  margin: 0;
+}
+
+.draftProgressHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  color: #58716d;
+  font-size: 13px;
+}
+
+.draftRangePanel {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.draftRangePanel label {
+  display: grid;
+  gap: 6px;
+}
+
+.draftRangePanel input {
+  width: 120px;
+}
+
+.draftProgressHeader strong {
+  color: #173b37;
+}
+
+.progressTrack {
+  height: 10px;
+  margin-top: 9px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: #e4eeeb;
+}
+
+.progressBar {
+  height: 100%;
+  border-radius: inherit;
+  background: #08786f;
+  transition: width 240ms ease;
+}
+
+.progressBar.indeterminate {
+  width: 45% !important;
+  animation: draft-progress 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes draft-progress {
+  from { transform: translateX(-40%); }
+  to { transform: translateX(180%); }
+}
+
 .stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -147,6 +249,10 @@ button.stop {
   background: #a33b3b;
 }
 
+button.drafts {
+  background: #075e59;
+}
+
 button.small {
   padding: 8px 12px;
 }
@@ -165,7 +271,8 @@ button.small {
 .queue {
   border: 1px solid #e5ebe9;
   border-radius: 10px;
-  overflow: hidden;
+  max-height: 520px;
+  overflow: auto;
 }
 
 .row {

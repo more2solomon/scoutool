@@ -1,0 +1,125 @@
+export type StoreProduct = {
+  id: string;
+  title: string;
+  handle: string;
+  description: string;
+  featuredImage?: {
+    url: string;
+    altText?: string | null;
+    width?: number | null;
+    height?: number | null;
+  } | null;
+  priceRange: {
+    minVariantPrice: {
+      amount: string;
+      currencyCode: string;
+    };
+  };
+};
+
+function getShopDomain() {
+  const domain =
+    process.env.SHOPIFY_STORE_DOMAIN ||
+    process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN ||
+    "";
+
+  return domain
+    .replace(/^https?:\/\//, "")
+    .replace(/\/$/, "");
+}
+
+function getToken() {
+  return (
+    process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN ||
+    process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN ||
+    ""
+  );
+}
+
+export async function getProducts(): Promise<StoreProduct[]> {
+  const domain = getShopDomain();
+
+  if (!domain) {
+    console.warn("SHOPIFY_STORE_DOMAIN is not configured.");
+    return [];
+  }
+
+  const token = getToken();
+
+  const query = `
+    query StorefrontProducts {
+      products(first: 16, sortKey: CREATED_AT, reverse: true) {
+        nodes {
+          id
+          title
+          handle
+          description
+          featuredImage {
+            url
+            altText
+            width
+            height
+          }
+          priceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  try {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+
+    if (token) {
+      headers["X-Shopify-Storefront-Access-Token"] = token;
+    }
+
+    const response = await fetch(
+      `https://${domain}/api/2026-07/graphql.json`,
+      {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ query }),
+        next: { revalidate: 60 },
+      }
+    );
+
+    if (!response.ok) {
+      console.error(
+        "Shopify request failed:",
+        response.status,
+        response.statusText
+      );
+      return [];
+    }
+
+    const json = await response.json();
+
+    if (json.errors) {
+      console.error("Shopify GraphQL errors:", json.errors);
+      return [];
+    }
+
+    return json?.data?.products?.nodes || [];
+  } catch (error) {
+    console.error("Shopify fetch error:", error);
+    return [];
+  }
+}
+
+export function formatMoney(amount: string, currencyCode: string) {
+  try {
+    return new Intl.NumberFormat("en", {
+      style: "currency",
+      currency: currencyCode,
+    }).format(Number(amount));
+  } catch {
+    return `${currencyCode} ${amount}`;
+  }
+}

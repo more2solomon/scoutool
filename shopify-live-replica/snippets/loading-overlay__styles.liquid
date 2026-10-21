@@ -1,0 +1,234 @@
+{% comment %}
+    Loading overlay styles
+{% endcomment %}
+
+{% style %}
+    .loading-overlay {
+        background-color: rgba(var(--color-base-background-1-rgb), 0.6);
+        position: absolute;
+        inset: 0px;
+        z-index: 40;
+    }
+
+    .path {
+        stroke-dasharray: 280;
+        stroke-dashoffset: 0;
+        transform-origin: center;
+        stroke: currentColor;
+        animation: dash 1.4s ease-in-out infinite;
+    }
+
+    .loading-overlay__spinner,
+    .spiner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 3rem;
+      height: 3rem;
+      transform: translate(-50%,-50%);
+    }
+
+    .grid-item .spinner_default {
+        width: 2rem;
+        height: 2rem;
+    }
+    {% if settings.enable_preload_images %}
+    .media--blur-image img {
+        visibility: hidden;
+        transition: visibility .25s ease-in-out;
+    }
+    {% if settings.preload_overlay_transparenty_blur %}
+    .media--blur-image {
+        filter: blur(.5rem);
+        -webkit-filter: blur(.5rem);
+        transition: filter .2s ease-in-out;
+    }
+
+    .media--blur-image.loaded {
+        filter: none;
+        -webkit-filter: none;
+    }{% endif %}
+
+
+    .media--blur-image:not(.loaded) {
+        --transparancy-value: {{ settings.preload_overlay_transparenty }};
+        background: rgba(229, 229, 229, var(--transparancy-value));
+    }
+
+    .media--blur-image.loaded img {
+        visibility: visible;
+    }
+    {% endif %}
+    .grid-item .loading-overlay {
+        background: transparent;
+    }
+
+    /* loader spinner_default */
+    @keyframes rotator {
+        0% {transform: rotate(0);}
+        100% {transform: rotate(270deg);}
+    }
+
+    @keyframes dash {
+        0% {
+            stroke-dashoffset: 280;
+        }
+        50% {
+            stroke-dashoffset: 75;
+            transform: rotate(135deg);
+        }
+        100% {
+            stroke-dashoffset: 280;
+            transform: rotate(450deg);
+        }
+    }
+
+    /* loader loading-bars */
+    .loading-bars .bar {
+        animation: loadingBars 0.5s cubic-bezier(0, 0.5, 0.5, 1) infinite alternate;
+    }
+
+    .loading-bars .bar-1 {
+        animation-delay: -0.4s;
+    }
+
+    .loading-bars .bar-2 {
+        animation-delay: -0.3s;
+    }
+
+    .loading-bars .bar-3 {
+        animation-delay: -0.2s;
+    }
+
+    .loading-bars .bar-4 {
+        animation-delay: -0.1s;
+    }
+
+    .loading-bars .bar-5 {
+        animation-delay: 0s;
+    }
+
+    @keyframes loadingBars {
+        0% {
+            height: 15px;
+            y: 50px;
+        }
+        100% {
+            height: 50px;
+            y: 30px;
+        }
+    }
+
+    /* loader dual_ball */
+    .dual-ball-loader .ball {
+        animation: moveBall 1s ease-in-out infinite;
+    }
+
+    .dual-ball-loader .ball-1 {
+        animation-delay: -0.5s;
+    }
+
+    .dual-ball-loader .ball-2 {
+        animation-delay: 0s;
+    }
+
+    .dual-ball-loader .ball-3 {
+        animation-delay: -0.5s;
+        position: absolute;
+        fill-opacity: 0;
+        animation-name: moveBall, fadeBall;
+        animation-duration: 1s, 1s;
+        animation-iteration-count: infinite, infinite;
+    }
+
+    @keyframes moveBall {
+        0% {cx: 30px;}
+        50% {cx: 60px;}
+        100% {cx: 30px;}
+    }
+
+    @keyframes fadeBall {
+        0%, 49.9% {fill-opacity: 0;}
+        50%, 100% {fill-opacity: 1;}
+    }
+
+    /* loader double_ring*/
+    .rotating-rings .ring {
+        transform-origin: 50px 50px;
+        animation: rotateRing 1s linear infinite;
+    }
+
+    .rotating-rings .outer-ring {
+        animation-direction: normal;
+    }
+
+    .rotating-rings .inner-ring {
+        animation-direction: reverse;
+    }
+
+    @keyframes rotateRing {
+        0% {transform: rotate(0deg);}
+        100% {transform: rotate(360deg);}
+    }
+
+    /* loader spinner_balls */
+    /*.spinner-ball {
+        fill: currentColor;
+        animation: scaleAnimation 1s infinite ease-in-out, opacityAnimation 1s infinite ease-in-out;
+    }
+
+    @keyframes scaleAnimation {
+        0% { transform: scale(1.5); }
+        100% { transform: scale(1); }
+    }
+
+    @keyframes opacityAnimation {
+        0% { fill-opacity: 1; }
+        100% { fill-opacity: 0; }
+    }
+
+    .spinner-ball[data-index="0"] { animation-delay: -0.875s; }
+    .spinner-ball[data-index="1"] { animation-delay: -0.75s; }
+    .spinner-ball[data-index="2"] { animation-delay: -0.625s; }
+    .spinner-ball[data-index="3"] { animation-delay: -0.5s; }
+    .spinner-ball[data-index="4"] { animation-delay: -0.375s; }
+    .spinner-ball[data-index="5"] { animation-delay: -0.25s; }
+    .spinner-ball[data-index="6"] { animation-delay: -0.125s; }
+    .spinner-ball[data-index="7"] { animation-delay: 0s; }*/
+
+    /* loader blinking_grid */
+    /*.blinking-grid .square {
+        fill: #E13124;
+        animation: squareBlink 1s infinite steps(1);
+    }
+
+    @keyframes squareBlink {
+        0%, 100% { fill: #000000; }
+        12.5% { fill: #E13124; }
+    }*/
+
+    /* Delay classes for each square */
+    /*.blinking-grid .square.delay-0 { animation-delay: 0s; }
+    .blinking-grid .square.delay-1 { animation-delay: 0.125s; }
+    .blinking-grid .square.delay-2 { animation-delay: 0.25s; }
+    .blinking-grid .square.delay-3 { animation-delay: 0.375s; }
+    .blinking-grid .square.delay-4 { animation-delay: 0.5s; }
+    .blinking-grid .square.delay-5 { animation-delay: 0.625s; }
+    .blinking-grid .square.delay-6 { animation-delay: 0.75s; }
+    .blinking-grid .square.delay-7 { animation-delay: 0.875s; }*/
+
+
+    /*  loader bouncing_squares */
+    /*.bouncing-squares rect {
+        animation: bounceSquares 2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    }
+
+    .bouncing-squares rect:nth-child(1) { animation-delay: -0.4s; }
+    .bouncing-squares rect:nth-child(2) { animation-delay: -0.2s; }
+    .bouncing-squares rect:nth-child(3) { animation-delay: 0s; }
+
+    @keyframes bounceSquares {
+        0%, 100% { y: 50px; }
+        50% { y: 120px; }
+    }*/
+{% endstyle %}

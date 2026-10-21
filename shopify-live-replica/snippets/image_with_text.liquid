@@ -1,0 +1,34 @@
+{% comment %}
+      Render Blocks Image with text
+
+      Accepts:
+    - block   {Object}
+{% endcomment %}
+
+{%- for block in blocks -%}
+    {% case block.type %}
+        {%- when 'heading' -%}
+            <h2 class="heading title reveal-item" {{ block.shopify_attributes }}>
+                {{ block.settings.heading }}
+            </h2>
+        {%- when 'text' -%}
+            <div class="image-with-text__text rte reveal-item" {{ block.shopify_attributes }}>
+                {{ block.settings.text }}
+            </div>
+        {%- when 'button' -%}
+            {%- if block.settings.button_label != blank -%}
+                <div class="action reveal-item">
+                    <a
+                        href="{{ block.settings.button_link }}"
+                        class="{% if settings.cut_button_corners %}border--with-cut-corners{% endif %} button button--primary{% if settings.show_button_ring_on_hover %} border--outline{% endif %}"
+                        {% if block.settings.button_link == blank %}
+                            aria-disabled="true"
+                        {% endif %}
+                        {{ block.shopify_attributes }}
+                    >
+                        {{ block.settings.button_label | escape }}
+                    </a>
+                </div>
+            {%- endif -%}
+    {%- endcase -%}
+{%- endfor -%}

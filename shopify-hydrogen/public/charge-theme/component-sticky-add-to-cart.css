@@ -1,0 +1,173 @@
+#add-to-cart-sticky {
+    border: 1px solid var(--color-foreground-10);
+    border-radius: .25rem;
+    background: var(--color-background);
+    margin-right: -33rem;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    opacity: 0;
+    position: fixed;
+    bottom: 3rem;
+    right: 0px;
+    z-index: 40;
+    transition: all .75s ease;
+}
+
+#add-to-cart-sticky details {
+    position: relative;
+    margin: 0 auto;
+    margin-top: -.5rem;
+    margin-bottom: -.5rem;
+    width: 100%;
+    max-width: 4rem;
+}
+
+.add-to-cart-sticky__gallery .product__title,
+.add-to-cart-sticky__gallery .product__price .price--final {
+    font-size: 1rem;
+    line-height: 1.5rem;
+}
+
+.add-to-cart-sticky__gallery .product__title--before,
+.add-to-cart-sticky__gallery .product__title--after,
+.add-to-cart-sticky__gallery .product__title--rating {
+    display: none;
+}
+
+.add-to-cart-sticky__gallery .product__title--sku {
+    min-height: 1.5rem;
+    float: unset;
+    display: block;
+    font-size: 0.75rem;
+    line-height: 1rem}
+
+.add-to-cart-sticky__gallery .price {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.add-to-cart-sticky__gallery .product__title--price .price--compare {
+    font-size: 0.75rem;
+    line-height: 1rem;
+}
+
+.add-to-cart-sticky__content ._action,
+.add-to-cart-sticky__variants {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+}
+
+.add-to-cart-sticky__content .wrapper {
+    margin-bottom: 1rem;
+}
+
+.add-to-cart-sticky__variants label {
+    font-size: .75rem;
+}
+
+.add-to-cart-sticky__gallery .price .badge {
+    display: none;
+}
+
+.add-to-cart-sticky__content ._action form,
+.add-to-cart-sticky__content ._action button {
+    width: 100% !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.add-to-cart-sticky__gallery .product-form__buttons button {
+    min-width: 4rem;
+}
+
+.add-to-cart-sticky__gallery {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+.add-to-cart-sticky__variants .select__select {
+    padding: 0 .5rem;
+    line-height: inherit;
+    background: #fafafa;
+    font-size: .85rem;
+}
+
+.add-to-cart-sticky__variants .product-form__input {
+    margin-bottom: 0.5rem;
+}
+
+.add-to-cart-sticky__variants .product-form__input .select {
+    max-width: 100%;
+}
+
+.add-to-cart-sticky__gallery .media {
+    margin-top: 0.75rem;
+}
+
+summary.add-to-cart-sticky--accordion {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 1rem 1rem;
+}
+
+.sticky-container .add-to-cart-sticky--accordion > svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+@media screen and (max-width: 475px) {
+    #add-to-cart-sticky {
+        left: 1.5rem;
+    }
+
+    .add-to-cart-sticky__gallery .product__title--wrapper {
+        max-width: calc(100% - 6px);
+    }
+
+    .add-to-cart-sticky__gallery .product__info-block--title {
+        gap: 0;
+    }
+
+    .add-to-cart-sticky__gallery {
+        justify-content: space-around;
+    }
+}
+
+@media screen and (min-width: 320px) {
+    .add-to-cart-sticky__gallery .product__info-block,
+    .add-to-cart-sticky__gallery .product__title--price {
+        display: flex;
+    }
+
+    .add-to-cart-sticky__gallery .product__info-block {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+}
+
+@media screen and (min-width: 767px) {
+    #add-to-cart-sticky {
+        width: 26rem;
+        right: 1rem}
+
+    .add-to-cart-sticky__gallery .product__info-block--title {
+        width: 60%;
+        border-bottom-width: 0px}
+
+    .add-to-cart-sticky__gallery .product__title--price {
+        align-items: center;
+    }
+
+    .add-to-cart-sticky__gallery .product__title--price .price > dl,
+    .add-to-cart-sticky__gallery .product__title--price .price > dl > div,
+    .add-to-cart-sticky__gallery .media {
+        display: flex;
+        flex-direction: column;
+    }
+}

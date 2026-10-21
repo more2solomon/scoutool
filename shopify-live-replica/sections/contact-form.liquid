@@ -1,0 +1,540 @@
+{%- liquid
+    # general contact info
+    assign contactPhone = settings.contact_phone
+    assign contactEmail = settings.contact_email
+
+    # contact page info
+    assign location = section.blocks | where: 'type', 'location' | first
+    assign contactInfo = section.blocks | where: 'type', 'contact_us' | first
+-%}
+
+{% style %}
+    .contact__form .contact__button > button {
+        color: var(--color-base-accent-1-inverse);
+        background: var(--color-base-accent-1);
+    }
+
+    .contact__container {
+        display: flex;
+        flex-direction: column-reverse;
+        width: 100%;
+        margin-bottom: 4rem;
+    }
+
+    .contact__container .bold {
+        font-weight: bold;
+    }
+
+    .contact_us .comment,
+    .contact_us .social-icons,
+    .contact_us .icons {
+        margin: 1rem 0;
+    }
+
+    .contact_us .company_data {
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .company_data .company__info,
+    .company_data .contact__info {
+        width: calc(50% - 0.5rem);
+        word-break: break-word;
+    }
+
+    .map__location,
+    .contact_us .icons {
+        display: flex;
+    }
+
+    .map__location {
+        flex-direction: column;
+    }
+
+    .contact_us .icons a {
+        width: 3rem;
+        padding: .75rem;
+        background: #F1F3F6;
+        margin-right: 1rem;
+        border-radius: 50%;
+    }
+
+    .contact_us .icons a:hover {
+        background: #e7e7e8;
+    }
+
+    .contact_us .icons a svg {
+        fill: var(--color-base-accent-1);
+    }
+
+    .map__location .error_coordinates {
+        width: 100%;
+        padding:.5rem;
+        text-align: center;
+        color: currentColor;
+    }
+
+    #map button,
+    #map .gmnoprint {
+        display: none !important;
+    }
+
+    .infowindow {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        min-width: 200px;
+        padding: 0.5rem;
+    }
+
+    .infowindow > h6 {
+        border-bottom: 1px solid var(--color-foreground-20);
+        margin-top: 0;
+        text-align: center;
+    }
+
+    .infowindow > p {
+        color: currentColor;
+        font-weight: 500;
+        line-height: 1.5;
+    }
+
+    .infowindow .contact-info {
+        margin-top: .5rem;
+        border-top: 1px solid var(--color-foreground-20);
+        padding-top: .5rem;
+    }
+
+    @media (max-width: 475px), print {
+        .contact__container {
+            gap: 4rem;
+        }
+    }
+
+    @media (min-width: 768px), print {
+        .contact__container {
+            flex-direction: row;
+        }
+
+        .contact__container > .contact__form {
+            width: 100%;
+        }
+
+        .contact__container:has(.contact_us) > div {
+            width: 50%;
+        }
+
+        .contact__container .contact_us {
+            padding: 1.5rem 3rem 0 1rem;
+        }
+    }
+
+    @media (min-width: 1024px), print {
+        .contact__container .contact_us {
+            padding: 1.5rem 9rem 0 4rem;
+        }
+    }
+{% endstyle %}
+
+<div class="contact dynamic-page-width page-width--narrow spaced-section">
+    <div class="contact__container{% if section.settings.animation_on_reveal %} reveal-slide-in{% endif %}">
+        <div class="contact__form reveal-item">
+            {%- form 'contact', id: 'ContactForm' -%}
+                {%- if form.posted_successfully? -%}
+                    <div
+                        class="form-status form-status-list form__message form__message--success"
+                        tabindex="-1"
+                        autofocus
+                    >
+                        {% render 'icons-outline', name: 'check-circle' %}
+                        <p>{{ 'templates.contact.form.post_success' | t }}</p>
+                    </div>
+                {%- elsif form.errors -%}
+                    {%- liquid
+                        assign error_message = 'Some error happend... :('
+                        if form.errors contains 'email'
+                            assign error_message = form.errors.translated_fields.email | capitalize | append: ' ' | append: form.errors.messages.email
+                        endif
+
+                        render 'message-error', text: error_message
+                    %}
+                {%- endif -%}
+                <div class="contact__fields">
+                    <div class="field">
+                        <label class="field__label" for="ContactForm-name">
+                            {{- 'templates.contact.form.name' | t -}}
+                        </label>
+                        <input
+                            class="field__input"
+                            autocomplete="name"
+                            type="text"
+                            id="ContactForm-name"
+                            name="contact[{{ 'templates.contact.form.name' | t }}]"
+                            value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+                            placeholder="{{ 'templates.contact.form.name' | t }}"
+                        >
+                    </div>
+                    <div class="field field--with-error">
+                        <label class="field__label" for="ContactForm-email">
+                            {{- 'templates.contact.form.email' | t }}
+                            <span aria-hidden="true">*</span></label
+                        >
+                        <input
+                            autocomplete="email"
+                            type="email"
+                            id="ContactForm-email"
+                            class="field__input"
+                            name="contact[email]"
+                            spellcheck="false"
+                            autocapitalize="off"
+                            value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+                            aria-required="true"
+                            required
+                            {% if form.errors contains 'email' %}
+                                aria-invalid="true"
+                                aria-describedby="ContactForm-email-error"
+                            {% endif %}
+                            placeholder="{{ 'templates.contact.form.email' | t }}"
+                        >
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field__label" for="ContactForm-phone">{{ 'templates.contact.form.phone' | t }}</label>
+                    <input
+                        type="tel"
+                        id="ContactForm-phone"
+                        class="field__input"
+                        autocomplete="tel"
+                        name="contact[{{ 'templates.contact.form.phone' | t }}]"
+                        pattern="[0-9\-]*"
+                        value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
+                        placeholder="{{ 'templates.contact.form.phone' | t }}"
+                    >
+                </div>
+                <div class="field">
+                    <label class="form__label field__label" for="ContactForm-body">
+                        {{- 'templates.contact.form.comment' | t }}
+                        <span aria-hidden="true">*</span></label
+                    >
+                    <textarea
+                        rows="10"
+                        id="ContactForm-body"
+                        class="text-area field__input"
+                        name="contact[{{ 'templates.contact.form.comment' | t }}]"
+                        placeholder="{{ 'templates.contact.form.comment' | t }}"
+                        aria-required="true"
+                        required
+                    >
+      {{- form.body -}}
+    </textarea>
+                </div>
+                <div class="contact__button">
+                    <button type="submit" class="button">
+                        {{ 'templates.contact.form.send' | t }}
+                    </button>
+                </div>
+            {%- endform -%}
+        </div>
+        {%- if contactInfo != null -%}
+            {%- liquid
+                assign title = contactInfo.settings.title
+                assign titleSize = contactInfo.settings.title_size
+                assign subtitle = contactInfo.settings.subtitle
+                assign address = contactInfo.settings.company_info
+                assign contactInfoTitle = contactInfo.settings.contact_info
+                assign showSocialIcons = contactInfo.settings.show_social_icons
+                assign socialIconsLabel = contactInfo.settings.social_heading | escape
+            -%}
+            <div class="contact_us" {{ contactInfo.shopify_attributes }}>
+                {% if title != blank %}
+                    <{{ titleSize }} class="heading title bold reveal-item">
+                        {{ title }}
+                    </{{ titleSize }}>
+                {% endif %}
+                {%- if subtitle != blank -%}
+                    <p class="comment reveal-item">{{ subtitle }}</p>
+                {%- endif -%}
+
+                <div class="company_data">
+                    {%- if address != blank -%}
+                        <div class="company__info reveal-item">
+                            {{ address }}
+                        </div>
+                    {%- endif -%}
+
+                    {%- if contactEmail or contactPhone != blank -%}
+                        <div class="contact__info reveal-item">
+                            {%- if contactInfoTitle != blank -%}
+                                <p class="bold">{{ contactInfoTitle }}</p>
+                            {%- endif -%}
+                            <p>{{ contactEmail }}</p>
+                            <p>{{ contactPhone }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+                {% if showSocialIcons %}
+                    <div class="follow__us social-icons reveal-item">
+                        {%- if socialIconsLabel != blank -%}
+                            <p class="bold">{{ socialIconsLabel }}</p>
+                        {%- endif -%}
+                        <div class="icons">
+                            {% if settings.social_facebook_link != blank %}
+                                <a
+                                    href="{{ settings.social_facebook_link }}"
+                                    title="{{ 'general.social.titles.facebook' | t }}"
+                                    target="_blank"
+                                >
+                                    <i class="icon" aria-hidden="true" focusable="false" role="presentation">
+                                        {% render 'icons-ion', name: 'logo-facebook' %}
+                                    </i>
+                                    <span class="visually-hidden">facebook</span>
+                                </a>
+                            {% endif %}
+                            {% if settings.social_youtube_link != blank %}
+                                <a
+                                    href="{{ settings.social_youtube_link }}"
+                                    title="{{ 'general.social.titles.youtube' | t }}"
+                                    target="_blank"
+                                >
+                                    <i class="icon" aria-hidden="true" focusable="false" role="presentation">
+                                        {% render 'icons-ion', name: 'logo-youtube' %}
+                                    </i>
+                                    <span class="visually-hidden">youtube</span>
+                                </a>
+                            {% endif %}
+                            {% if settings.social_twitter_link != blank %}
+                                <a
+                                    href="{{ settings.social_twitter_link }}"
+                                    title="{{ 'general.social.titles.twitter' | t }}"
+                                    target="_blank"
+                                >
+                                    <i class="icon" aria-hidden="true" focusable="false" role="presentation">
+                                        {% render 'icons-ion', name: 'logo-twitter' %}
+                                    </i>
+                                    <span class="visually-hidden">twitter</span>
+                                </a>
+                            {% endif %}
+                            {% if settings.social_instagram_link != blank %}
+                                <a
+                                    href="{{ settings.social_instagram_link }}"
+                                    title="{{ 'general.social.titles.instagram' | t }}"
+                                    target="_blank"
+                                >
+                                    <i class="icon" aria-hidden="true" focusable="false" role="presentation">
+                                        {% render 'icons-ion', name: 'logo-instagram' %}
+                                    </i>
+                                    <span class="visually-hidden">instagram</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        {%- endif -%}
+    </div>
+</div>
+{%- if location != null -%}
+    <div class="contact map__location" {{ location.shopify_attributes }}>
+        {%- assign apiKey = location.settings.api_key | escape -%}
+        {%- assign coordinateLatitud = location.settings.position_latitude | escape -%}
+        {%- assign coordinateLongitud = location.settings.position_longitude | escape -%}
+        {%- if apiKey != blank -%}
+            {%- assign street = location.settings.street_address | escape -%}
+            {%- assign postcode = location.settings.postcode | escape -%}
+            {%- assign city = location.settings.city | escape -%}
+            {%- assign region = location.settings.region_id | escape -%}
+            {%- assign country = location.settings.country_id | escape -%}
+            {%- assign phone = location.settings.phone | escape -%}
+            {%- assign email = location.settings.email | escape -%}
+            {%- assign shopName = shop.name | escape -%}
+            <div class="error_coordinates" hidden>
+                <p>{{ 'templates.contact.location.error_coordinates' | t }}</p>
+            </div>
+            <div id="map"></div>
+            {% render 'init_map_js',
+                api_key: apiKey,
+                latitud: coordinateLatitud,
+                longitud: coordinateLongitud,
+                street: street,
+                postcode: postcode,
+                city: city,
+                region: region,
+                country: country,
+                phone: phone,
+                email: email,
+                shop_name: shopName
+            %}
+        {%- else -%}
+            <img src="{{ 'contact-map.png' | asset_img_url: 'master' }}" loading="lazy">
+        {%- endif -%}
+    </div>
+{%- endif -%}
+
+{{ 'section-contact-form.css' | asset_url | stylesheet_tag }}
+<noscript>
+    {{ 'section-contact-form.css' | asset_url | stylesheet_tag }}
+</noscript>
+
+{% schema %}
+{
+  "name": "t:sections.contact-form.name",
+  "tag": "section",
+  "class": "spaced-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "animation_on_reveal",
+      "label": "t:sections.all.settings.animation_on_reveal.label",
+      "default": true
+    }
+  ],
+  "max_blocks": 2,
+  "blocks": [
+    {
+      "type": "contact_us",
+      "name": "t:sections.contact-form.blocks.contact_us.name",
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "title",
+          "label": "t:sections.contact-form.blocks.settings.title.label",
+          "default": "Got Questions?"
+        },
+        {
+          "type": "select",
+          "id": "title_size",
+          "options": [
+            {
+              "value": "h1",
+              "label": "t:sections.contact-form.blocks.settings.title_size.options.h1"
+            },
+            {
+              "value": "h2",
+              "label": "t:sections.contact-form.blocks.settings.title_size.options.h2"
+            },
+            {
+              "value": "h3",
+              "label": "t:sections.contact-form.blocks.settings.title_size.options.h3"
+            }
+          ],
+          "default": "h2",
+          "label": "t:sections.contact-form.blocks.settings.title_size.label"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "subtitle",
+          "label": "t:sections.contact-form.blocks.settings.subtitle.label",
+          "default": "If you’d like to learn more about us and our products, contact us!"
+        },
+        {
+          "type": "richtext",
+          "id": "company_info",
+          "label": "t:sections.contact-form.blocks.settings.company_info.label",
+          "default": "<p><b>Company Info</b></p><p><b>CHARGE SHOP</b></p><p>FifthAve Street 31</p><p>New York, USA</p>"
+        },
+        {
+          "type": "text",
+          "id": "contact_info",
+          "label": "t:sections.contact-form.blocks.settings.contact_info.label",
+          "default": "<p><b>Contact Info</b></p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_social_icons",
+          "label": "t:sections.contact-form.blocks.settings.show_social_icons.label",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "social_heading",
+          "label": "t:sections.contact-form.blocks.settings.social_heading.label",
+          "default": "Follow us"
+        }
+      ]
+    },
+    {
+      "type": "location",
+      "name": "t:sections.contact-form.blocks.location.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "api_key",
+          "label": "t:sections.contact-form.blocks.location.settings.api_key.label"
+        },
+        {
+          "type": "header",
+          "content": "t:sections.contact-form.blocks.location.settings.header.content",
+          "info": "t:sections.contact-form.blocks.location.settings.header.info"
+        },
+        {
+          "type": "text",
+          "id": "position_latitude",
+          "label": "t:sections.contact-form.blocks.location.settings.position_latitude.label",
+          "info": "t:sections.contact-form.blocks.location.settings.position_latitude.info"
+        },
+        {
+          "type": "text",
+          "id": "position_longitude",
+          "label": "t:sections.contact-form.blocks.location.settings.position_longitude.label",
+          "info": "t:sections.contact-form.blocks.location.settings.position_longitude.info"
+        },
+        {
+          "type": "text",
+          "id": "street_address",
+          "label": "t:sections.contact-form.blocks.location.settings.street_address.label",
+          "info": "t:sections.contact-form.blocks.location.settings.street_address.info"
+        },
+        {
+          "type": "text",
+          "id": "postcode",
+          "label": "t:sections.contact-form.blocks.location.settings.postcode.label",
+          "info": "t:sections.contact-form.blocks.location.settings.postcode.info"
+        },
+        {
+          "type": "text",
+          "id": "city",
+          "label": "t:sections.contact-form.blocks.location.settings.city.label",
+          "info": "t:sections.contact-form.blocks.location.settings.city.info"
+        },
+        {
+          "type": "text",
+          "id": "region_id",
+          "label": "t:sections.contact-form.blocks.location.settings.region_id.label"
+        },
+        {
+          "type": "text",
+          "id": "country_id",
+          "label": "t:sections.contact-form.blocks.location.settings.country_id.label",
+          "info": "t:sections.contact-form.blocks.location.settings.country_id.info"
+        },
+        {
+          "type": "text",
+          "id": "phone",
+          "label": "t:sections.contact-form.blocks.location.settings.phone.label",
+          "info": "t:sections.contact-form.blocks.location.settings.phone.info"
+        },
+        {
+          "type": "text",
+          "id": "email",
+          "label": "t:sections.contact-form.blocks.location.settings.email.label",
+          "info": "t:sections.contact-form.blocks.location.settings.email.info"
+        }
+      ]
+    }
+  ],
+
+  "presets": [
+    {
+      "name": "t:sections.contact-form.presets.name",
+      "blocks": [
+        {
+          "type": "contact_us"
+        },
+        {
+          "type": "location"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

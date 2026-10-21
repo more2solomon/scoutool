@@ -1,0 +1,155 @@
+{% comment %}
+    Renders Spotlights
+
+    Accepts:
+    - section_settings:      {Object}
+    - block_spotlight:       {Object}
+    - products:              {Object}
+{% endcomment %}
+<div class="spotlights-container">
+    {% assign sectionId = '#shopify-section-' | append: section.id %}
+    {% style %}
+        {{ sectionId }} .spotlight-link {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content:center;
+            padding: .75rem;
+            outline: 1px solid var(--color-foreground-20);
+            background: {{ section_settings.spot_background }};
+        }
+        {{ sectionId }} .spotlight-link:is(.circle) {
+            border-radius: 9999px;
+        }
+        .spotligh-heading {
+            display: none;
+        }
+        .spotlight-link:not(.active) img {
+            visibility: hidden;
+        }
+        .spotlight-link.active .spot-tooltip :is(img, svg) {
+            transition: none;
+            border-top-right-radius: initial;
+            border-bottom-right-radius: initial;
+            border-bottom-left-radius: initial;
+            border-top-left-radius: initial;
+        }
+        {{ sectionId }} .spotlight-link::before {
+            --spotlight-outline-rgba:rgba({{ section_settings.spot_background.red }},{{ section_settings.spot_background.green }},{{ section_settings.spot_background.blue }}, .5);
+            border: 1px solid var(--spotlight-outline-rgba);
+        }
+        {{ sectionId }} .spotlight-link .spot-tooltip {
+            border-radius: {{ section_settings.border_radius }}rem;
+        }
+        @media(min-width: 990px), print {
+            {{ sectionId }} .spotlight-link {
+                padding: 1rem;
+            }
+
+            {{ sectionId }} .spotligh-heading > span {
+                font-weight: bold;
+                color: {{ section_settings.spot_background }};
+            }
+            {{ sectionId }} .spotligh-heading p {
+                color: {{ section_settings.spot_subtitle_color }};
+            }
+            .spotligh-heading::before {
+                content: '';
+                position: absolute;
+                width: 2rem;
+                height: 1px;
+                top: .75rem;
+            }
+            {{ sectionId }} .spotligh-heading.position--right::before {
+                left: 0.75rem;
+            }
+            {{ sectionId }} .spotligh-heading.position--left::before {
+                right: 0.75rem;
+            }
+            {{ sectionId }} .spotligh-heading::before {
+                background: {{ section_settings.spot_background }};
+            }
+        }
+    {% endstyle %}
+    {%- for spot in block_spotlight %}
+        {%- liquid
+            assign index = forloop.index
+            assign position_left = spot.settings.spot_position_left
+            assign position_top = spot.settings.spot_position_top
+            assign spot_title = spot.settings.spot_heading
+            assign spot_subtitle = spot.settings.spot_subheading
+            assign spot_text_position = spot.settings.text_position
+        -%}
+        {%- for product in products limit: block_spotlight.size %}
+            {%- if forloop.index == index %}
+                <div
+                    class="grid-item spotlight-link{% if section_settings.display_card_in_row %} item--row{% endif%}{% if spot.settings.circle_corners %} circle{% endif %}"
+                    data-spot-index="{{ spot_index }}"
+                    data-product-id="{{ product.id }}"
+                    title="{{ product.title }}"
+                    style="left:{{ position_left | append: '%' }};top:{{ position_top | append: '%' }};"
+                    {{ block.shopify_attributes }}
+                >
+                    {%- unless spot_title == blank -%}
+                        <div class="spotligh-heading position--{{ spot_text_position }}">
+                            <span>{{- spot_title -}}</span>
+                            {%- unless spot_subtitle == blank -%}
+                                <p>{{- spot_subtitle -}}</p>
+                            {%- endunless -%}
+                        </div>
+                    {%- endunless -%}
+                    <div class="spot-tooltip">
+                        {%- if section_settings.show_product_image %}
+                            {% assign featuredImage = product.featured_media.preview_image %}
+                            {% assign imageWidth = '75' | append: 'px' %}
+                            <div
+                                class="media"
+                                style="padding-bottom: {% render 'helper__media-padding-bottom' image: featuredImage %};"
+                            >
+                                {% if featuredImage %}
+                                    {% render 'render-image', image: featuredImage, width: imageWidth %}
+                                {%- else -%}
+                                    {{
+                                        product.id
+                                        | divided_by: 1000
+                                        | modulo: 4
+                                        | plus: 1
+                                        | prepend: 'product-'
+                                        | placeholder_svg_tag: 'placeholder-svg placeholder'
+                                    }}
+                                {%- endif -%}
+                            </div>
+                        {% endif -%}
+
+                        {%- if section_settings.display_card_in_row %}<div class="item-details">{% endif -%}
+                        {%- if section_settings.show_vendor %}
+                            <p class="item-vendor">{{ product.vendor | default: 'vendor' }}</p>
+                        {% endif -%}
+                        <p class="item-title">
+                            {{ product.title | default: 'Product title' }}
+                        </p>
+                        {%- if section_settings.show_description %}
+                            <p class="item-description">{{ product.description | strip_html | truncatewords: 10 }}</p>
+                        {% endif -%}
+                        {%- if section_settings.show_price %}
+                            {%- render 'helper__decorate-product-price',
+                                product: product,
+                                showPriceLabel: settings.price_label
+                            -%}
+                        {% endif -%}
+
+                        <a
+                            href="{{ product.url }}"
+                            class="item-link button button--primary{% if settings.cut_button_corners %} border--with-cut-corners{% endif %}"
+                            title="{{ product.title | default: "Product title" }}"
+                        >
+                            <span>{{ 'products.product.view_product' | t }}</span>
+                        </a>
+                        {%- if section_settings.display_card_in_row -%}</div>{%- endif -%}
+                    </div>
+                </div>
+            {% endif -%}
+        {% endfor -%}
+    {% endfor -%}
+    <script src="{{ 'spotlights.js' | asset_url }}" defer="defer"></script>
+</div>

@@ -1,0 +1,40 @@
+{% comment %}
+    Render Countdown timer block
+
+    Accepts:
+      - block:   {Object}
+{% endcomment %}
+<countdown-timer>
+    {% style %}
+        .timer--{{ section.id }} .period {
+          background: {{ block.settings.period_item_background }};
+        }
+        .timer--{{ section.id }} .period > span {
+          color: {{ block.settings.text_color }};
+        }
+    {% endstyle %}
+    <div
+        class="timer--{{ section.id }} timer-wrapper"
+        id="timer"
+        data-day-starts="{{ block.settings.day_starts }}"
+        data-hours-start="{{ block.settings.hours_start }}"
+    >
+        <div class="period">
+            <span class="days">00</span>
+            <span class="label">{{ 'sections.overlay.countdown_timer.days' | t }}</span>
+        </div>
+        <div class="period">
+            <span class="hours">00</span>
+            <span class="label">{{ 'sections.overlay.countdown_timer.hours' | t }}</span>
+        </div>
+        <div class="period">
+            <span class="minutes">00</span>
+            <span class="label">{{ 'sections.overlay.countdown_timer.minutes' | t }}</span>
+        </div>
+        <div class="period">
+            <span class="seconds">00</span>
+            <span class="label">{{ 'sections.overlay.countdown_timer.seconds' | t }}</span>
+        </div>
+    </div>
+    <script src="{{ 'countdown-timer.js' | asset_url }}" defer="defer"></script>
+</countdown-timer>

@@ -1,0 +1,57 @@
+{%- comment -%}
+    Renders an extra Announcement block
+
+    Accept:
+        - css_class: {String}
+{%- endcomment -%}
+{% style %}
+    :is(.business-announcement div) {
+        line-height: 1.15;
+    }
+    :is(.business-announcement) {
+        display: flex;        
+        align-items: center;
+        gap: .5rem;
+        padding-right: .5rem;
+    }    
+    .business-announcement:is(.drawer-menu--block) {
+        gap: .5rem;
+        padding: .75rem 0;
+    }
+    @media (max-width: 989px) {
+        .business-announcement:is(.header--block) {
+            display: none;
+        }
+    }
+    @media (min-width: 990px) {
+        :is(.business-announcement) { 
+            min-width: 13rem;        
+        }
+        :is(.business-announcement .subtitle) {
+            color: {{ settings.business_block_subtitle_color }};
+        }
+        .business-announcement:is(.drawer-menu--block) {
+            margin-left: 1.5rem;
+        } 
+    }
+{% endstyle %}
+
+<{% if settings.business_block_link == blank %}div{% else %}a href="{{ settings.business_block_link.url }}" title="{{ settings.business_block_link }}"{% endif %} class="business-announcement {{ css_class }}">
+    {%- if settings.business_custom_icon == blank %}
+    {%- render 'icon-business-card' -%}
+    {% else %}
+    {%- render 'custom_icons-outline' image: settings.business_custom_icon -%}
+    {% endif -%}
+    {%- if settings.business_block_title != blank or settings.business_block_subtitle != blank %}
+    <div>
+    {% endif -%}
+        {% unless settings.business_block_title == blank %}
+        <p class="title">{{- settings.business_block_title -}}</p>
+        {% endunless %}
+        {% unless settings.business_block_subtitle == blank %}
+        <p class="subtitle">{{- settings.business_block_subtitle -}}</p>
+        {% endunless %}
+    {%- if settings.business_block_title != blank or settings.business_block_subtitle != blank %}
+    </div>
+    {% endif -%}
+</{%if settings.business_block_link == blank %}div{% else %}a{% endif %}>

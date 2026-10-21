@@ -1,0 +1,460 @@
+.compare-icon > svg,
+.compare-checkmark > svg {
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: .25rem;
+    border: 1px solid var(--color-foreground-10);
+}
+
+.compare-checkmark > svg {
+    color: #039603;
+}
+
+.grid-item :is(.compare-add-button),
+.grid-item :is(.compare-add-button svg) {
+    background: var(--color-grid-item-background);
+}
+
+.compare-link {
+    position: fixed;
+    left: 0.75rem;
+    z-index: 20;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    bottom: -100%;    
+    background: var(--color-background);    
+    box-shadow: 0px 0px 30px -16px var(--color-foreground);
+    transition: bottom .5s;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.compare-link._active {
+    bottom: 0px;
+}
+
+.compare-link__title {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;    
+    background: var(--color-base-accent-1);
+    color: var(--color-base-accent-1-inverse);
+    padding: .75rem 1.5rem .5rem;
+    width: 100%;
+    min-width: 280px;
+}
+
+.compare-link__title svg {
+    position: absolute;
+    right: 1rem;
+}
+
+.compare-link__products .row,
+.compare-link__products .item,
+.compare-link__products .heading,
+.compare-link__products .compare-table:not(:first-child),
+.compare-link__products .compare-table .vendor,
+.compare-link__products .compare-table .item-actions-wrapper,
+.compare-link__products .compare-table:first-child compare-remove-item {
+    display: none;
+}
+
+.compare-link__products .row_visible {
+    display: flex;
+    flex-direction: column;
+}
+
+.compare-link__products {
+    height: 100%;
+    max-height: 20rem;
+    overflow-y: auto;
+}
+
+.compare-link__products .compare-table:first-child .item_visible {
+    border-bottom: 1px solid var(--color-foreground-8);
+    width: calc(288px - 1rem);
+    position: relative;
+    padding: 1rem}
+
+.compare-link__products .compare-table:first-child .item-image {
+    width: 5rem;
+}
+
+.compare-link__products .compare-table:first-child .item-image span._center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.compare-link__products .compare-table:first-child .item-title {
+    position: absolute;
+    top: 1rem;
+    right: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    width: calc(50% + 1rem);
+}
+
+.compare-link__actions .remove-items  {
+    background-color: var(--color-foreground-10);
+}
+
+.compare-link__actions .compare-items {
+    background-color: var(--color-foreground);
+    color: var(--color-base-accent-1-inverse);
+}
+
+.compare-link__actions {
+    margin: 0.75rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.compare-link .count--bubble {
+    display: flex;
+    height: 1rem;
+    width: 1rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    padding: .15rem .5rem;
+    margin-right: .5rem;
+    background: var(--color-base-accent-1-inverse);
+    color: var(--color-base-link);
+}
+
+@media all and (min-width: 990px) {
+    .compare-link {
+        left: 2rem;
+    }
+}
+
+body[data-compare-opened="true"] {
+    overflow: hidden;
+}
+
+body[data-compare-opened="true"]::after {
+    content: '';
+    position: fixed;
+    display: block;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-foreground-30);
+    z-index: 99;
+}
+
+#compare-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--color-background);
+    padding: 1rem;
+    width: calc(100% - .5rem);
+    max-width: 1200px;
+    height: 100%;
+    max-height: 85%;
+    border-radius: 6px;
+    z-index: 999;
+    box-shadow: 0 0 2rem var(--color-foreground-30);
+}
+
+#compare-popup .title {
+    margin-top: 0px;
+}
+
+#compare-popup .compare-products-list {
+    border-top: 1px solid var(--color-foreground-10);
+    display: flex;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+    overflow: auto;
+    max-height: calc(80vh - 6rem);
+}
+
+.compare-table .old-price {
+    display: none;
+}
+
+.compare-table-wrapper .compare-table {
+    width: 100%;
+}
+
+.compare-table-wrapper .compare-table .item_visible,
+#compare-popup .compare-table .item_visible {
+    min-width: 16rem;
+    position: relative;
+    width: 100%}
+
+#compare-popup .compare-table .item_visible {
+    padding-top: 0.5rem;
+}
+
+.compare-table .item > .heading {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+[data-theme-preset="metalware"] .compare-table .item > .heading {
+    font-weight: 400;
+}
+
+.compare-table-wrapper .compare-table .item:not(:last-child),
+.compare-table-wrapper .compare-table .item_visible:not(:last-child) {
+    margin-right: 1rem;
+}
+
+.compare-table .item-actions-wrapper {
+    position: relative;
+}
+
+.compare-table-wrapper .compare-table .row_visible,
+#compare-popup .compare-table .row_visible,
+.compare-table-wrapper .compare-table .row:not(:last-child),
+#compare-popup .compare-table .row:not(:last-child) {
+    position: relative;    
+}
+
+.compare-table-wrapper .compare-table .row_visible::after,
+#compare-popup .compare-table .row_visible::after,
+.compare-table-wrapper .compare-table .row:not(:last-child)::after,
+#compare-popup .compare-table .row:not(:last-child)::after {
+    content: '';
+    position: absolute;    
+    width: calc(100% - 4px);
+    background-color: var(--color-foreground);    
+    bottom: 0;
+}
+
+.compare-table-wrapper .compare-table .row_visible::after,
+#compare-popup .compare-table .row_visible::after {    
+    height: 3px;
+}
+
+.compare-table-wrapper .compare-table .row:not(:last-child)::after,
+#compare-popup .compare-table .row:not(:last-child)::after {
+    height: 1px;
+}
+
+[data-theme-preset]:not([data-theme-preset="metalware"]) .compare-table-wrapper .compare-table .row:not(:last-child)::after,
+    [data-theme-preset]:not([data-theme-preset="metalware"]) #compare-popup .compare-table .row:not(:last-child)::after {
+        background-color: var(--color-foreground-10);
+    }
+
+.compare-table .sticky_header {
+    background: var(--color-background);
+    box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
+    position: sticky;
+    top: 0px;
+    z-index: 10}
+
+.compare-table .column {
+    padding-top: 0px;
+    padding-right: 0.75rem;
+    padding-bottom: 1.5rem;
+    padding-left: 0.75rem;
+}
+
+.compare-table ._center {
+    align-items: center;
+}
+
+.compare-table .item-link {
+    display: block;
+}
+
+.compare-table .item-title {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    word-break: break-word;
+}
+
+[data-theme-preset="metalware"] .compare-table .item-title {
+    font-size: 22px;
+}
+
+.compare-table .vendor {
+    color: var(--color-foreground-50);
+    word-break: break-all;
+}
+
+.compare-table .item {
+    min-width: 9rem;
+    width: 100%;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem}
+
+[data-theme-preset="metalware"] .compare-table .item:first-child {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.compare-table .item:first-child {
+    max-width: 9rem;
+}
+
+.compare-table .row_visible,
+.compare-table .row {
+    display: flex;
+}
+
+.compare-table ._description p {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+#compare-popup .modal__toggle-close {
+    position: absolute;
+    right: 2rem;
+    top: 2rem;
+    display: block;
+    cursor: pointer;
+}
+
+.modal__toggle-close:hover,
+.modal__toggle-close:focus {
+    transform: rotate(90deg);
+    transition: transform .35s ease;
+}
+
+#compare-popup .modal__toggle-close > svg {
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 1px solid var(--color-foreground-30);
+    padding: .15rem;
+}
+
+[data-theme-preset]:not([data-theme-preset="metalware"]) .modal__toggle-close > svg,
+[data-theme-preset]:not([data-theme-preset="metalware"]) .remove-item {
+    border-radius: 1.5rem;
+}
+
+#compare-popup .modal__popup-warnings {
+    position: relative;
+        padding-bottom: .5rem;
+        padding-left: .25rem;
+        margin-top: -1rem;
+}
+
+#compare-popup .modal__popup-warnings > span {
+    color: #ffa900;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 600}
+
+#compare-popup .compare-table .item-image,
+.compare-table-wrapper .compare-table .item-image {
+    position: relative;
+    margin: 1.5rem auto;
+    width: 100%;
+}
+
+.compare-table .item-image {
+    max-width: 150px;
+}
+
+#compare-popup compare-remove-item {
+    position: absolute;
+    right: 1rem;
+    z-index: 10;
+}
+
+#compare-popup .remove-item {
+    color: var(--color-foreground-50);
+    background: var(--color-foreground-8);
+    padding: 0.25rem}
+
+#compare-popup .remove-item > svg {
+    height: 0.75rem;
+    width: 0.75rem;
+    padding: 0.125rem;
+}
+
+#compare-popup .remove-item:hover,
+#compare-popup .remove-item:focus,
+#compare-popup .remove-item:hover > svg,
+#compare-popup .remove-item:focus > svg {
+    color: var(--color-link);
+    opacity: 1}
+
+#compare-popup .item-actions-wrapper .icon-cart {
+    display: none;
+}
+
+#compare-popup .item-added-to-cart__message {
+    visibility: hidden;
+    position: absolute;
+    top: 0px;
+    left: 50%;
+    width: -moz-max-content;
+    width: max-content;
+    --tw-translate-x: -50%;
+    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+    opacity: 0.5;
+    color: #039647;
+    background-color: #f0f8f2;
+    border: 1px solid #c9ebd7;
+    border-radius: 3px;
+    transition: all .5s;
+}
+
+#compare-popup .item-added-to-cart__message.active {
+    visibility: visible;
+    top: -3rem;
+    opacity: 1;
+}
+
+.compare-table .item-actions-wrapper button {
+    font-weight: 500;
+}
+
+[data-theme-preset="metalware"] .compare-table button[type="submit"] {
+            width: 207px;
+            height: 48px;
+            font-family: var(--font-heading-family);
+        }
+
+@media only screen and (min-width: 760px) {
+    #compare-popup {
+        padding: 2rem;
+    }
+}
+
+/* styles for compare table section */
+
+.compare-table-wrapper .item-added-to-cart__message,
+    .compare-table-wrapper compare-remove-item,
+    .compare-table-wrapper table .item-price .label {
+        display: none;
+    }
+
+.compare-table-wrapper .table-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.compare-table-wrapper .row .item .h6 {
+    margin: 0px;
+}

@@ -1,0 +1,52 @@
+{% comment %}
+    Render Critical styles for Judgeme reviews
+{% endcomment %}
+{% style %}
+    :is(.jdgm-rev-widg__title) {
+      display: none;
+    }
+    .grid-item :is(.jdgm-preview-badge) {
+      font-size: calc(1rem - 2px);
+    }
+
+    .grid-item .jdgm-preview-badge > div {
+      margin: .5rem 0 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .grid-item :is(.jdgm-prev-badge__text) {
+      font-weight: 600;
+    }
+
+    .grid-item :is(.jdgm-prev-badge[data-number-of-reviews="0"]) {
+      display: none !important;
+    }
+    {% if settings.current_presets == 'metalware' %}
+    .jdgm-widget.jdgm-preview-badge .jdgm-star {
+      display: inline-block !important;
+      padding: 4px 6px !important;
+      margin-right: 4px !important;
+      font-size: 10px;
+      background-color: var(--color-price-final);
+    }{% endif %}
+
+    @media only screen and (max-width: 989px) {
+      .grid-item .judgeme-product-reviews-badge .jdgm-widget.jdgm-widget {
+        float: left;
+      }
+    }
+
+    @media only screen and (min-width: 767px) {
+      :is(.tab-judgeme-reviews .jdgm-widget .jdgm-row-stars) {
+        justify-content: unset !important;
+      }
+    }
+
+    @media only screen and (min-width: 990px) {
+      .tab-judgeme-reviews .jdgm-widget:not(.jdgm-review-widget--small,.jdgm-review-widget--medium) :not(.jdgm-histogram-wrapper) > .jdgm-histogram {
+        width: 50%;
+      }
+    }
+{% endstyle %}

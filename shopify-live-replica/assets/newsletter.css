@@ -1,0 +1,26 @@
+.newsletter.page-width {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+}
+
+@media (min-width: 990px) {
+
+    .newsletter.page-width {
+        margin-bottom: 3rem;
+    }
+}
+
+.maintenance-image__container {
+    margin: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+}
+
+.newsletter__wrapper .maintenance-image__container.hidden {
+    display: none;
+}
+
+.newsletter:has(.loading-overlay) {
+    z-index: 1;
+}

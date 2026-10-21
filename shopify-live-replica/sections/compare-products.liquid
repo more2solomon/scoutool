@@ -1,0 +1,89 @@
+{%- capture heading_html %}
+  {%- assign title = 'sections.compare.link_title' | t -%}
+    <h3 class="h3 title{% if settings.show_uppercase_heading %} uppercase{% endif %}">
+        {% render 'helper__decorate-heading' heading: title %}
+    </h3>
+  <div class="modal__popup-warnings">
+    <span class="warning" 
+      data-empty-list="{{ 'sections.compare.popup.empty_list' | t }}"
+      data-lack-list="{{ 'sections.compare.popup.lack_items' | t }}"
+    ></span>
+  </div>
+  <div class="action">
+    <a href="#/" class="modal__toggle-close">
+        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-close">
+          <use href="#icon-close" />
+        </svg>
+    </a>
+  </div>  
+{% endcapture -%}
+
+{%- render 'compare-popup',
+    heading_html: heading_html,
+    sticky_table_header: section.settings.sticky_table_header,
+    show_add_to_cart: section.settings.show_add_to_cart,
+    show_description: section.settings.show_product_description,
+    show_vendor: section.settings.show_product_vendor,
+    show_sku: section.settings.show_product_sku,
+    show_rating: section.settings.show_product_rating,
+    description_size: section.settings.truncate_product_description
+-%}
+
+{{ 'component-compare-products.css' | asset_url | stylesheet_tag }}
+<noscript>{{ 'component-compare-products.css' | asset_url | stylesheet_tag }}</noscript>
+
+{% schema %}
+{
+  "name": "t:sections.compare.name",
+  "tag": "section",
+  "settings": [
+    {
+        "type": "checkbox",
+        "id": "sticky_table_header",
+        "label": "t:sections.compare.settings.sticky_table_header.label",
+        "default": false
+    },
+    {
+        "type": "checkbox",
+        "id": "show_add_to_cart",
+        "label": "t:sections.compare.settings.show_add_to_cart.label",
+        "default": true
+    },
+    {
+        "type": "checkbox",
+        "id": "show_product_description",
+        "label": "t:sections.compare.settings.show_product_description.label",
+        "default": true
+    },
+    {
+        "type": "checkbox",
+        "id": "show_product_vendor",
+        "label": "t:sections.compare.settings.show_product_vendor.label",
+        "default": true
+    },
+    {
+        "type": "checkbox",
+        "id": "show_product_sku",
+        "label": "t:sections.compare.settings.show_product_sku.label",
+        "default": false
+    },
+    {
+        "type": "checkbox",
+        "id": "show_product_rating",
+        "label": "t:sections.compare.settings.show_product_rating.label",
+        "default": true
+    },
+    {
+        "type": "text",
+        "id": "truncate_product_description",
+        "label": "t:sections.compare.settings.truncate_product_description.label",
+        "default": "50"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.compare.name"
+    }
+  ]
+}
+{% endschema %}

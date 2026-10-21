@@ -1,0 +1,85 @@
+{%- comment -%}
+    Render collection image using block settings
+
+    Accepts:
+     - block:      {Object}
+     - blockOrder: {Number}
+{%- endcomment -%}
+
+{%- liquid
+    assign sectioHasAsideColumn = false
+    for block in section.blocks
+        assign position = block.settings.position | split: '-' | first
+        case position
+            when 'left', 'right'
+                assign sectioHasAsideColumn = true
+        endcase
+    endfor
+
+    assign image = block.settings.image | default: collection.featured_image
+-%}
+{% style %}
+        .collection__block--image {
+            position: relative;
+        }
+
+        .collection__block--image :is(.loading-overlay) {
+            z-index: 1;
+        }
+    {%- if settings.current_presets == 'gorpcore' %}
+
+        .collection__block--image .media {
+            border-radius: 6px;
+        }
+    {% endif -%}
+{% endstyle %}
+<div
+    class="collection__block collection__block--image{% if settings.cut_button_corners %} border--with-cut-corners{% endif %}"
+    style="order: {{ blockOrder }}"
+    {{ block.shopify_attributes }}
+>
+    {%- if image %}
+        {%- liquid
+            assign media_styles = 'padding-bottom:'
+            assign media_class = 'media'
+
+            assign width = image.width
+            if sectioHasAsideColumn
+                if width > 920
+                    assign width = 920
+                endif
+            else
+                if width > 1176
+                    assign width = 1176
+                endif
+            endif
+
+            assign sizes = width | append: 'px'
+            capture padding_bottom_value
+                render 'helper__media-padding-bottom', image: image, image_ratio: block.settings.ratio
+            endcapture
+
+            assign media_styles = media_styles | append: padding_bottom_value
+            assign media_styles = media_styles | append: ';'
+
+            unless request.design_mode
+                if settings.enable_preload_images
+                    assign media_class = media_class | append: ' media--blur-image'
+                endif
+            endunless
+        -%}
+        {%- if settings.enable_preload_images -%}
+            {%- render 'loading-overlay' -%}
+        {%- endif -%}
+        <div class="{{ media_class }}" style="{{ media_styles }}">
+            {% render 'render-image',
+                image: image,
+                width: width,
+                widths: width,
+                sizes: sizes,
+                loading_strategy: 'auto',
+                fetchpriority: 'high'
+            %}
+        </div>
+    {% endif -%}
+</div>

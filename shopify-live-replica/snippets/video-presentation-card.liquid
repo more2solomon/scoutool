@@ -1,0 +1,190 @@
+{%- liquid
+    assign imageWidth = '326,652,978,1182'
+    assign imageSizes = '(max-width: 767px) calc(100vw - 2rem - 2px), (max-width: 1279px) calc(100vw - 6rem - 2px), 100vw'
+
+    assign products = block.settings.source
+    assign product_count = 0
+    for product in products
+        assign product_count = product_count | plus: 1
+    endfor
+-%}
+
+{% style %}
+    #{{ block.id }} .card-video {
+        width: 100%;
+        height: 400px;
+        overflow: hidden;
+        border-radius: {{ section.settings.card_border_radius }}px;
+    }
+
+    #{{ block.id }}.presentation-card .card-product {
+        position: relative;
+        display:flex;
+        flex: 1;
+        align-items: center;
+        justify-content: space-around;
+        gap: 0.5rem;
+        border-radius: {{ section.settings.card_border_radius }}px;
+        width:100%;
+        min-height: 5rem;
+        padding: 0.5rem;
+    }
+
+    #{{ block.id }} .card-product-details {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        background: {{ section.settings.dropdown_bg_color }};
+        transform: translateY(100%);
+        transition: all 0.4s ease-in-out;
+    }
+
+    #{{ block.id }} .card-product-details:is(.active) {
+        transform: translateY(0);
+    }
+
+    #{{ block.id }} .product-title {
+        color: {{ section.settings.product_title_color }};
+    }
+{% endstyle %}
+
+<li
+    class="presentation-card reveal-item{% if section.settings.swipe_on_mobile %} slider__slide{% endif %}"
+    id="{{ block.id }}"
+    {{ block.shopify_attributes }}
+>
+    <div class="media card-video">
+        {% if block.settings.video %}
+            {%- assign is_autoplay = block.settings.autoplay -%}
+            {%- assign video = block.settings.video -%}
+            {%- if is_autoplay %}
+                {{ video | video_tag: autoplay: true, muted: true, loop: true, preload: false }}
+            {% else %}
+                {{ video | video_tag: autoplay: false, muted: true, loop: true, controls: true, preload: false -}}
+            {%- endif -%}
+        {% elsif block.settings.video_url %}
+            <div class="">
+                {%- if block.settings.video_url.type == 'youtube' -%}
+                    <iframe
+                        src="https://www.youtube.com/embed/{{ block.settings.video_url.id }}?&autoplay=1&mute=1&showinfo=1&loop=1&playlist={{ block.settings.video_url.id }}&controls=1"
+                    ></iframe>
+                {%- else -%}
+                    <iframe
+                        src="https://player.vimeo.com/video/{{ block.settings.video_url.id }}?title=0&byline=0&portrait=0&autopause=0&playlist={{ block.settings.video_url.id }}&controls=1"
+                        class="js-vimeo"
+                        allowfullscreen
+                        title="{{ block.settings.video_url.id }}"
+                    ></iframe>
+                {%- endif -%}
+            </div>
+        {% else %}
+            <div class="placeholder-image">
+                {% render 'icon-video-presentation', name: 'placeholder-2' %}
+            </div>
+        {% endif %}
+    </div>
+
+    {% if products != blank %}
+        {% assign first_product_rendered = false %}
+        {% for product in products %}
+            {% if product != blank and first_product_rendered == false %}
+                {% assign first_product_rendered = true %}
+                <div class="card-product">
+                    {% if product.featured_image %}
+                        {% render 'render-image',
+                            image: product.featured_image,
+                            widths: imageWidth,
+                            sizes: imageSizes,
+                            css_class: ''
+                        -%}
+                    {%- endif %}
+                    <div class="product-card-width">
+                        <p class="product-title">{{ product.title }}</p>
+                        {% render 'helper__decorate-product-price',
+                            product: product,
+                            showPriceLabel: settings.price_label
+                        %}
+                    </div>
+                    <button
+                        id="ProductPopup-{{ block.id }}"
+                        class="product-show-button"
+                        type="button"
+                        onclick="toggleCardDetails(`{{ block.id }}`);return false;"
+                    >
+                        {% render 'icon-zoom' %}
+                    </button>
+                </div>
+
+                <div class="card-product-details" id="details-{{ block.id }}">
+                    <button
+                        type="button"
+                        class="button modal__close-button"
+                        onclick="toggleCardDetails(this);return false;"
+                    >
+                        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-close">
+                            <use href="#icon-close" />
+                        </svg>
+                    </button>
+
+                    <div class="product-card-list">
+                        {% for product in products %}
+                            {% if product_count == 1 %}
+                                {% render 'vp_single-product', block: block, product: product %}
+                            {% else %}
+                                <div class="card-product">
+                                    {% if product.featured_image %}
+                                        {% render 'render-image',
+                                            image: product.featured_image,
+                                            widths: imageWidth,
+                                            sizes: imageSizes,
+                                            css_class: ''
+                                        -%}
+                                    {%- endif %}
+                                    <div class="product-card-width">
+                                        <p class="product-title">{{ product.title }}</p>
+                                        {% render 'helper__decorate-product-price',
+                                            product: product,
+                                            showPriceLabel: settings.price_label
+                                        %}
+                                    </div>
+                                    <button
+                                        class="product-show-button button"
+                                        onclick="toggleCardDetails(this, '{{ product.id }}');return false;"
+                                        type="button"
+                                    >
+                                        {% render 'icon-zoom' %}
+                                    </button>
+                                </div>
+                                <div
+                                    class="card-product-details"
+                                    data-product-id="{{ product.id }}"
+                                >
+                                    <button
+                                        type="button"
+                                        class="button modal__close-button"
+                                        onclick="toggleCardDetails(this, '{{ product.id }}');return false;"
+                                    >
+                                        <svg
+                                            aria-hidden="true"
+                                            focusable="false"
+                                            role="presentation"
+                                            class="icon icon-close"
+                                        >
+                                            <use href="#icon-close" />
+                                        </svg>
+                                    </button>
+                                    {% render 'vp_single-product', block: block, product: product %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <div class="card-product">
+            {{ 'image' | placeholder_svg_tag: 'placeholder' }}
+            <p>{{ 'products.product.select_product' | t }}</p>
+        </div>
+    {% endif %}
+</li>

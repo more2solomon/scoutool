@@ -1,0 +1,64 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.footer.name",
+  "type": "footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "footer-contacts": {
+          "type": "footer-contacts",
+          "settings": {
+            "image_show": true,
+            "image_width": 170,
+            "image_align": "top",
+            "show_logo_above_contacts_on_mobile": true
+          }
+        },
+        "menu-1": {
+          "type": "menu",
+          "settings": {
+            "title": "Quick links"
+          }
+        },
+        "menu-2": {
+          "type": "menu",
+          "settings": {
+            "title": "Quick links"
+          }
+        },
+        "menu-3": {
+          "type": "menu",
+          "settings": {
+            "title": "Quick links"
+          }
+        },
+        "menu-4": {
+          "type": "menu",
+          "settings": {
+            "title": "Quick links"
+          }
+        }
+      },
+      "block_order": [
+        "footer-contacts",
+        "menu-1",
+        "menu-2",
+        "menu-3",
+        "menu-4"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

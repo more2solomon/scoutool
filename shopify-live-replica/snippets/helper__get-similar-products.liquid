@@ -1,0 +1,36 @@
+{%- comment -%}
+    Return string that presents list of separated product handles similar (related) to product
+
+    Accepts:
+    - product   {Object}
+    - limit     {Number}
+    - separator {String}
+{%- endcomment -%}
+
+{%- liquid
+    assign limit = limit | default: 4 | plus: 0
+    assign separator = separator | default: '|'
+    assign collections = product.collections | default: collections
+    assign handles = ''
+    assign count = 0
+    assign handle = ''
+
+    for collection in collections
+        for similar in collection.products
+            if similar.handle != product.handle and similar.handle != handle
+                assign handles = handles | append: similar.handle
+                assign count = count | plus: 1
+                if count == limit
+                    break
+                endif
+                assign handles = handles | append: separator
+            endif
+            assign handle = similar.handle
+        endfor
+        if count == limit
+            break
+        endif
+    endfor
+
+    echo handles
+-%}

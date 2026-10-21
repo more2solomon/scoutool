@@ -1,0 +1,34 @@
+.spinner {
+  animation: rotator 1.4s linear infinite;
+}
+
+.loading--icon {
+  shape-rendering: auto;
+}
+
+.loading .loading-overlay,
+.loading-overlay:not(.hidden) {
+  display: flex;
+}
+
+button.loading {
+  position: relative;
+}
+
+button .loading-overlay {
+  align-items: center;
+}
+
+button .loading-overlay__spinner.spinner_default {
+  width: 2rem;
+}
+
+.loading-overlay:not(.hidden) + .cart-item__price-wrapper,
+.loading-overlay:not(.hidden) ~ cart-remove-button {
+  opacity: 50%;
+}
+
+.loading-overlay:not(.hidden) ~ cart-remove-button {
+  pointer-events: none;
+  cursor: default;
+}

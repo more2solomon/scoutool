@@ -1,0 +1,102 @@
+{% comment %}
+    Render block Complementary products: Cart sidebar & Product Info block
+
+    Accept:
+        - heading           {String}
+        - ul_class          {String}
+        - sectionId         {String}
+        - productId         {String}
+        - items_per_page    {Number}
+        - mode              {String}
+        - show_add_to_cart  {Bool}
+        - is_slider         {Bool}
+        - is_border_top     {Bool}
+        - is_border_bottom  {Bool}
+        - is_icon           {Bool}
+{% endcomment %}
+
+{%- liquid
+    assign heading = heading
+    if section.id contains 'cart-sidebar'
+        assign heading = 'sections.cart.complementary_products_heading' | t
+    endif
+    assign ul_class = ul_class | default: 'complementary-block__list'
+    assign show_add_to_cart = show_add_to_cart | default: true
+    assign is_slider = is_slider | default: true
+    assign mode = mode | default: 'list'
+    if is_slider
+        assign ul_class = ul_class | append: ' slider slider--desktop'
+    endif
+    assign is_border_top = is_border_top | default: true
+    assign is_border_bottom = is_border_bottom | default: false
+    assign is_icon = is_icon | default: 'none'
+-%}
+{% unless product.gift_card? -%}
+    {%- render 'complementary-block__styles',
+        is_slider: is_slider,
+        is_border_top: is_border_top,
+        is_border_bottom: is_border_bottom
+    -%}
+    {%- unless is_icon == 'none' %}
+        {% capture icon_html %}
+        {%- render 'icon-accordion' name: is_icon, css_class: 'icon-accordion' -%}
+    {% endcapture %}
+    {%- endunless %}
+    {%- capture complementary_html %}
+        {% if is_slider %}<slider-component data-loop="false">{% endif %}
+        {% render 'complementary-block__list',
+            ul_class: ul_class            
+            items: recommendations.products
+            mode: mode
+            columns: items_per_page            
+            image_ratio: block.settings.image_ratio
+            product_secondary_image: settings.product_card_secondary_image
+            product_to_cart_button: show_add_to_cart            
+        %}
+        {% if is_slider %}
+            <div class="slider-buttons no-js-hidden">
+                <button type="button" class="slider-button slider-button--prev button--tertiary slider-button--stucked" name="previous" aria-label="{{ 'accessibility.previous_slide' | t }}">
+                    <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret"><use href="#icon-caret" /></svg>
+                </button>
+                <button type="button" class="slider-button slider-button--next button--tertiary slider-button--stucked" name="next" aria-label="{{ 'accessibility.next_slide' | t }}">
+                    <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret"><use href="#icon-caret" /></svg>
+                </button>
+            </div>
+        </slider-component>
+        {% endif %}
+    {%- endcapture %}
+
+    <products-complementary
+        id="complementary-block"
+        data-url="{{ routes.product_recommendations_url }}?section_id={{ sectionId }}&product_id={{ productId }}&limit={{ items_per_page }}&intent=complementary"
+    >
+        <div class="content-wrapper" hidden>
+            {% if is_collapsed %}
+                <details>
+                    <summary>
+                        <div class="summary__title">
+                            {{- icon_html -}}
+                            {%- unless heading == blank %}
+                                <span class="complementary-accordion__title">{{ heading }}</span>
+                            {%- endunless %}
+                        </div>
+                        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+                            <use href="#icon-caret" />
+                        </svg>
+                    </summary>
+
+                    {{- complementary_html -}}
+                </details>
+            {% else %}
+                {%- unless heading == blank %}
+                    <span class="complementary-title">
+                        {{- icon_html -}}
+                        {{ heading }}
+                    </span>
+                {%- endunless %}
+
+                {{- complementary_html -}}
+            {% endif %}
+        </div>
+    </products-complementary>
+{% endunless -%}

@@ -1,0 +1,43 @@
+{%- comment -%}
+    Render Message block that allows the customers to leave some message
+
+    Accepts:
+     - block:      {Object}
+     - blockOrder: {Number}
+     - sectionId:  {String}
+     - product:    {Object}
+{%- endcomment -%}
+
+{% liquid
+    assign collectionNames = block.settings.collection_name | downcase | split: ','
+    assign isShown = false
+
+    unless collectionNames == blank
+        for collection in product.collections
+            assign title = collection.title | downcase
+            if collectionNames contains title
+                assign isShown = true
+            endif
+        endfor
+    endunless
+%}
+
+{% capture messageBlock %}
+    <div class="product__info-block product__info-block--message reveal-item" style="order: {{ blockOrder }}" {{ block.shopify_attributes }}>
+        <label for="message_{{ block.id }}" class="form__label">{{ 'products.product.message_label' | t }}:</label>
+        <div class="field">
+            <textarea
+                id="message_{{ block.id }}"
+                class="text-area field__input"
+                placeholder="{{ 'products.product.message_placeholder' | t }}"
+                name="properties[message-{{ product.handle }}]"
+                form="product-form-{{ section.id }}-{{ product.id }}"
+            ></textarea>
+        </div>
+    </div>
+{% endcapture %}
+{% if isShown %}
+    {{- messageBlock -}}
+{% elsif isShown == false and collectionNames == blank %}
+    {{- messageBlock -}}
+{% endif %}

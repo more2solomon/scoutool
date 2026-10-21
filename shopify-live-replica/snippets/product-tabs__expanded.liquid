@@ -1,0 +1,36 @@
+{%- comment -%}
+    Render tabs when layout is expanded.
+
+    Accepts:
+    - block: {Object}
+{%- endcomment -%}
+
+{%- liquid
+    capture tabContent
+        render 'product-tabs__tab-content', block: block
+    endcapture
+    assign tabContent = tabContent | strip
+-%}
+{%- if tabContent != blank -%}
+    {% liquid
+        capture heading
+            render 'product-tabs__tab-heading', block: block
+        endcapture
+
+        assign reviewsTab = false
+        if block.type == 'reviews' and settings.product_card_rating
+            assign reviewsTab = true
+        endif
+    %}
+    <h2 class="tab-title reveal-item{% if settings.show_uppercase_heading %} uppercase{% endif %}">
+        <span>{% render 'helper__decorate-heading', heading: heading %}</span>
+        {% if reviewsTab %}
+            <div class="judgeme-product-reviews-badge" data-id="{{ product.id }}">
+                <span class="jdgm-widget jdgm-preview-badge">{{ product.metafields.judgeme.badge }}</span>
+            </div>
+        {% endif %}
+    </h2>
+    <div class="tab-content{% if reviewsTab %} tab-judgeme-reviews{% endif %}" {{ block.shopify_attributes }}>
+        {{ tabContent }}
+    </div>
+{%- endif -%}

@@ -1,0 +1,63 @@
+{%- comment -%}
+    Render share product url using block settings
+
+    Accepts:
+     - block:      {Object}
+     - blockOrder: {Number}
+     - sectionId:  {String}
+     - product:    {Object}
+{%- endcomment -%}
+
+<div
+    class="product__info-block product__info-block--share reveal-item"
+    style="order: {{ blockOrder }}"
+    {{ block.shopify_attributes }}
+>
+    <share-button class="share-button">
+        <button
+            class="share-button__button button--tertiary button--small hidden"
+            title="{{ 'general.share.share' | t }}"
+        >
+            {% render 'icons-outline', name: 'share' %}
+            <span class="visually-hidden">{{ 'general.share.share' | t }}</span>
+        </button>
+        <details>
+            <summary
+                class="share-button__button button button--tertiary button--small"
+                title="{{ 'general.share.share' | t }}"
+            >
+                {% render 'icons-outline', name: 'share' %}
+                <span class="visually-hidden">{{ 'general.share.share' | t }}</span>
+            </summary>
+            <div class="share-button__fallback">
+                <div class="field">
+                    <label class="field__label visually-hidden" for="url">{{ 'general.share.share_url' | t }}</label>
+                    <input
+                        type="text"
+                        class="field__input"
+                        id="url"
+                        value="{{ shop.url | append: product.url }}"
+                        placeholder="{{ 'general.share.share_url' | t }}"
+                        onclick="this.select();"
+                        readonly
+                    >
+                    <button
+                        class="field__button button button--tertiary button--small"
+                        title="{{ 'general.share.copy_to_clipboard' | t }}"
+                    >
+                        {% render 'icons-outline', name: 'duplicate' %}
+                        <span class="visually-hidden">{{ 'general.share.copy_to_clipboard' | t }}</span>
+                    </button>
+                </div>
+                <span
+                    id="ShareMessage-{{ sectionId }}"
+                    class="share-button__message hidden"
+                    role="status"
+                    aria-hidden="true"
+                >
+                    {{ 'general.share.success_message' | t }}
+                </span>
+            </div>
+        </details>
+    </share-button>
+</div>

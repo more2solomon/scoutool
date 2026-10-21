@@ -1,0 +1,80 @@
+{%- comment -%}
+    Render product title using block settings
+
+    Accepts:
+     - block:      {Object}
+     - blockOrder: {Number}
+     - sectionId:  {String}
+     - product:    {Object}
+{%- endcomment -%}
+{% liquid
+    assign class = 'product__info-block product__info-block--title'
+    if block.settings.show_price
+        assign class = class | append: ' product__info-block--title-with-price'
+    endif
+
+    if block.settings.show_badges
+        assign class = class | append: ' product__info-block--title-with-badge'
+    endif
+
+    assign class = class | append: ' reveal-item'
+
+    assign heading_tag = heading_tag | default: 'h1'
+%}
+<div class="{{ class }}" style="order: {{ blockOrder }}" {{ block.shopify_attributes }}>
+    <div class="product__title--wrapper">
+        {%- if block.settings.text_before != blank %}
+            {% if sectionId contains 'featured_product' %}
+                <div class="product__title--before-with-sku" data-updatable="true">
+            {% endif %}
+            <p class="product__title--before">{{ block.settings.text_before }}</p>
+            {%- if sectionId contains 'featured_product' and block.settings.show_sku -%}
+                {% render 'product__info-block-title--sku', product: product %}
+            {%- endif -%}
+            {% if sectionId contains 'featured_product' %}</div>{% endif %}
+        {% endif -%}
+        <{{ heading_tag }} class="product__title">
+            {{- product.title | escape | default: 'Product title' -}}
+        </{{ heading_tag }}>
+        {% if block.settings.text_after != blank %}
+            <p class="product__title--after">{{ block.settings.text_after }}</p>
+        {% endif %}
+        {%- if block.settings.show_rating -%}
+            {% assign rating_size = product.metafields.judgeme | replace: '{', '' %}
+            {% assign rating_size = rating_size | replace: '}', '' | times: 1 %}
+            <a
+                href="#judgeme_product_reviews"
+                class="product__title--rating"
+                title="{{ 'sections.main-product.title.reviews' | t }}"
+                {% unless rating_size == 0 %}
+                    tabindex="-1"
+                {% endunless %}
+            >
+                <span class="jdgm-widget jdgm-preview-badge">
+                    {{- product.metafields.judgeme.badge -}}
+                </span>
+            </a>
+        {%- endif -%}
+        {%- unless sectionId contains 'featured_product' %}
+            {%- if block.settings.show_sku -%}
+                <div id="block-title-sku-{{ sectionId }}" class="product__title--sku" data-updatable="true">
+                    {% render 'product__info-block-title--sku', product: product %}
+                </div>
+            {%- endif -%}
+        {% endunless -%}
+    </div>
+    {%- if block.settings.show_price or block.settings.show_badges -%}
+        <div id="block-title-price-{{ sectionId }}" class="product__price product__title--price" data-updatable="true">
+            {%- render 'price',
+                product: product,
+                use_variant: true,
+                show_badges: block.settings.show_badges,
+                show_stock: false,
+                show_sku: false
+            -%}
+            {%- if settings.show_tax_info_on_product_page -%}
+                {% render 'tax-info', product: product %}
+            {% endif %}
+        </div>
+    {%- endif -%}
+</div>

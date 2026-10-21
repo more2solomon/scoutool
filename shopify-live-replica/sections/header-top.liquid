@@ -1,0 +1,243 @@
+{%- liquid
+    assign sectionId = section.id | prepend: '#shopify-section-'
+    assign hasMessage = true
+    if section.settings.message == blank
+        assign hasMessage = false
+    endif
+-%}
+
+{% style %}
+    :root {
+        --header-top--text-color: {{ settings.colors_header_top_foreground }};
+        --header-top--text-color-rgb: {{ settings.colors_header_top_foreground.red }}, {{ settings.colors_header_top_foreground.green }}, {{ settings.colors_header_top_foreground.blue }};
+    }
+
+    {{ sectionId }} {
+        position: relative;
+        display: block;
+        line-height: 1.25rem;
+        font-size: .875rem;
+        color: var(--header-top--text-color);
+        background: {{ settings.colors_header_top_background }};{% if section.settings.add_border_bottom %}
+        box-shadow: inset 0px -1px 0px 0px rgba(var(--header-top--text-color-rgb), .3);{% endif %}
+    }
+
+    #header-top-inner {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        padding-top: .5rem;
+        padding-bottom: .5rem;
+    }
+
+    #header-top-inner :is(.swither-wrapper) {
+        display: flex;
+        gap: .25rem;
+    }
+
+    #header-top-inner :is(.swither-wrapper) .disclosure__button {
+        background: inherit;
+        color: inherit;
+        line-height: 1;
+    }
+
+    #header-top-inner :is(.swither-wrapper) .disclosure__button .label {
+        display: none;
+    }
+
+    #header-top-inner :is(.swither-wrapper) .language-icon__wrapper {
+        --switcher-icon-width: 18px;
+    }
+
+    {{ sectionId }} .message {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    {{ sectionId }} .message :is(._link) {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    {{ sectionId }}:not(:has(.contacts)) .message {
+        justify-content: center;
+    }
+
+    {{ sectionId }} .message :is(.button) {
+        padding: .25rem;
+        text-transform: none;
+    }
+
+    #MainContent {{ sectionId }} {
+        z-index: 0;
+    }
+
+    #header-top-inner .message,
+    #header-top-inner .contacts {
+        flex: 1 1 0%;
+    }
+
+    #header-top-inner .contacts p {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        justify-content: right;
+    }
+
+    #header-top-inner .contacts p :is(.separator) {
+        background: currentColor;
+        border-radius: 999px;
+        display: inline-block;
+        height: 5px;
+        width: 5px;
+    }
+
+    #header-top-inner :only-child p {
+        justify-content: center;
+        text-align: center;
+    }
+
+    @media all and (max-width: 989px) {
+        {%- unless hasMessage -%}
+        {{ sectionId }} {
+            display: none;
+        }
+        {%- endunless %}
+        #header-top-inner .message {
+            text-align: center;
+        }
+        #header-top-inner .contacts {
+            display: none;
+        }
+    }
+{% endstyle %}
+
+<div
+    id="header-top-inner"
+    class="{% if section.settings.full_width %}full--width{% else %}header--dynamic-page-width{% endif %}"
+>
+    {% if hasMessage -%}
+        <div class="message">
+            {% if section.settings.link == blank %}
+                <p>{{- section.settings.message -}}</p>
+            {% else %}
+                {%- if section.settings.link_appearence == 'link' %}
+                    <a href="{{ section.settings.link }}" class="_link animate-arrow" target="_blank">
+                        <p>{{- section.settings.message -}}</p>
+                        {% render 'icons-solid', name: 'arrow-right', css_class: 'icon-arrow' %}
+                    </a>
+                {% else %}
+                    <p>{{- section.settings.message -}}</p>
+                    <a href="{{ section.settings.link }}" class="button button--primary" target="_blank">
+                        <span>{{ section.settings.button_label }}</span>
+                    </a>
+                {% endif -%}
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if section.settings.show_phone or section.settings.show_email -%}
+        <div class="contacts">
+            <p>
+                {% if section.settings.show_phone %}
+                    <a href="tel:{{ settings.contact_phone }}" title="{{ 'header_top.contact_phone.title' | t }}">
+                        {{- settings.contact_phone -}}
+                    </a>
+                    {% if settings.current_presets == 'garage' and settings.current_presets == 'metalware' %}
+                        {%- if section.settings.show_email %}<span class="separator"></span>{% endif -%}
+                    {% endif %}
+                {% endif %}
+                {% if section.settings.show_email %}
+                    <a href="mailto:{{ settings.contact_email }}" title="{{ 'header_top.contact_email.title' | t }}">
+                        {{- settings.contact_email -}}
+                    </a>
+                {% endif %}
+            </p>
+        </div>
+    {%- endif %}
+    {%- if settings.switcher_language_position == 'top_bar' or settings.switcher_country_position == 'top_bar' %}
+        <div class="swither-wrapper">
+    {% endif -%}
+    {%- if settings.switcher_language_position == 'top_bar' %}
+        {%- render 'switcher-language', formId: 'LanguageForm-header-top', css_class: '' -%}
+    {% endif -%}
+    {%- if settings.switcher_country_position == 'top_bar' %}
+        {%- render 'switcher-country', formId: 'CountryForm-header-top' -%}
+    {% endif -%}
+    {%- if settings.switcher_language_position == 'top_bar' or settings.switcher_country_position == 'top_bar' %}
+        </div>
+    {% endif -%}
+</div>
+
+{% schema %}
+{
+    "name": "t:sections.header_top.name",
+    "class": "header-top",
+    "settings": [
+        {
+            "type": "checkbox",
+            "id": "full_width",
+            "label": "t:sections.header_top.settings.full_width.label",
+            "default": false
+        },
+        {
+            "type": "inline_richtext",
+            "id": "message",
+            "label": "t:sections.header_top.settings.message.label",
+            "default": "Demo announcement message"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_phone",
+            "label": "t:sections.header_top.settings.show_phone.label",
+            "default": true
+        },
+        {
+            "type": "checkbox",
+            "id": "show_email",
+            "label": "t:sections.header_top.settings.show_email.label",
+            "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "add_border_bottom",
+          "default": true,
+          "label": "t:sections.header_top.settings.add_border_bottom.label"
+        },
+        {
+            "type": "url",
+            "id": "link",
+            "label": "t:sections.announcement-bar.blocks.announcement.settings.link.label"
+        },
+        {
+            "type": "text",
+            "id": "button_label",
+            "label": "t:sections.header_top.settings.button_label.label",
+            "default": "Find out more"
+        },
+        {
+            "type": "select",
+            "id": "link_appearence",
+            "label": "t:sections.header_top.settings.link_appearence.label",
+            "options": [
+                {
+                    "value": "link",
+                    "label": "t:sections.header_top.settings.link_appearence.options.link"
+                },
+                {
+                    "value": "button",
+                    "label": "t:sections.header_top.settings.link_appearence.options.button"
+                }
+            ],
+            "default": "button"
+        }
+    ],
+    "presets": [
+        {
+          "name": "t:sections.header_top.presets.name"
+        }
+    ]
+}
+{% endschema %}

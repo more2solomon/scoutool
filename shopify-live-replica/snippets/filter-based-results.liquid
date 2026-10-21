@@ -1,0 +1,187 @@
+{% comment %}
+    Render Block that provides Filter results based on the collections / attributes
+{% endcomment %}
+{%- assign is_hidden_on_mobile = settings.hide_filter_based_results_on_mobile -%}
+{%- unless settings.select_main_department.size == 0 %}
+    {% style %}
+        {% if is_hidden_on_mobile %}
+        @media all and (max-width: 500px) {
+        :where(filter-based-results) {display: none;}
+        }
+        {% endif %}
+        :is(.filter-based--results-wrapper) {
+            position: absolute;
+            top: 50%;
+            right: 5rem;
+            transform: translateY(-50%);
+            border-radius: 3px;
+            padding: .5rem 1.75rem 1.75rem;
+            background: rgba(255, 255, 255, .9);
+            min-width: 18rem;
+        }
+        :is(.filter-based--results-wrapper) .h3 {
+            font-size: 1rem;
+            text-align: center;
+            font-weight: bold;
+        }
+        :is(.filter-based--results-wrapper) select {
+            width: 100%;
+            line-height: 1.5;
+            padding: .5rem;
+        }
+        :is(.filter-based--results-wrapper) .select {
+            margin: .75rem 0;
+        }
+        @media(max-width: 760px) {
+            :is(.desktop-departments-select) {
+                display: none;
+            }
+        }
+        @media(min-width: 767px) {
+            :is(.mobile-departments-select) {
+                display: none;
+            }
+            .desktop-departments-select .wrapper-options {
+                position: absolute;
+            }
+            .departments-button {
+                width: 100%;
+                padding: .5rem 0;
+            }
+            .desktop-departments-select .wrapper-options .option {
+                opacity: 0;
+            }
+        }
+    {% endstyle %}
+
+    <filter-based-results>
+        <form id="FilterBasedOnOptions">
+            <div class="filter-based--results-wrapper">
+                <div class="heading h3">{{ settings.filter_based_results_title }}</div>
+                <div class="select mobile-departments-select">
+                    <label for="mobileDepartmentsList" class="visually-hidden">Mobile departments list</label>
+                    <select name="mobile-departments-list" id="mobileDepartmentsList">
+                        <option value="choose department" class="text-center">
+                            {{ 'general.filter_based_results.choose_department' | t }}
+                        </option>
+                        {% for d in settings.select_main_department %}
+                            <option value="{{ d.handle }}">
+                                {{ d.title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="desktop-departments-select">
+                    <button class="departments-button" id="desktopDepartmentsAction">
+                        {{ 'general.filter_based_results.choose_department' | t }}
+                    </button>
+                    <div class="wrapper-options" data-departments-size="{{ settings.select_main_department.size }}">
+                        {%- for d in settings.select_main_department %}
+                            <div
+                                class="option"
+                                data-value="{{ d.handle }}"
+                                data-title="{{ d.title }}"
+                                data-index="{{ forloop.index }}"
+                            >
+                                <div class="media">
+                                    {%- if d.featured_image %}
+                                        {%- render 'render-image', image: d.featured_image -%}
+                                    {% elsif d.products[0].featured_image %}
+                                        {%- render 'render-image', image: d.featured_image -%}
+                                    {% else %}
+
+                                    {% endif -%}
+                                </div>
+                                <div class="title">{{- d.title -}}</div>
+                            </div>
+                        {% endfor -%}
+                    </div>
+                </div>
+                <div class="select">
+                    <select name="" id="options-list" data-options-list="{{ settings.filter_option_name }}" disabled>
+                        <option value="choose option" class="text-center">
+                            {{ 'general.filter_based_results.choose_option' | t }}
+                        </option>
+                    </select>
+                </div>
+                <div class="action">
+                    {%- liquid
+                        assign button_class = 'button button--primary w-full'
+                        if settings.show_button_ring_on_hover
+                            assign button_class = button_class | append: ' border--outline'
+                        endif
+                        if settings.cut_button_corners
+                            assign button_class = button_class | append: ' border--with-cut-corners'
+                        endif
+                    -%}
+                    <button type="submit" class="{{ button_class }}" disabled>
+                        <span>{{ 'general.filter_based_results.button_label' | t }}</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </filter-based-results>
+
+    {{ 'component-filter-based-results.css' | asset_url | stylesheet_tag }}
+
+    {% comment %} Build json {% endcomment %}
+    {%- assign departments_json = '' -%}
+    {%- assign selected_options_name = settings.filter_option_name | split: ', ' | downcase -%}
+
+    {% comment %} loop selected collections {% endcomment %}
+    {%- for d in settings.select_main_department -%}
+        {%- assign option_map = '' -%}
+        {%- assign options_buffer = '' -%}
+
+        {% comment %} loop collection products {% endcomment %}
+        {%- for product in d.products -%}
+            {% comment %} loop products options {% endcomment %}
+            {%- for option in product.options_with_values -%}
+                {%- assign option_n = option.name | downcase -%}
+                {% if selected_options_name contains option_n %}
+                    {%- for value in option.values -%}
+                        {%- assign key = option.name | append: ':' | append: value -%}
+
+                        {% comment %} get only uniquie options {% endcomment %}
+                        {%- unless option_map contains key -%}
+                            {%- capture option_json -%}
+                        {
+                            "name": {{ option.name | json }},
+                            "value": {{ value | json }},
+                            "handle": {{ value | handleize | json }}
+                        }
+                    {%- endcapture -%}
+
+                            {% comment %} variable options_buffer let us build json values splitted with comma properly {% endcomment %}
+                            {%- if options_buffer != blank -%}
+                                {%- assign options_buffer = options_buffer | append: ',' -%}
+                            {%- endif -%}
+                            {%- assign options_buffer = options_buffer | append: option_json -%}
+                            {%- assign option_map = option_map | append: key | append: '|' -%}
+                        {%- endunless -%}
+                    {%- endfor -%}
+                {% endif -%}
+            {%- endfor -%}
+        {%- endfor -%}
+
+        {%- capture department_json -%}
+        "{{ d.handle }}": {
+            "url": {{ d.url | json }},
+            "options": [{{ options_buffer }}]
+        }
+    {%- endcapture -%}
+
+        {%- if departments_json != blank -%}
+            {%- assign departments_json = departments_json | append: ',' -%}
+        {%- endif -%}
+
+        {%- assign departments_json = departments_json | append: department_json -%}
+    {% endfor %}
+
+    <script type="application/json" id="department-filters-data">
+        {
+            {{ departments_json }}
+        }
+    </script>
+    <script src="{{ 'filter-based-results.js' | asset_url }}" defer="defer"></script>
+{% endunless -%}

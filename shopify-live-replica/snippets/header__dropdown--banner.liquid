@@ -1,0 +1,72 @@
+{% comment %}
+    Render header dropdown content - Banner
+
+    Accepts:
+     - block               {Object}
+     - blockOrder:         {Numb}
+     - parent_item_index:  {Numb}
+{% endcomment %}
+
+{%- liquid
+    assign block_class = 'dropdown-inner__banner'
+    assign selected_item_index = block.settings.item_menu_index
+    assign bg_color = block.settings.cover_background_gradient | default: block.settings.cover_background
+    assign is_bg_enabled = block.settings.add_cover
+    assign image_position = block.settings.image_position
+    assign media_condition = '(max-width: 989px)'
+    assign block_class = block_class | append: ' ' | append: image_position
+
+    if block.settings.show_outline
+        assign block_class = block_class | append: ' with--outline'
+    endif
+    unless block.settings.show_block_on_mobile
+        assign block_class = block_class | append: ' hidden-on-mobile'
+    endunless
+-%}
+{%- if parent_item_index == selected_item_index -%}
+    {%- unless block.settings.show_block_on_mobile %}
+        <style media="{{ media_condition }}">
+            .dropdown-inner__banner:is(.hidden-on-mobile) {
+              display: none !important;
+            }
+        </style>
+    {% endunless -%}
+    {% style %}
+        .dropdown-inner__banner,
+        .dropdown-inner__banner:is(.cover) :is(svg, img) {
+          border-radius: {{ block.settings.border_radius }}rem;
+        }
+        @media(max-width: 989px) {
+          .dropdown-inner__banner :is(svg, img, .media > div) {
+            border-radius: {{ block.settings.border_radius }}rem;
+          }
+        }
+        @media(min-width: 990px) {
+          .dropdown-inner__banner {
+            width: {{ block.settings.banner_width }}%;
+            margin: 0 auto;
+          }
+          .dropdown-inner__banner:is(.contain, .cover) :is(.multicolumn-card__image-wrapper) {
+            width: 100%;
+          }
+          .dropdown-inner__banner:is(.contain) :is(svg, img, .media > div) {
+            border-top-right-radius: {{ block.settings.border_radius }}rem;
+            border-bottom-right-radius: {{ block.settings.border_radius }}rem;
+          }
+        }
+    {% endstyle %}
+    {%- capture innerHtml %}
+    {%- render 'multicolumn-content' block: block, image_ratio: 1, image_width_divider: 1 -%}
+  {% endcapture -%}
+
+    <div
+        class="{{ block_class }}"
+        data-block-index="{{ blockOrder }}"
+        {% if is_bg_enabled %}
+            style="background: {{ bg_color }};"
+        {% endif %}
+    >
+        {{- innerHtml -}}
+    </div>
+    {{ 'component-dropdown-menu__banner.css' | asset_url | stylesheet_tag }}
+{%- endif -%}

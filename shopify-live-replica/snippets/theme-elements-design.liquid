@@ -1,0 +1,181 @@
+{% comment -%}
+    Critical styles for most common elements when uses Elements Design
+    Elements border radius
+{% endcomment -%}
+{% style %}
+    [type=button],
+    [type=reset],
+    [type=submit],
+    .button,
+    button,
+    .shopify-payment-button__button [role=button],
+    .shopify-challenge__button,
+    .cart__dynamic-checkout-buttons div[role=button],
+    .page-scroll-up,
+    .product-form__buttons button,
+    header .cart-sidebar__footer-actions > * {
+      border-radius: {% if settings.use_elements_border_radius %}{{ settings.button_border_radius_value }}rem{% else %}2px{% endif %};
+      -webkit-border-radius: {% if settings.use_elements_border_radius %}{{ settings.button_border_radius_value }}rem{% else %}2px{% endif %};
+    }
+
+    [type=text],
+    [type=password],
+    [type=url],
+    [type=tel],
+    [type=search],
+    .search__input,
+    [type=datetime],
+    [type=email],
+    [type=date],
+    textarea,
+    form select,
+    .form__message,
+    .select__select,
+    .header__search .field,
+    .pagination__item,
+    .our-collections.slider li > a .item-title,
+    .facet-checkbox:not(.facet-checkbox--disabled) .facet__swatch-option[type=radio] + label::before,
+    .facet__swatch-option + label,
+    .facet__swatch-option + label > img,
+    .compare-icon > svg,
+    .compare-checkmark > svg,
+    quick-view svg,
+    quick-view > button,
+    .grid-item .compare-add-button,
+    .jdgm-write-rev-link.jdgm-write-rev-link,
+    .menu-drawer .localization-form__select,
+    bought-together .item-checkbox svg {
+      border-radius: {% if settings.use_elements_border_radius %}{{ settings.button_border_radius_value }}rem {% else %}2px{% endif %};
+      -webkit-border-radius: {% if settings.use_elements_border_radius %}{{ settings.button_border_radius_value }}rem {% else %}2px{% endif %};
+    }
+
+    .cart__dynamic-checkout-buttons div[role=button] {
+      height: 44px !important;
+    }
+
+    .header__search .search__button {
+      border-radius: {% if settings.use_elements_border_radius %}{{ settings.button_border_radius_value }}rem{% else %}0px 2px 2px 0px{% endif %};
+      -webkit-border-radius: {% if settings.use_elements_border_radius %}{{ settings.button_border_radius_value }}rem{% else %}0px 2px 2px 0px{% endif %};
+    }
+
+    .header__search .search__button:not(.disclosure__button) {
+      padding: {% if settings.use_elements_border_radius %}0.45{% else %}.75{% endif %}rem;
+    }
+
+    footer .newsletter-form__field-wrapper button.button,
+    .footer-contacts__newsletter button.button {
+      padding: {% if settings.use_elements_border_radius %}0.35{% else %}.5{% endif %}rem;
+    }
+
+    footer .newsletter-form__field-wrapper button.button,
+    .footer-contacts__newsletter button.button,
+    .field__button {
+      position: absolute;{% if settings.use_elements_border_radius %}
+      top: .25rem;
+      bottom: .25rem;
+      right: .25rem;{% else %}
+      top: 0;
+      bottom: 0;
+      right: -1px;{% endif %}
+    }
+
+    .swatch-attribute-options input[type=radio] + label,
+    .swatch-option[type=radio]:checked + label:before,
+    .swatch-option[type=radio] + label:hover:before,
+    variant-radios label,
+    variant-radios label :is(.unavailable-swatch__overlay) {
+      border-radius: {{ settings.swatches_border_radius_value }}rem;
+      -webkit-border-radius: {{ settings.swatches_border_radius_value }}rem;
+    }
+    {% if settings.use_elements_border_radius %}
+    .our-collections.slider li, .our-collections.slider li > a {
+      border-radius: {{ settings.item_card_border_radius_value }}rem;
+      -webkit-border-radius: {{ settings.item_card_border_radius_value }}rem;
+    }
+
+    .compare-link__title {
+        border-radius: 6px 6px 0 0;
+    }{% endif %}
+
+    /* Cut elements border */
+    {% if settings.cut_elements_corners %}
+    :root {
+      --element-edge-size: 1rem;
+    }
+    :is(.magazine .title-wrapper),
+    :is(.magazine .title-wraper__image-cover),
+    :is(.our-collections li),
+    :is(.collection__block--featured > .title-wrapper) {
+      clip-path: polygon(
+          0 0,
+          0 0,
+          100% 0,
+          100% calc(100% - var(--element-edge-size)),
+          calc(100% - var(--element-edge-size)) 100%,
+          0 100%
+      );
+    }
+    :is(.section-compare-products),
+    :is(.featured-product-section),
+    :is(.countdown__timer) {
+      clip-path: polygon(
+          0 var(--element-edge-size),
+          var(--element-edge-size) 0,
+          100% 0,
+          100% calc(100% - var(--element-edge-size)),
+          calc(100% - var(--element-edge-size)) 100%,
+          0 100%
+      );
+    }
+
+    :is(.modern .content__desc),
+    :is(.frequently-asked__wrapper) {
+      clip-path: polygon(
+          0 var(--element-edge-size),
+          var(--element-edge-size) 0,
+          100% 0,
+          100% 100%,
+          100% 100%,
+          0 100%
+      );
+    }
+    {% endif %}{% if settings.current_presets == 'metalware' %}
+    @media(min-width: 1260px) {
+      :is(.with--metalware-element-design) {
+        position: relative;
+        padding: 0 .5rem;
+      }
+      :is(.with--metalware-element-design)::after,
+      :is(.with--metalware-element-design)::before {
+        content: '+';
+        display: block;
+        position: absolute;
+        font-size: 1.5rem;
+        top: calc(1.25rem + 2px);
+      }
+      :is(.featured--product .with--metalware-element-design)::after,
+      :is(.featured--product .with--metalware-element-design)::before {
+        top: 0;
+      }
+      :is(.with--metalware-element-design)::before {
+        left: -1rem;
+      }
+      :is(.with--metalware-element-design)::after {
+        right: -1rem;
+      }
+
+      :is(.featured--product.with--metalware-element-design)::after,
+      :is(.featured--product.with--metalware-element-design)::before {
+        top: unset;
+        bottom: 0;
+      }
+
+      :is(.featured--product.with--metalware-element-design)::before {
+        left: 0;
+      }
+
+      :is(.featured--product.with--metalware-element-design)::after {
+        right: 0;
+      }
+    }{% endif %}
+{% endstyle %}

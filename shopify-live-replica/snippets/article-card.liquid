@@ -1,0 +1,218 @@
+{% comment %}
+    Renders an article card for a given blog with settings to either show the image or not.
+
+    Accepts:
+    - blog: {Object} Blog object
+    - article: {Object} Article object
+    - show_image: {String} The setting either show the article image or not. If it's not included it will show the image by default
+    - use_filter: {Boolean}
+    - forloop_index: {Number)
+    - show_link_read_more: {Boolean}
+    - tag_bg_color: RGB Color
+    - content_position: {String}
+    - use_outline: {Bool}
+    - tags_limit: {Number}
+    - item_link_appearence: {String}
+    - button_label: {String}
+    Usage:
+    {% render 'article-card' blog: blog, article: article, show_image: section.settings.show_image %}
+{% endcomment %}
+{%- liquid
+    assign count = 0
+    if forloop_index >= tag_bg_color.size
+        assign tagBgColor = tag_bg_color[count]
+        assign count = count | plus: 1
+        if count == tag_bg_color.size
+            assign count = 0
+        endif
+    else
+        assign tagBgColor = tag_bg_color[forloop_index]
+    endif
+
+    assign button_class = ''
+    case item_link_appearence
+        when 'button'
+            assign button_class = button_class | append: ' button button--primary animate-arrow'
+        when 'link'
+            assign button_class = button_class | append: ' link'
+    endcase
+
+    if settings.show_button_ring_on_hover
+        assign button_class = button_class | append: ' border--outline'
+    endif
+    if settings.cut_button_corners
+        assign button_class = button_class | append: ' border--with-cut-corners'
+    endif
+
+    if button_label == blank
+        assign button_class = button_class | append: ' btn-with-no-label'
+    endif
+-%}
+
+{% style %}
+    .article-card__image-wrapper:has(a.button) {
+        position: relative;
+    }
+
+    .article-card__image-wrapper:has(a.button) a {
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+    }
+{% endstyle %}
+
+{% capture card_html %}
+    {%- if article.tags != blank and use_filter -%}
+        <ul class="article_tags tags">
+            {% for tag in article.tags limit: tags_limit %}
+                <li class="item tag" style="background-color:{{ tagBgColor }}">
+                    {{ tag }}
+                </li>
+            {% endfor %}
+        </ul>
+    {%- endif -%}
+    <div class="article-card__image-wrapper">
+        {%- if show_image -%}
+            {%- if article.image -%}
+                {%- liquid
+                    assign media_styles = 'padding-bottom:'
+                    assign padding = 100 | divided_by: article.image.aspect_ratio
+                    assign media_styles = media_styles | append: padding
+                    assign media_styles = media_styles | append: '%;'
+
+                    assign media_class = 'article-card__image media'
+                    if request.design_mode == false and settings.enable_preload_images
+                        assign media_class = media_class | append: ' media--blur-image'
+                    endif
+                -%}
+                {%- if settings.enable_preload_images -%}{%- render 'loading-overlay' -%}{%- endif -%}
+                <div class="{{ media_class }}" style="{{ media_styles }}">
+                    <img
+                        srcset="
+                            {%- if article.image.src.width >= 533 -%}{{ article.image.src | image_url: width: 533 }} 533w,{%- endif -%}
+                            {%- if article.image.src.width >= 720 -%}{{ article.image.src | image_url: width: 720 }} 720w,{%- endif -%}
+                            {%- if article.image.src.width >= 940 -%}{{ article.image.src | image_url: width: 940 }} 940w,{%- endif -%}
+                            {%- if article.image.src.width >= 1066 -%}{{ article.image.src | image_url: width: 1066 }} 1066w{%- endif -%}
+                        "
+                        src="{{ article.image.src | image_url }}"
+                        sizes="(min-width: 1100px) 535px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
+                        width="{{ article.image.width }}"
+                        height="{{ article.image.height }}"
+                        alt="{{ article.image.src.alt | escape }}"
+                        loading="lazy"
+                    >
+                </div>
+            {%- else -%}
+                {{ 'image' | placeholder_svg_tag: 'placeholder-svg placeholder' }}
+            {%- endif -%}
+        {%- endif -%}
+        {% if item_link_appearence == "button"  %}
+          <a href="{{ article.url }}" class="{{ button_class }}" title="{{ button_label }}" aria-label="{{ button_label | default: "Explore" }}">
+              {% unless button_label == blank %}
+                  <span>{{ button_label }}</span>
+              {% endunless %}
+              {% if button_label == blank %}
+                {% render 'icons-solid', name: 'arrow-right', css_class: 'icon-arrow' %}
+              {% endif %}
+          </a>
+      {% endif %}
+    </div>
+
+    <div class="article-card__info {{ content_position | prepend: '_' }}">
+        {%- for block in section.blocks -%}
+            {%- case block.type -%}
+                {%- when 'title' -%}
+                    <header class="article-card__header" {{ block.shopify_attributes }}>
+                        {%- if block.settings.show_date -%}
+                            <div class="date__wrapper">
+                                {% if block.settings.show_icon_calendar %}
+                                    {% render 'icons-outline', name: 'calendar', css_class: 'icon w-5 h-5' %}
+                                {% endif %}
+                                <span class="article-card__published-at{% if block.settings.show_text_uppercase %} uppercase{% endif %}">
+                                    {%- liquid
+                                        assign currentFormat = ''
+                                        if block.settings.date_format == 'day_month_year'
+                                            assign currentFormat = '%d %B %Y'
+                                        endif
+                                        if block.settings.date_format == 'year_month_day'
+                                            assign currentFormat = '%Y-%m-%d'
+                                        endif
+                                    -%}
+                                    {% if block.settings.date_format == 'month_year' %}
+                                        {{- article.published_at | time_tag: format: 'month_year' -}}
+                                    {% else %}
+                                        {{- article.published_at | time_tag: currentFormat -}}
+                                    {% endif %}
+                                </span>
+                            </div>
+                        {%- endif -%}
+                        {%- if block.settings.show_author -%}
+                            <span class="article-card__author{% if block.settings.show_text_uppercase %} uppercase{% endif %}">{{ article.author -}}</span>
+                        {%- endif -%}
+                        {% if block.settings.show_article_title %}
+                            <span
+                                class="article-card__title{% if block.settings.show_text_uppercase %} uppercase{% endif %}"
+                                id="Article-{{ article.id }}"
+                                style="font-size: {{ block.settings.title_size | append:'px'}};"
+                            >
+                                {{ article.title | escape }}
+                            </span>
+                        {% endif %}
+                    </header>
+
+                {%- when 'summary' -%}
+                    {%- if article.excerpt.size > 0 or article.content.size > 0 -%}
+                        <p
+                            class="article-card__excerpt{% if block.settings.show_text_uppercase %} uppercase{% endif %}"
+                            style="font-size:{{ block.settings.excerpt_font_size }}px"
+                            {{ block.shopify_attributes }}
+                        >
+                            {% assign limit = block.settings.truncate_words | plus: 0 %}
+                            {% unless limit == 0 %}
+                                {%- if article.excerpt.size > 0 -%}
+                                    {{ article.excerpt | strip_html | truncatewords: limit }}
+                                {%- else -%}
+                                    {{ article.content | strip_html | truncatewords: limit }}
+                                {%- endif -%}
+                            {% endunless %}
+                        </p>
+                    {%- endif -%}
+
+                {%- when 'link' -%}
+                    <div
+                        class="article-card__footer {% if block.settings.show_link_read_more == false %}with__no-link{% endif %}"
+                        {{ block.shopify_attributes }}
+                    >
+                        {%- if block.settings.show_link_read_more -%}
+                            <span
+                                class="link article-card__link"
+                                aria-label="{{ 'blogs.article.read_more_title' | t: title: article.title | escape }}"
+                            >
+                                {{ 'blogs.article.read_more' | t }}
+                            </span>
+                        {%- endif -%}
+                        {%- if article.comments_count > 0 and blog.comments_enabled? -%}
+                            <span class="article-comments{% if block.settings.show_text_uppercase %} uppercase{% endif %}">
+                                {{- 'blogs.article.comments' | t: count: article.comments_count -}}
+                            </span>
+                        {%- endif -%}
+                    </div>
+            {%- endcase -%}
+        {%- endfor -%}
+    </div>
+{% endcapture %}
+
+<article
+    class="article-card{% if show_image == false %} article-card--no-image{% endif %}{% if use_outline %} _with--outline{% endif %} reveal-item"
+    aria-labelledby="{{ article.title }}"
+    data-article-id="{{ article.id }}"
+    data-article-tag="{{ article.tags | join: ' ' | downcase }}"
+>
+    {% if item_link_appearence == 'link' %}
+        <a href="{{ article.url }}" class="article-content">
+            {{- card_html -}}
+        </a>
+    {% else %}
+        {{- card_html -}}
+    {% endif %}
+</article>

@@ -1,0 +1,141 @@
+<div class="loading-overlay hidden">
+    <div class="loading-overlay__spinner{% if settings.loader_icon == 'spinner_default' %} spinner_default{% endif %}">
+        {%- if settings.loader_icon == 'spinner_default' -%}
+            <svg
+                aria-hidden="true"
+                focusable="false"
+                role="presentation"
+                class="spinner"
+                viewBox="0 0 66 66"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+            </svg>
+
+        {%- elsif settings.loader_icon == 'spinner_balls' -%}
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 100 100"
+                class="spinner_balls"
+                preserveAspectRatio="xMidYMid"
+            >
+                <g>
+                  <g transform="translate(80,50)">
+                    <g transform="rotate(0)">
+                      <circle class="spinner-ball" data-index="0" r="6" cy="0" cx="0"></circle>
+                    </g>
+                  </g>
+                  <g transform="translate(71.21320343559643,71.21320343559643)">
+                    <g transform="rotate(45)">
+                      <circle class="spinner-ball" data-index="1" r="6" cy="0" cx="0"></circle>
+                    </g>
+                  </g>
+                  <g transform="translate(50,80)">
+                    <g transform="rotate(90)">
+                      <circle class="spinner-ball" data-index="2" r="6" cy="0" cx="0"></circle>
+                    </g>
+                  </g>
+                  <g transform="translate(28.786796564403577,71.21320343559643)">
+                    <g transform="rotate(135)">
+                      <circle class="spinner-ball" data-index="3" r="6" cy="0" cx="0"></circle>
+                    </g>
+                  </g>
+                  <g transform="translate(20,50.00000000000001)">
+                    <g transform="rotate(180)">
+                      <circle class="spinner-ball" data-index="4" r="6" cy="0" cx="0"></circle>
+                    </g>
+                  </g>
+                  <g transform="translate(28.78679656440357,28.786796564403577)">
+                    <g transform="rotate(225)">
+                      <circle class="spinner-ball" data-index="5" r="6" cy="0" cx="0"></circle>
+                    </g>
+                  </g>
+                  <g transform="translate(49.99999999999999,20)">
+                    <g transform="rotate(270)">
+                      <circle class="spinner-ball" data-index="6" r="6" cy="0" cx="0"></circle>
+                    </g>
+                  </g>
+                  <g transform="translate(71.21320343559643,28.78679656440357)">
+                    <g transform="rotate(315)">
+                      <circle class="spinner-ball" data-index="7" r="6" cy="0" cx="0"></circle>
+                    </g>
+                  </g>
+                </g>
+            </svg>
+
+        {%- elsif settings.loader_icon == 'dual_ball' -%}
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="xMidYMid"
+                class="dual-ball-loader"
+            >
+                <g>
+                  <circle class="ball ball-1" r="15" fill="#E13124" cy="50" cx="30"></circle>
+                  <circle class="ball ball-2" r="15" fill="currentColor" cy="50" cx="60"></circle>
+                  <circle class="ball ball-3" r="15" fill="#E13124" cy="50" cx="30"></circle>
+                </g>
+            </svg>
+
+        {%- elsif settings.loader_icon == 'pulse' -%}
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="xMidYMid"
+                class="loading-bars"
+            >
+                <g>
+                  <rect class="bar bar-1" fill="currentColor" height="50" width="8" y="30" x="15.5"></rect>
+                  <rect class="bar bar-2" fill="currentColor" height="50" width="8" y="30" x="38.5"></rect>
+                  <rect class="bar bar-3" fill="currentColor" height="50" width="8" y="30" x="62.5"></rect>
+                  <rect class="bar bar-4" fill="currentColor" height="50" width="8" y="30" x="85.5"></rect>
+                </g>
+            </svg>
+
+        {%- elsif settings.loader_icon == 'double_ring' -%}
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 100 100"
+                class="rotating-rings"
+                preserveAspectRatio="xMidYMid"
+            >
+                <g>
+                  <!-- Outer Ring -->
+                  <circle class="ring outer-ring" stroke-linecap="round" fill="none" stroke-dasharray="50.27 50.27"
+                      stroke="#E13124" stroke-width="8" r="32" cy="50" cx="50">
+                  </circle>
+                  <!-- Inner Ring -->
+                  <circle class="ring inner-ring" stroke-linecap="round" fill="none" stroke-dasharray="36.13 36.13"
+                      stroke-dashoffset="36.13" stroke="currentColor" stroke-width="8" r="23" cy="50"cx="50">
+                  </circle>
+                </g>
+            </svg>
+
+        {%- elsif settings.loader_icon == 'blinking_grid' -%}
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 100 100"
+                class="blinking-grid"
+                preserveAspectRatio="xMidYMid"
+            >
+                <g>
+                  <rect class="square delay-0" x="19" y="19" width="20" height="20"></rect>
+                  <rect class="square delay-1" x="40" y="19" width="20" height="20"></rect>
+                  <rect class="square delay-2" x="61" y="19" width="20" height="20"></rect>
+                  <rect class="square delay-7" x="19" y="40" width="20" height="20"></rect>
+                  <rect class="square delay-3" x="61" y="40" width="20" height="20"></rect>
+                  <rect class="square delay-6" x="19" y="61" width="20" height="20"></rect>
+                  <rect class="square delay-5" x="40" y="61" width="20" height="20"></rect>
+                  <rect class="square delay-4" x="61" y="61" width="20" height="20"></rect>
+                </g>
+            </svg>
+
+        {% elsif settings.loader_icon == 'bouncing_squares' %}
+            <svg class="bouncing-squares" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+                <rect fill="#E13124" width="50" height="50" x="25" y="50"></rect>
+                <rect fill="currentColor" width="50" height="50" x="85" y="50"></rect>
+                <rect fill="#E13124" width="50" height="50" x="145" y="50"></rect>
+            </svg>
+        {%- endif -%}
+    </div>
+</div>

@@ -1,0 +1,138 @@
+{%- comment -%}
+    Render Recommendations & Complementary products section
+
+    Accepts:
+      - product:              {Object}
+      - product_status:       {Boolean}
+      - handle:               {Boolean}
+      - show_articles:        {Boolean}
+      - show_pages:           {Boolean}
+      - use_search_discovery: {Boolean}
+      - intent:               {String}
+{%- endcomment -%}
+
+{% liquid
+    assign sectionId = section.id | prepend: '#shopify-section-'
+    assign ul_class = 'products'
+    assign swipeOnMobile = section.settings.swipe_on_mobile
+
+    if swipeOnMobile
+        assign ul_class = ul_class | append: ' slider slider--tablet slider--no-controls slider--mobile grid--peek'
+    endif
+
+    if use_search_discovery
+        assign products_list = recommendations.products
+    endif
+%}
+
+{%- if product_status and handle %}
+    {% style %}
+        {{ sectionId }} > div {
+          border-top: 1px solid var(--color-foreground-10);
+          padding-top: 1rem;
+        }
+    {% endstyle %}
+
+    <div
+        class="{% if intent == 'related' %}product-recommendations{% else %}product-complementary{% endif %} dynamic-page-width{% if section.settings.animation_on_reveal %} use_reveal_animation{% endif %}"
+        data-size="{{  products_list.size }}"
+        data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.products_per_page }}&intent={{ intent }}"
+    >
+        {%- if section.settings.heading != blank -%}
+            <{{ section.settings.heading_size }} class="heading{% if section.settings.animation_on_reveal %} reveal-item{% endif %}{% if settings.show_uppercase_heading %} uppercase{% endif %}">
+                {% render 'helper__decorate-heading', heading: section.settings.heading %}
+            </{{ section.settings.heading_size }}>
+        {%- endif -%}
+
+        {%- if swipeOnMobile %}<slider-component data-loop="false">{% endif -%}
+        {% assign badge_size = section.settings.badge_size | default: 'sm' %}
+        {% assign swatch_option_color = section.settings.show_swatch_options_color | default: false %}
+
+        {% render 'grid-items',
+            ul_class: ul_class,
+            has_side_column: false,
+            items: products_list,
+            columns: section.settings.products_per_page,
+            badge_size: badge_size,
+            image_ratio: section.settings.image_ratio,
+            product_secondary_image: settings.product_card_secondary_image,
+            product_to_cart_button: section.settings.show_to_cart_button,
+            swatch_option_color: swatch_option_color,
+            product_show_vendor: settings.product_card_vendor,
+            compare_products: settings.compare_products,
+            quick_view: settings.enable_quick_view,
+            slideshow_ui_type: section.settings.slideshow_ui_type
+        %}
+        {%- if swipeOnMobile -%}
+            {% render 'slider-buttons', items: products_list, section_settings: section.settings %}
+        {%- endif -%}
+        {%- if swipeOnMobile %}</slider-component>{% endif -%}
+    </div>
+{%- endif -%}
+
+<script type="text/javascript" defer>
+    async function handleIntersection (entries, observer) {
+      if (!entries[0].isIntersecting) return;
+
+      entries.forEach((entry) => {
+          let url,
+              section = entry.target;
+
+          observer.unobserve(section);
+
+          url = section.dataset.url;
+          fetch(url)
+              .then(response => response.text())
+              .then(text => {
+                let html = document.createElement('div');
+                html.innerHTML = text;
+
+                const sectionToRender = html.querySelector('section');
+
+                if (sectionToRender && sectionToRender.innerHTML.trim().length) {
+                  section.innerHTML = sectionToRender.innerHTML;
+                  section.dispatchEvent(new CustomEvent('renderProductGrid', { bubbles: true }));
+                }
+
+                const childs = section.querySelector('ul').children;
+
+                if (childs.length == 0) section.setAttribute('hidden', true);
+                else {
+                    section.removeAttribute('hidden');
+                    // on-scroll reveal animation
+                    if (section.classList.contains('use_reveal_animation')) {
+                      const listArr = [];
+                      section.querySelector('ul').classList.add('reveal-slide-in');
+                      listArr.push(section.querySelector('ul'));
+
+                      setTimeout( async () => {
+                        if (section.querySelector('ul').classList.contains('reveal-slide-in') && listArr.length) {
+                          typeof onReveal === 'function' && await onReveal?.(listArr);
+                          typeof updateItemZIndex === 'function' && await updateItemZIndex?.(listArr);
+                        }
+                      }, 250);
+                    }
+                    //reinit preload images
+                    section.querySelectorAll(".media--blur-image").length > 0 && _preloadImg?.(section.querySelectorAll(".media--blur-image"));
+                }
+              })
+              .catch(e => {
+                console.error(e);
+          });
+      });
+    };
+
+    function init() {
+      const productComplementarySection = document.querySelector('.product-complementary');
+      const productRecommendationsSection = document.querySelector('.product-recommendations');
+      const observer = new IntersectionObserver(handleIntersection, {rootMargin: '0px 0px 200px 0px'});
+
+      if(productComplementarySection)
+        observer.observe(productComplementarySection);
+
+      if(productRecommendationsSection)
+        observer.observe(productRecommendationsSection);
+    }
+
+    init();
+</script>

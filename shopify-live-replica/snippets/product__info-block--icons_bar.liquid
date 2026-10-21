@@ -1,0 +1,64 @@
+{%- comment -%}
+    Render Icons bar block
+
+    Accepts:
+        - block:      {Object}
+        - blockOrder: {Number}
+        - sectionId:  {String}
+{%- endcomment -%}
+{% style %}
+    :is(.product__info-block--icons-bar ul) {
+        display: flex;
+        justify-content: flex-start;
+        gap: 1.5rem;
+    }
+    :is(.product__info-block--icons-bar ul > li) {
+        display: flex;
+        gap: .5rem;
+        align-items: center;
+    }
+    :is(.product__info-block--icons-bar ul > li.text-position__left) {
+        flex-direction: row-reverse;
+    }
+    :is(.product__info-block--icons-bar ul > li.text-position__top) {
+        flex-direction: column-reverse;
+    }
+    :is(.product__info-block--icons-bar ul > li.text-position__bottom) {
+        flex-direction: column;
+    }
+    .product__info-block--icons-bar :is(svg, img) {
+        width: 2.5rem;
+        height: 2.5rem;
+        stroke-width: 1;
+        transition: stroke-width .35s ease-out;
+    }
+    .product__info-block--icons-bar li:hover :is(svg, img) {
+        stroke-width: 2;
+    }
+    .product__info-block--icons-bar :is(.text-position__top, .text-position__bottom ) .bar-content {
+        text-align: center;
+    }
+{% endstyle %}
+<div
+    class="product__info-block product__info-block--icons-bar reveal-item"
+    style="order: {{ blockOrder }}"
+    {{ block.shopify_attributes }}
+>
+    <ul class="block__icons-bar--container{% if block.settings.swipe_on_mobile %} slider slider--mobile{% endif %}">
+        {%- for i in (1..3) %}
+            {%- liquid
+                assign icon = 'icon_' | append: i
+                assign custom_icon = 'custom_icon_' | append: i
+                assign text = 'text_' | append: i
+            -%}
+            <li class="item{% if block.settings.swipe_on_mobile %} slider__slide{% endif %} text-position__{{ block.settings.text_position}} reveal-item">
+                {%- if block.settings[custom_icon] != blank %}
+                    {% render 'custom_icons-outline', image: block.settings[custom_icon] %}
+                {% else %}
+                    {% render 'icons-outline', name: block.settings[icon] %}
+                {% endif -%}
+                <div class="bar-content">{{ block.settings[text] }}</div>
+            </li>
+        {% endfor -%}
+    </ul>
+</div>

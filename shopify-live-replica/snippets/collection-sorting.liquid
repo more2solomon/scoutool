@@ -1,0 +1,48 @@
+{%- comment -%}
+    Render collection sorting
+
+    Accepts:
+    - collection: {Object}
+{%- endcomment -%}
+{%- liquid
+    assign form = form | default: false
+    assign sort_by = collection.sort_by | default: collection.default_sort_by
+-%}
+
+<div class="collection-filters__item sorting">
+    <div class="collection-filters__field">
+        <label class="collection-filters__label no-js-hidden" for="SortBy-{{ sort_by }}">
+            {{- 'sections.collection_template.sort_by_label' | t -}}
+        </label>
+        <div class="select">
+            <select
+                name="sort_by"
+                class="select__select collection-filters__sort"
+                id="SortBy-{{ sort_by }}"
+                aria-describedby="a11y-refresh-page-message"
+                {% unless form == false %}
+                    form="{{ form }}"
+                {% endunless %}
+            >
+                {%- for option in collection.sort_options -%}
+                    <option
+                        value="{{ option.value | escape }}"
+                        {% if option.value == sort_by %}
+                            selected="selected"
+                        {% endif %}
+                    >
+                        {{ option.name | escape }}
+                    </option>
+                {%- endfor -%}
+            </select>
+            <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+                <use href="#icon-caret" />
+            </svg>
+        </div>
+        <noscript>
+            <button type="submit" class="button button--small">
+                {{ 'sections.collection_template.sort_button' | t }}
+            </button>
+        </noscript>
+    </div>
+</div>

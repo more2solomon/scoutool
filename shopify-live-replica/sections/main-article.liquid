@@ -1,0 +1,337 @@
+{%- liquid
+    assign count = 0
+    assign limitReadMoreArticles = 2 | plus: 0
+    assign blogContent = section.blocks | where: 'type', 'content' | first
+    assign blogReadMore = section.blocks | where: 'type', 'title' | first
+    assign customerComments = section.blocks | where: 'type', 'comments' | first
+
+    assign TagFt = section.settings.tag_1_background_cover | split: ', '
+    assign TagSd = section.settings.tag_2_background_cover | split: ', '
+    assign TagTd = section.settings.tag_3_background_cover | split: ', '
+    assign TagFh = section.settings.tag_4_background_cover | split: ', '
+
+    assign articleTagsBgColors = TagFt | concat: TagSd | concat: TagTd | concat: TagFh
+
+    assign useRevealAnimation = false
+    if section.settings.animation_on_reveal and settings.animation_on_reveal
+        assign useRevealAnimation = true
+    endif
+
+    assign title = section.blocks | where: 'type', 'title' | first
+    assign item_link_appearence = title.settings.item_link_appearence
+
+    assign button_label = title.settings.button_label
+-%}
+
+<article
+    class="article-template{% if useRevealAnimation == true %} reveal-slide-in{% endif -%}"
+    itemscope
+    itemtype="http://schema.org/BlogPosting"
+>
+    {%- if blogContent.settings != nill -%}
+        {%- for block in section.blocks -%}
+            {% assign currentArticleId = article.id %}
+            {%- capture article_content_html -%}
+      <div {{ blogContent.shopify_attributes }}>
+        <div class="article-template__hero-container{% if section.settings.image_content_width %} narrow-page-width{% endif %}"
+        {% if section.settings.use_top_spacing %}style="margin-top: 2rem;"{% endif %}
+        >
+        {%- if article.image -%}
+          {%- liquid
+            assign media_class = 'article-template__hero media'
+            if request.design_mode == false and settings.enable_preload_images
+              assign media_class = media_class | append: ' media--blur-image'
+            endif
+          -%}
+          {%- if settings.enable_preload_images -%}{%- render 'loading-overlay' -%}{%- endif -%}
+          <div class="{{ media_class }}" itemprop="image"
+            style="padding-bottom: {{ 1 | divided_by: article.image.aspect_ratio | times: 100 }}%;"
+          >
+            <img
+              srcset="
+                {% if article.image.width >= 375 %}{{ article.image | image_url: width: 375 }} 375w,{% endif %}
+                {% if article.image.width >= 425 %}{{ article.image | image_url: width: 425 }} 425w,{% endif %}
+                {% if article.image.width >= 768 %}{{ article.image | image_url: width: 768 }} 768w,{% endif %}
+                {% if article.image.width >= 1100 %}{{ article.image | image_url: width: 1100 }} 1100w,{% endif %}
+                {% if article.image.width >= 1500 %}{{ article.image | image_url: width: article.image.width }} {{ article.image.width }}w,{% endif %}
+                {{ article.image | image_url }} {{ article.image.width }}w
+              "
+              sizes="(max-width: 768px) 30rem, (max-width: 1279px) 28rem, 100vw"
+              src="{{ article.image | image_url }}"
+              loading="eager"
+              fetchpriority="high"
+              width="{{ article.image.width }}"
+              height="{{ article.image.height }}"
+              alt="{{ article.image.alt | escape }}"
+            >
+          </div>
+        {%- endif -%}
+        </div>
+        <div class="dynamic-page-width article-content__wrapper{% if article.image == null %} no-image{% endif %}">
+          <div class="narrow-page-width">
+            <header>
+              <div class="date__wrapper reveal-item">
+                {% render 'icons-outline' name: 'calendar' css_class: 'icon w-5 h-5' %}
+                <span class="article-template__published_at reveal-item" itemprop="dateCreated pubdate datePublished">{{ article.published_at | time_tag: format: 'month_year' }}</span>
+              </div>
+              <h1 class="article-template__title reveal-item{% if settings.show_uppercase_heading %} uppercase{% endif %}" itemprop="headline">{{ article.title | escape }}</h1>
+              {%- if blogContent.settings.social_sharing -%}
+              <div class="article-template__social-sharing reveal-item">
+                <span>{{ 'blogs.article.social_sharing' | t }}</span>
+                {% render 'social-sharing', share_title: article.title, share_permalink: article.url, share_image: article.image %}
+              </div>
+              {%- endif -%}
+              {%- if block.settings.blog_show_author -%}
+                <span class="article-template__author reveal-item" itemprop="author" itemscope itemtype="http://schema.org/Person">
+                  <span itemprop="name">{{ article.author }}</span>
+                </span>
+              {%- endif -%}
+            </header>
+
+            <div class="article-template__content rte" itemprop="articleBody">
+            {%- if article.content != blank -%}
+              <div class="article__content">
+                {{ article.content }}
+              </div>
+            {%- endif -%}
+
+            {%- if article.tags.size > 0 -%}
+              <ul class="article_tags reveal-item">
+                <li>{{ 'blogs.article.tags' | t }}</li>
+              {% for tag in article.tags %}
+                <li class="tag">{{ tag }}</li>
+              {% endfor %}
+              </ul>
+            {%- endif -%}
+            </div>
+          </div>
+        </div>
+      </div>
+      {%- endcapture -%}
+        {%- endfor -%}
+    {%- endif -%}
+
+    {{ article_content_html }}
+
+    {%- if blog.articles.size > 1 and blogReadMore.settings != nill -%}
+        <div class="dynamic-page-width" data-blog="more-articles" {{ blogReadMore.shopify_attributes }}>
+            <h4 class="title read__next narrow-page-width reveal-item{% if settings.show_uppercase_heading %} uppercase{% endif %}">
+                {{ 'blogs.article.read_next' | t }}
+            </h4>
+            <div class="more-articles narrow-page-width">
+                {%- for article in blog.articles -%}
+                    {%- if article.id == currentArticleId -%}
+                        {% continue %}
+                    {%- endif -%}
+
+                    {%- assign count = count | plus: 1 -%}
+                    <div class="blog-articles__article article" data-article-tag="{{ article.tags }}">
+                        {%- render 'article-card',
+                            article: article,
+                            show_image: blogReadMore.settings.show_image,
+                            use_filter: true,
+                            forloop_index: forloop.index0,
+                            tag_bg_color: articleTagsBgColors,
+                            tags_limit: section.settings.tags_limit,
+                            item_link_appearence: item_link_appearence,
+                            button_label: button_label
+                        -%}
+                    </div>
+
+                    {% if count == limitReadMoreArticles %}
+                        {% break %}
+                    {% endif %}
+                {%- endfor -%}
+            </div>
+        </div>
+    {%- endif -%}
+
+    <div class="link-back_to">
+        <a href="{{ blog.url }}" class="article-template__link link animate-arrow">
+            {% render 'icons-solid', name: 'arrow-right', css_class: 'icon-arrow' %}
+            {{ 'blogs.article.back_to_blog' | t: title: blog.title }}
+        </a>
+    </div>
+
+    {%- if customerComments.settings != nill -%}
+        {% render 'article-comments', article: article, customer_comments: customerComments %}
+    {%- endif -%}
+</article>
+
+{{ 'component-pagination.css' | asset_url | stylesheet_tag }}
+{% render 'init-styles', init_section_blog_posts: true, init_section_featured_blog: true %}
+
+{% schema %}
+{
+  "name": "t:sections.main-article.name",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "image_content_width",
+      "default": false,
+      "label": "t:sections.main-blog.settings.image_content_width.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_top_spacing",
+      "label": "t:sections.main-blog.settings.use_top_spacing.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "animation_on_reveal",
+      "label": "t:sections.all.settings.animation_on_reveal.label",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-blog.settings.header.content"
+    },
+    {
+        "type": "color",
+        "id": "tag_1_background_cover",
+        "label": "t:sections.main-blog.settings.tag_1_background_cover.label",
+        "default": "#E13124"
+    },
+    {
+        "type": "color",
+        "id": "tag_2_background_cover",
+        "label": "t:sections.main-blog.settings.tag_2_background_cover.label",
+        "default": "#FF6601"
+    },
+    {
+        "type": "color",
+        "id": "tag_3_background_cover",
+        "label": "t:sections.main-blog.settings.tag_3_background_cover.label",
+        "default": "#286EF1"
+    },
+    {
+        "type": "color",
+        "id": "tag_4_background_cover",
+        "label": "t:sections.main-blog.settings.tag_4_background_cover.label",
+        "default": "#6542CA"
+    },
+    {
+      "type": "range",
+      "id": "tags_limit",
+      "label": "t:sections.main-blog.settings.tags_limit.label",
+      "default": 3,
+      "min": 0,
+      "max": 10,
+      "step": 1
+    }
+  ],
+  "blocks": [
+    {
+      "type": "content",
+      "name": "t:sections.main-article.blocks.content.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "social_sharing",
+          "label": "t:sections.main-article.blocks.content.settings.social_sharing.label",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "title",
+      "name": "t:sections.main-article.blocks.title.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_image",
+          "default": true,
+          "label": "t:sections.featured-blog.settings.show_image.label",
+          "info": "t:sections.featured-blog.settings.show_image.info"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_date",
+          "default": true,
+          "label": "t:sections.main-blog.blocks.title.settings.show_date.label"
+        },
+        {
+          "type": "select",
+          "id": "date_format",
+          "label": "t:sections.featured-blog.blocks.title.settings.date_format.label",
+          "options": [
+            {
+              "value": "day_month_year",
+              "label": "t:sections.featured-blog.blocks.title.settings.date_format.options.day_month_year"
+            },
+            {
+              "value": "year_month_day",
+              "label": "t:sections.featured-blog.blocks.title.settings.date_format.options.year_month_day"
+            },
+            {
+              "value": "month_year",
+              "label": "t:sections.featured-blog.blocks.title.settings.date_format.options.month_year"
+            }
+          ],
+          "default": "month_year"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_icon_calendar",
+          "label": "t:sections.featured-blog.blocks.title.settings.show_icon_calendar.label",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_author",
+          "default": false,
+          "label": "t:sections.main-blog.blocks.title.settings.show_author.label"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_article_title",
+          "default": true,
+          "label": "t:sections.featured-blog.blocks.title.settings.show_article_title.label"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_text_uppercase",
+          "label": "t:sections.featured-blog.blocks.title.settings.show_text_uppercase.label",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "item_link_appearence",
+          "label": "Item link appearence",
+          "options": [
+            {
+              "value": "link",
+              "label": "t:sections.our-list-collections.settings.item_link_appearence.options.link"
+            },
+            {
+              "value": "button",
+              "label": "t:sections.our-list-collections.settings.item_link_appearence.options.button"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "t:sections.our-list-collections.settings.button_label.label"
+        }
+      ]
+    },
+    {
+      "type": "comments",
+      "name": "t:sections.main-article.blocks.comments.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "comment_icon",
+          "label": "t:sections.main-article.blocks.comments.settings.comment_icon.label",
+          "info": "t:sections.main-article.blocks.comments.settings.comment_icon.info"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

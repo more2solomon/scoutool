@@ -1,0 +1,461 @@
+{%- liquid
+    assign itemCandidates = section.settings.source
+    if itemCandidates.count == 0 and section.settings.is_random
+        capture handels
+            render 'helper__get-similar-products', product: product, limit: section.settings.products_per_page
+        endcapture
+        assign itemCandidates = handels | split: '|'
+    endif
+
+    assign image_width = '240'
+    assign image_sizes = '(max-width: 639px) 44vw, (max-width: 767px) 28vw, (max-width: 1279px) 20vw, {image_width}px'
+    assign image_sizes = image_sizes | replace: '{image_width}', image_width
+
+    assign totalPrice = 0
+
+    if product.selected_or_first_available_variant.available and section.settings.total_includes_main_product_price
+        assign totalPrice = product.selected_or_first_available_variant.price
+    endif
+
+    assign formId = 'product-form-' | append: section.id
+-%}
+
+{%- if itemCandidates.count > 0 or itemCandidates.size > 0 -%}
+    {%- comment -%}
+        Prepare settings for item image
+    {%- endcomment -%}
+    {%- liquid
+        assign mode = mode | default: 'list'
+        capture sizes_config
+            render 'grid-item--item-image--sizes', mode: mode, columns: section.settings.products_per_page, has_side_column: true
+        endcapture
+    -%}
+
+    {% style %}
+        bought-together > .items {
+            padding: 0 1rem 1rem;
+        }
+        {% if section.settings.enable_slider_buttons %}
+        @media (max-width: 475px), print {
+            bought-together > .items {
+                padding-bottom: 0;
+            }
+        }
+        {% endif %}
+        @media (min-width: 600px), print {
+            bought-together .slider-buttons__container {
+                display: none;
+            }
+        }
+        {% if settings.current_presets == 'gorpcore' %}
+        bought-together {
+            border-radius: 6px;
+        }
+        {% endif %}
+        bought-together .grid-item::after {
+            left: {% if request.locale.iso_code contains 'ar' %}-3{% else %}0.5{% endif %}rem;
+        }
+
+        {% if request.locale.iso_code contains 'ar' %}
+        bought-together .item-checkbox {
+            left: 0.5rem;
+        }{% else %}
+         bought-together .item-checkbox {
+            right: 0.5rem;
+        }{% endif %}
+    {% endstyle %}
+
+    <div class="dynamic-page-width{% if section.settings.animation_on_reveal %} reveal-slide-in{% endif %}">
+        <bought-together data-loop="false">
+            <div class="items">
+                {%- if section.settings.heading != blank -%}
+                    <{{ section.settings.heading_size }} class="heading reveal-item{% if settings.show_uppercase_heading %} uppercase{% endif %}">
+                        {% render 'helper__decorate-heading', heading: section.settings.heading %}
+                    </{{ section.settings.heading_size }}>
+                {%- endif -%}
+                <slider-component>
+                    <ul
+                        class="items-grid"
+                        data-mode="grid"
+                        data-slideshow-btn-type="{{ section.settings.slideshow_ui_type }}"
+                    >
+                        {%- for itemCandidate in itemCandidates limit: section.settings.products_per_page -%}
+                            {%- liquid
+                                if itemCandidate.object_type != null
+                                    assign item = itemCandidate
+                                else
+                                    assign item = all_products[itemCandidate]
+                                endif
+
+                                if item == null
+                                    continue
+                                endif
+
+                                assign isAvailable = item.selected_or_first_available_variant.available
+                                assign productTags = item.tags | downcase
+                            -%}
+                            <li
+                                class="grid-item reveal-item"
+                                {% if section.settings.hide_soldout_items and isAvailable == false %}
+                                    hidden
+                                {% endif %}
+                            >
+                                <input
+                                    type="checkbox"
+                                    name="items[{{ forloop.index }}][id]"
+                                    value="{{ item.selected_or_first_available_variant.id }}"
+                                    id="item-{{ section.id }}__{{ forloop.index }}"
+                                    form="{{ formId }}"
+                                    {% if isAvailable %}
+                                        checked
+                                    {% else %}
+                                        disabled
+                                    {% endif %}
+                                    class="visually-hidden"
+                                >
+                                <label for="item-{{ section.id }}__{{ forloop.index }}" class="item-checkbox">
+                                    {% render 'icons-outline', name: 'check', css_class: 'icon icon-checkmark' %}
+                                    <span class="visually-hidden">
+                                        {{- 'sections.product-bought-together.choose_product' | t: name: item.title -}}
+                                    </span>
+                                </label>
+                                <a href="{{ item.url }}" class="item-link">
+                                    <div class="item-image">
+                                        <div class="badge-container">
+                                            {%- render 'badge-onsale',
+                                                product: item,
+                                                size: section.settings.badge_size
+                                            -%}
+                                            {%- render 'badge-soldout',
+                                                product: item,
+                                                size: section.settings.badge_size
+                                            -%}
+                                            {%- if productTags contains 'new' -%}
+                                                {%- render 'badge-new', product: item, size: badge_size -%}
+                                            {%- endif -%}
+                                        </div>
+                                        {%- liquid
+                                            assign featuredImage = item.featured_media.preview_image
+                                            capture padding_bottom_value
+                                                render 'helper__media-padding-bottom', image: featuredImage, image_ratio: section.settings.image_ratio
+                                            endcapture
+
+                                            assign media_class = 'media'
+
+                                            if settings.use_media_transparent
+                                                assign media_class = media_class | append: ' media--transparent'
+                                            endif
+
+                                            unless request.design_mode
+                                                if settings.enable_preload_images and featuredImage
+                                                    assign media_class = media_class | append: ' media--blur-image'
+                                                endif
+                                            endunless
+                                        -%}
+                                        {%- if settings.enable_preload_images -%}
+                                            {%- render 'loading-overlay' -%}
+                                        {%- endif -%}
+                                        <div
+                                            class="{{ media_class }}"
+                                            style="padding-bottom: {{ padding_bottom_value }};"
+                                        >
+                                            {%- if featuredImage %}
+                                                {% render 'grid-item--item-image',
+                                                    image: featuredImage,
+                                                    image_ratio: section.settings.image_ratio,
+                                                    image_sizes_config: sizes_config
+                                                %}
+                                            {% else %}
+                                                {%- if settings.use_same_placeholder_on_listing %}
+                                                    {%- liquid
+                                                        # placeholder image set in the General Placeholder settings
+                                                        assign placeholder_name = '#name#'
+                                                        assign placeholder_name = placeholder_name | replace: '#name#', settings.placeholder_image | strip
+                                                    -%}
+                                                    {{ placeholder_name | placeholder_svg_tag: 'placeholder' }}
+                                                {% else %}
+                                                    {% comment %} unique placeholder image {% endcomment %}
+                                                    {{
+                                                        item.id
+                                                        | divided_by: 1000
+                                                        | modulo: 4
+                                                        | plus: 1
+                                                        | prepend: 'product-'
+                                                        | placeholder_svg_tag: 'placeholder-svg placeholder'
+                                                    }}
+                                                {% endif -%}
+                                            {% endif -%}
+                                        </div>
+                                    </div>
+                                    <div class="item-details-wrapper">
+                                        {% if settings.product_card_vendor -%}
+                                            <p class="item-vendor">
+                                                <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
+                                                <span>{{ item.vendor | default: 'vendor' }}</span>
+                                            </p>
+                                        {%- endif %}
+                                        <p class="item-title">{{ item.title }}</p>
+                                        {% render 'helper__decorate-product-price',
+                                            product: item,
+                                            showPriceLabel: settings.price_label
+                                        %}
+                                        {% if settings.product_card_rating -%}
+                                            <div class="judgeme-product-reviews-badge" data-id="{{ product.id }}">
+                                                <span class="jdgm-widget jdgm-preview-badge">
+                                                    {{- product.metafields.judgeme.badge -}}
+                                                </span>
+                                            </div>
+                                        {%- endif %}
+                                        {%- liquid
+                                            if isAvailable
+                                                assign totalPrice = totalPrice | plus: item.price
+                                            endif
+                                        -%}
+                                    </div>
+                                </a>
+                            </li>
+                        {%- endfor -%}
+                    </ul>
+                    {% if section.settings.enable_slider_buttons %}
+                        {% render 'slider-buttons',
+                            items: section.settings.products_per_page,
+                            section_settings: section.settings
+                        %}
+                    {% endif %}
+                </slider-component>
+            </div>
+
+            <div
+                class="summary reveal-item"
+                data-includes-main-product-price="{% if section.settings.total_includes_main_product_price %}true{% else %}false{% endif %}"
+            >
+                <span class="label">{{- 'sections.product-bought-together.total_price' | t -}}</span>
+                {%- render 'render-price', price: totalPrice, css_class: 'price regular-price price--final' -%}
+
+                <product-form class="product-form">
+                    <div class="message-wrapper" role="alert" hidden>
+                        {% render 'message-error' %}
+                    </div>
+
+                    {% form 'product',
+                        product,
+                        id: formId,
+                        class: 'form',
+                        novalidate: 'novalidate',
+                        data-type: 'add-to-cart-form'
+                    %}
+                        <input
+                            type="hidden"
+                            name="items[0][id]"
+                            value="{{ product.selected_or_first_available_variant.id }}"
+                            {% unless product.selected_or_first_available_variant.available %}
+                                disabled
+                            {% endunless %}
+                        >
+                        <div class="product-form__buttons">
+                            {%- liquid
+                                assign button_class = 'product-form__submit button button--primary'
+                                if settings.show_button_ring_on_hover
+                                    assign button_class = button_class | append: ' border--outline'
+                                endif
+                                if settings.cut_button_corners
+                                    assign button_class = button_class | append: ' border--with-cut-corners'
+                                endif
+                            -%}
+                            <button
+                                type="submit"
+                                name="add"
+                                class="{{ button_class }}"
+                                {% if settings.minicart_enabled %}
+                                    data-cart-toggle-button
+                                {% endif %}
+                            >
+                                {% comment %}
+                                    {% render 'icons-charge' name: 'cart' css_class: 'icon-cart' %}
+                                {% endcomment %}
+                                <span class="text">{{ 'products.product.add_to_cart' | t }}</span>
+                            </button>
+                        </div>
+                    {% endform %}
+                </product-form>
+            </div>
+            {%- assign price = totalPrice | default: 36999 -%}
+            {%- assign language_number_formatting = section.settings.enabled_language_total_number_formatting -%}
+            <template
+                data-id="price"
+                data-price-sample="{{ price | money_without_currency }}"
+                data-number-formatting="{{ language_number_formatting }}"
+            >
+                {%- render 'render-price', price: price, css_class: 'price regular-price price--final' -%}
+            </template>
+        </bought-together>
+    </div>
+
+    {{ 'section-bought-together.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'bought-together.js' | asset_url }}" async></script>
+{%- endif -%}
+
+{% schema %}
+{
+    "name": "t:sections.product-bought-together.name",
+    "tag": "section",
+    "class": "spaced-section",
+    "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "default": "Frequently Bought Together",
+            "label": "t:sections.product-bought-together.settings.heading.label"
+        },
+        {
+            "type": "select",
+            "id": "heading_size",
+            "options": [
+                {
+                    "value": "h1",
+                    "label": "t:sections.product-bought-together.settings.heading_size.options.h1"
+                },
+                {
+                    "value": "h2",
+                    "label": "t:sections.product-bought-together.settings.heading_size.options.h2"
+                },
+                {
+                    "value": "h3",
+                    "label": "t:sections.product-bought-together.settings.heading_size.options.h3"
+                }
+            ],
+            "default": "h3",
+            "label": "t:sections.product-bought-together.settings.heading_size.label"
+        },
+        {
+            "type": "product_list",
+            "id": "source",
+            "limit": 4,
+            "label": "t:sections.all.promote_source.label",
+            "info": "t:sections.all.promote_source.info"
+        },
+        {
+            "type": "checkbox",
+            "id": "is_random",
+            "default": true,
+            "label": "t:sections.all.promote_random.label"
+        },
+        {
+            "type": "checkbox",
+            "id": "total_includes_main_product_price",
+            "label": "t:sections.product-bought-together.settings.total_includes_main_product_price.label",
+            "default": true
+        },
+        {
+            "type": "checkbox",
+            "id": "hide_soldout_items",
+            "label": "t:sections.product-bought-together.settings.hide_soldout_items.label",
+            "default": false
+        },
+        {
+            "type": "range",
+            "id": "products_per_page",
+            "min": 1,
+            "max": 4,
+            "step": 1,
+            "default": 4,
+            "label": "t:sections.product-bought-together.settings.products_per_page.label"
+        },
+        {
+            "type": "checkbox",
+            "id": "enable_slider_buttons",
+            "default": true,
+            "label": "t:sections.product-bought-together.settings.enable_slider_buttons.label",
+            "info": "t:sections.product-bought-together.settings.enable_slider_buttons.info"
+        },
+        {
+            "type": "select",
+            "id": "slideshow_ui_type",
+            "options": [
+                {
+                    "value": "buttons",
+                    "label": "t:sections.featured-collection.settings.slideshow_ui_type.options.buttons"
+                },
+                {
+                    "value": "scrollbar",
+                    "label": "t:sections.featured-collection.settings.slideshow_ui_type.options.scrollbar"
+                }
+            ],
+            "default": "buttons",
+            "label": "t:sections.featured-collection.settings.slideshow_ui_type.label"
+        },
+        {
+            "type": "header",
+            "content": "t:sections.all.product-card.header"
+        },
+        {
+            "type": "select",
+            "id": "badge_size",
+            "options": [
+                {
+                    "value": "xs",
+                    "label": "t:sections.all.product-card.badge_size.options__1.label"
+                },
+                {
+                    "value": "sm",
+                    "label": "t:sections.all.product-card.badge_size.options__2.label"
+                },
+                {
+                    "value": "md",
+                    "label": "t:sections.all.product-card.badge_size.options__3.label"
+                },
+                {
+                    "value": "lg",
+                    "label": "t:sections.all.product-card.badge_size.options__4.label"
+                }
+            ],
+            "default": "sm",
+            "label": "t:sections.all.product-card.badge_size.label"
+        },
+        {
+            "type": "select",
+            "id": "image_ratio",
+            "label": "t:sections.all.product-card.image_ratio.label",
+            "options": [
+                {
+                    "value": "settings|product_card_image_ratio",
+                    "label": "t:sections.all.product-card.image_ratio.options.default"
+                },
+                {
+                    "value": "native",
+                    "label": "t:sections.all.product-card.image_ratio.options.native"
+                },
+                {
+                    "value": "1",
+                    "label": "t:sections.all.product-card.image_ratio.options.1_by_1"
+                },
+                {
+                    "value": "5/4",
+                    "label": "t:sections.all.product-card.image_ratio.options.4_by_5"
+                }
+            ],
+            "default": "settings|product_card_image_ratio"
+        },
+        {
+            "type": "checkbox",
+            "id": "animation_on_reveal",
+            "label": "t:sections.all.settings.animation_on_reveal.label",
+            "default": true
+        },
+        {
+            "type": "checkbox",
+            "id": "enabled_language_total_number_formatting",
+            "label": "t:sections.product-bought-together.settings.enabled_language_total_number_formatting.label",
+            "default": false
+        }
+    ],
+    "presets": [
+        {
+            "name": "t:sections.product-bought-together.name"
+        }
+    ],
+    "enabled_on": {
+        "templates": ["product"]
+    }
+}
+{% endschema %}

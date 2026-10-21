@@ -1,0 +1,23 @@
+.countdown__media :is(img,svg) {
+   border-radius: 4px;
+}
+
+.countdown__text {
+    text-align: center;
+    width: 100%;
+    max-width: 25rem;
+    word-break: break-word;
+    padding: .75rem;
+}
+
+.countdown__timer {
+   font-family: var(--font-body-secondary-family);
+   font-style: var(--font-body-secondary-style);
+   font-weight: var(--font-body-secondary-weight);  
+}
+
+@media(min-width: 750px), print {
+   .countdown__text {
+      max-width: 36rem;
+   }
+}

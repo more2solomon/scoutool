@@ -1,0 +1,13 @@
+.menu-drawer {
+  right: 0px;
+}
+
+@media all and (max-width: 989px) {
+  .menu-drawer {
+    transform-origin: calc(100% - 2.5rem) -2.5rem;
+  }
+
+  .menu-drawer::after {
+    right: 1.5rem;
+  }
+}

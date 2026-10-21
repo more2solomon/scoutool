@@ -1,0 +1,99 @@
+{%- assign formIdNoScript = formId | append: 'NoScript' -%}
+
+{%- if shop.enabled_currencies.size > 1 -%}
+    <div class="localization-currency-wrapper">
+        <noscript>
+            {%- form 'localization', id: formIdNoScript, class: 'localization-form' -%}
+                <div class="localization-form__select select">
+                    <h2 class="visually-hidden" id="{{ formIdNoScript }}">{{ 'localization.country_label' | t }}</h2>
+                    <select class="localization-selector" name="currency_code" aria-labelledby="{{ formIdNoScript }}">
+                        {%- for currency in shop.enabled_currencies -%}
+                            <option
+                                value="{{ currency.iso_code }}"
+                                {%- if currency == cart.currency %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ currency.name }} ({{ currency.iso_code }}
+                                {{ currency.symbol }})
+                            </option>
+                        {%- endfor -%}
+                    </select>
+                    <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+                        <use href="#icon-caret" />
+                    </svg>
+                </div>
+                <button type="submit">{{ 'localization.update_currency' | t }}</button>
+            {%- endform -%}
+        </noscript>
+        <localization-form>
+            {%- form 'localization', id: formId, class: 'localization-form no-js-hidden' -%}
+                <span class="visually-hidden" id="{{ formId }}Label">{{ 'localization.currency_label' | t }}</span>
+                <div class="disclosure">
+                    <button
+                        type="button"
+                        class="disclosure__button button--small localization-form__select localization-selector"
+                        aria-expanded="false"
+                        aria-controls="{{ formId }}List"
+                        aria-describedby="{{ formId }}Label"
+                    >
+                        <span class="localization-form__currency-name">{{ cart.currency.name }}</span>
+                        <span class="localization-form__currency">
+                            {{- cart.currency.iso_code }}
+                            {{ cart.currency.symbol -}}
+                        </span>
+                        <svg
+                            aria-hidden="true"
+                            focusable="false"
+                            role="presentation"
+                            width="16"
+                            height="16"
+                            class="icon icon-caret"
+                        >
+                            <use href="#icon-caret" />
+                        </svg>
+                        <svg
+                            aria-hidden="true"
+                            focusable="false"
+                            role="presentation"
+                            width="12"
+                            height="12"
+                            class="icon-x"
+                            hidden
+                        >
+                            <use href="#icon-x" />
+                        </svg>
+                    </button>
+                    <div
+                        class="localization-panel disclosure__list--wrapper transition-bezier"
+                        data-search-placeholder="{{ 'localization.search_placeholder' | t }}"
+                        data-localization-size="{{ shop.enabled_currencies.size }}"
+                        hidden
+                    >
+                        <ul id="{{ formId }}List" role="list" class="disclosure__list list-unstyled">
+                            {%- for currency in shop.enabled_currencies -%}
+                                <li class="disclosure__item" tabindex="-1">
+                                    <a
+                                        class="link link--text disclosure__link{% if currency == cart.currency %} disclosure__link--active{% endif %} focus-inset"
+                                        href="#"
+                                        {% if currency == cart.currency %}
+                                            aria-current="true"
+                                        {% endif %}
+                                        data-value="{{ currency.iso_code }}"
+                                    >
+                                        <span class="localization-form__currency-name">{{ currency.name }}</span>
+                                        <span class="localization-form__currency">
+                                            {{- currency.iso_code }}
+                                            {{ currency.symbol -}}
+                                        </span>
+                                    </a>
+                                </li>
+                            {%- endfor -%}
+                        </ul>
+                    </div>
+                </div>
+                <input type="hidden" name="currency_code" value="{{ cart.currency.iso_code }}">
+            {%- endform -%}
+        </localization-form>
+    </div>
+{%- endif -%}

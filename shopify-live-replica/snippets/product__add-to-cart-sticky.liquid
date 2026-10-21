@@ -1,0 +1,183 @@
+{% comment %}
+    Render flow Add to Cart on the product page
+
+    Accept:
+    - sectionId:     {String}
+    - blocks:        {Array}
+    - product:       {Object}
+    - block:         {Object}
+    - show_variants: {Bool}
+    - show_img: {Bool}
+{% endcomment %}
+
+{{ 'component-sticky-add-to-cart.css' | asset_url | stylesheet_tag }}
+
+{% liquid
+    assign imageWidth = '75' | append: 'px'
+    assign id = 'add-to-cart-sticky'
+    assign productFormId = 'product-form-' | append: id
+    assign styleRules = 'width:100%;max-width:' | append: imageWidth | append: ';height:' | append: imageWidth
+    assign styleRules = styleRules | replace: "'", ''
+%}
+
+<sticky-add-to-card id="{{ id }}">
+    <div class="sticky-container">
+        <div class="add-to-cart-sticky__gallery">
+            {%- for block in blocks -%}
+                {%- case block.type -%}
+                    {%- when 'gallery' -%}
+                        {% if show_img %}
+                            <div
+                                class="media"
+                                style="{{ styleRules | append:';order:' | append: forloop.index }}"
+                            >
+                                {%- if product.featured_media != null -%}
+                                    {% render 'render-image', image: product.featured_media, width: imageWidth %}
+                                {%- else -%}
+                                    {{
+                                        product.id
+                                        | divided_by: 1000
+                                        | modulo: 4
+                                        | plus: 1
+                                        | prepend: 'product-'
+                                        | placeholder_svg_tag: 'placeholder-svg placeholder'
+                                    }}
+                                {%- endif -%}
+                            </div>
+                        {% endif %}
+                    {%- when 'title' -%}
+                        {% render 'product__info-block--title',
+                            block: block,
+                            blockOrder: forloop.index,
+                            product: product,
+                            heading_tag: 'h3'
+                        %}
+                {%- endcase -%}
+            {%- endfor -%}
+            <div class="_action">
+                <product-form class="product-form">
+                    <div class="message-wrapper" role="alert" hidden>
+                        {% render 'message-error' %}
+                    </div>
+                    {% form 'product',
+                        product,
+                        id: productFormId,
+                        class: 'form sticky-add-to-cart-form',
+                        novalidate: 'novalidate',
+                        data-type: 'add-to-cart-form'
+                    %}
+                        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                        <div class="product-form__buttons">
+                            <button
+                                type="submit"
+                                name="add"
+                                class="product-form__submit button button--primary"
+                                {% if product.selected_or_first_available_variant.available == false %}
+                                    disabled
+                                {% endif %}
+                                aria-label="{{ 'products.product.add_to_cart' | t }}"
+                            >
+                                {% render 'icons-charge', name: 'cart', css_class: 'icon-cart' %}
+                            </button>
+                        </div>
+                    {% endform %}
+                </product-form>
+            </div>
+        </div>
+        <details-disclosure
+            {% if product.has_only_default_variant %}
+                hidden
+            {% endif %}
+        >
+            <details>
+                <summary class="add-to-cart-sticky--accordion" role="button">
+                    <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+                        <use href="#icon-caret" />
+                    </svg>
+                </summary>
+            </details>
+        </details-disclosure>
+        <div class="add-to-cart-sticky__content">
+            <div class="wrapper">
+                {% if show_variants %}
+                    {% unless product.has_only_default_variant %}
+                        <div class="add-to-cart-sticky__variants">
+                            {%- for block in blocks -%}
+                                {%- case block.type -%}
+                                    {%- when 'variant_picker' -%}
+                                        <variant-selects
+                                            class="no-js-hidden block mb-6 variants"
+                                            data-section="{{ sectionId }}"
+                                            data-product-id="{{ product.id }}"
+                                            data-url="{{ product.url }}"
+                                            data-update-url="true"
+                                            data-mark-unavailable-variant="{{ block.settings.mark_unavailable_variants }}"
+                                            {{ block.shopify_attributes }}
+                                        >
+                                            {%- for option in product.options_with_values -%}
+                                                <div
+                                                    class="product-form__input product-form__input--dropdown mb-6 p-0"
+                                                    data-product-form="variant-selects"
+                                                    data-option-index="{{ forloop.index0 }}"
+                                                >
+                                                    <label
+                                                        class="form__label p-0"
+                                                        for="Option-{{ sectionId }}-{{ forloop.index0 }}"
+                                                    >
+                                                        {{ option.name }}&#58;
+                                                    </label>
+                                                    <div class="select">
+                                                        <select
+                                                            id="Option-{{ sectionId }}-{{ forloop.index0 }}"
+                                                            class="select__select"
+                                                            name="options[{{ option.name | escape }}]"
+                                                            form="product-form-{{ sectionId }}-{{ product.id }}"
+                                                        >
+                                                            {%- for value in option.values -%}
+                                                                {%- assign productAvailable = product.variants[forloop.index0].available -%}
+                                                                <option
+                                                                    value="{{ value | escape }}"
+                                                                    {% if option.selected_value == value %}
+                                                                        selected="selected"
+                                                                    {% endif %}
+                                                                    {% if productAvailable == false %}
+                                                                        disabled="disabled"
+                                                                    {% endif %}
+                                                                    data-option-name="{{ option.name }}"
+                                                                    data-product-url="{{ value.product_url }}"
+                                                                    data-option-value-id="{{ value.id }}"
+                                                                >
+                                                                    {{- value -}}
+                                                                </option>
+                                                            {%- endfor -%}
+                                                        </select>
+                                                        <svg
+                                                            aria-hidden="true"
+                                                            focusable="false"
+                                                            role="presentation"
+                                                            class="icon icon-caret"
+                                                        >
+                                                            <use href="#icon-caret" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            {%- endfor -%}
+
+                                            <script type="application/json">
+                                                {{ product.variants | json }}
+                                            </script>
+                                        </variant-selects>
+                                        {%- comment -%}
+                                            <div class="invisible">Make sure `invisible` included into purged CSS</div>
+                                        {%- endcomment -%}
+                                {%- endcase -%}
+                            {%- endfor -%}
+                        </div>
+                    {% endunless %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</sticky-add-to-card>
+
+<script src="{{ 'sticky-add-to-cart.js' | asset_url }}" defer="defer"></script>

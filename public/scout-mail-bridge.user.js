@@ -7,14 +7,14 @@
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setValue
 // @grant        GM_getValue
-// @connect      scoutool-lilac.vercel.app
+// @connect      scoutool-batch.vercel.app
 // ==/UserScript==
 
 (() => {
   "use strict";
 
   const API =
-    "https://scoutool-lilac.vercel.app/api/bridge/queue";
+    "https://scoutool-batch.vercel.app/api/bridge/queue";
 
   function extractQueue() {
     const results = [];

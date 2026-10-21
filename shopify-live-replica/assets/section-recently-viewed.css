@@ -1,0 +1,7 @@
+.recently-viewed-wrapper {
+	margin-top: 2.5rem !important;
+}
+	
+	.recently-viewed-wrapper :is(compare-add-button) {
+		display: none;
+	}

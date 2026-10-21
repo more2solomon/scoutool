@@ -1,0 +1,108 @@
+{%- comment -%}
+    Render Background color of swatches
+
+    Accepts:
+        - product:     {Object}
+        - color_value: {String}
+        - image_width: {Number}
+{%- endcomment -%}
+{% liquid
+    assign color = color_value | remove: ' ' | remove: '.' | remove: ',' | escape
+    assign backgroundColor = ''
+    assign useColorSwatcheslist = settings.use_color_swatches_list
+    assign colorSwatcheslist = settings.color_swatches_list
+    assign colorsList = ''
+
+    # color-swatch images from variant options
+    for variant in product.variants
+        if variant.options contains color_value
+            if variant.featured_image
+                assign swatchImage = variant.featured_image | image_url: width: image_width
+                assign backgroundColor = backgroundColor | append: 'background: url'
+                assign backgroundColor = backgroundColor | append: '('
+                assign backgroundColor = backgroundColor | append: swatchImage
+                assign backgroundColor = backgroundColor | append: ')'
+                assign backgroundColor = backgroundColor | append: 'no-repeat;'
+                assign backgroundColor = backgroundColor | append: 'background-position: center;'
+                break
+            endif
+        endif
+    endfor
+
+    # color-swatch images from Content -> Files
+    assign acceptableImgFormats = 'jpg,jpeg,png' | split: ','
+    assign isColorImageExist = ''
+    for format in acceptableImgFormats
+        assign swatchImgUrl = color | append: '.' | append: format
+        assign swatchImg = images[swatchImgUrl]
+        if swatchImg and swatchImg contains format
+            assign isColorImageExist = color | append: '.' | append: format
+            break
+        endif
+    endfor
+
+    # render color swatches from the theme settings Swatch list
+    if useColorSwatcheslist
+        assign colorsList = colorsList | append: colorSwatcheslist | split: ', '
+        for item in colorsList
+            assign colorFirst = item | split: ':' | first | remove: '["' | remove: ' ' | escape
+            assign colorLast = item | split: ':' | last | remove: '"]' | remove: ','
+
+            if colorFirst == color
+                assign backgroundColor = backgroundColor | append: 'background:'
+                assign backgroundColor = backgroundColor | append: colorLast
+                assign backgroundColor = backgroundColor | append: ';'
+            endif
+        endfor
+    endif
+    # if swatch includes two colors like red/blue
+    # this condition can be removed or commented to use the Swatch list
+    if color contains '/'
+        assign colorFirst = color | split: '/' | first
+        assign colorLast = color | split: '/' | last
+        assign backgroundColor = backgroundColor | append: 'background:linear-gradient(to bottom right,'
+        assign backgroundColor = backgroundColor | append: colorFirst
+        assign backgroundColor = backgroundColor | append: ' '
+        assign backgroundColor = backgroundColor | append: '50%,'
+        assign backgroundColor = backgroundColor | append: ' '
+        assign backgroundColor = backgroundColor | append: colorLast
+        assign backgroundColor = backgroundColor | append: ' '
+        assign backgroundColor = backgroundColor | append: '52%);'
+        assign backgroundColor = backgroundColor | append: 'border:1px solid #EAEAEA;'
+    endif
+    # if swatch images applied
+    if isColorImageExist != blank
+        assign src = isColorImageExist | file_url
+        assign backgroundColor = backgroundColor | append: 'background: url'
+        assign backgroundColor = backgroundColor | append: '('
+        assign backgroundColor = backgroundColor | append: src
+        assign backgroundColor = backgroundColor | append: ')'
+        assign backgroundColor = backgroundColor | append: 'no-repeat;'
+        assign backgroundColor = backgroundColor | append: 'background-position: center;'
+    endif
+
+    if color_value.swatch.image
+        assign image_width = image_width
+        if image_width == 0
+            assign image_width = color_value.swatch.image.width
+        endif
+        assign image_url = color_value.swatch.image | image_url: width: image_width
+        assign backgroundColor = backgroundColor | append: 'background: url('
+        assign backgroundColor = backgroundColor | append: image_url
+        assign backgroundColor = backgroundColor | append: ')no-repeat;'
+        assign backgroundColor = backgroundColor | append: 'background-position: center;background-size: cover;'
+    elsif color_value.swatch.color
+        assign backgroundColor = backgroundColor | append: 'background: rgb('
+        assign backgroundColor = backgroundColor | append: color_value.swatch.color.rgb
+        assign backgroundColor = backgroundColor | append: ');'
+    else
+        # if simple colors Names use - https://www.nameacolor.com/COMPLETE%20COLOR%20NAMES%20TABLE.htm
+        if backgroundColor == ''
+            assign backgroundColor = backgroundColor | append: 'background: '
+            assign backgroundColor = backgroundColor | append: color
+            assign backgroundColor = backgroundColor | append: ';'
+        endif
+    endif
+
+    echo backgroundColor
+%}

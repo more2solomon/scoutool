@@ -1,0 +1,102 @@
+{% comment %}
+    Render header dropdown content - Product List
+
+    Accepts:
+     - block               {Object}
+     - blockOrder:         {Numb}
+     - parent_item_index:  {Numb}
+{% endcomment %}
+
+{%- liquid
+  assign ulID = 'product-list--' | append: section.id
+  assign ulClass = 'products product-list'
+
+  assign productList = block.settings.product_list.products
+  assign selectedParentIndex = block.settings.item_menu_index
+  assign items_width = block.settings.items_width
+  assign limit = block.settings.products_to_show
+  assign link_url = block.settings.collection_url
+  assign link_appearance = block.settings.view_all_appearance
+  assign showPrice = block.settings.show_product_price
+  assign showBadge = block.settings.show_badge
+  assign showDescription = block.settings.show_description
+  assign showOutlineBorder = block.settings.show_outline_border
+  assign showSliderButtons = block.settings.show_slider_buttons
+
+  assign imageRatio = 'settings|product_card_image_ratio'
+
+  if showPrice == false
+    assign ulClass = ulClass | append: " with__price-hidden"
+  endif
+
+  if showBadge == false
+    assign ulClass = ulClass | append: " with__badge-hidden"
+  endif
+
+  if showDescription == false
+    assign ulClass = ulClass | append: " with__description-hidden"
+  endif
+
+  if showOutlineBorder
+    assign ulClass = ulClass | append: " with__outline-border"
+  endif
+
+  assign media_condition = '(max-width: 989px)'
+-%}
+
+{%- unless productList.count == 0 %}
+  {%- if parent_item_index == selectedParentIndex %}
+    {%- unless block.settings.show_block_on_mobile %}
+    <style media="{{ media_condition }}">
+      .dropdown-inner__product-list:is(.hidden-on-mobile) {
+        display: none !important;
+      }
+    </style>
+    {% endunless -%}
+    {% style %}
+      .dropdown-inner__product-list {
+        --product-list__foreground: {{ block.settings.product_list_foreground }};
+      }
+      .dropdown-inner__product-list {{ ulID | prepend:'#' }} > li {
+        width: clamp(150px, {{ items_width | append: '%' }},  300px);
+        padding: {% if items_width > 40 %}.8{% elsif items_width >= 30 and items_width < 40 %}.6{% elsif items_width < 30 and items_width >= 20 %}.4{% else %}.2{% endif %}rem;
+      }
+      @media(min-width: 990px) {
+        .dropdown-inner__product-list {{ ulID | prepend:'#' }} > li .item-price .price,
+        .dropdown-inner__product-list {{ ulID | prepend:'#' }} > li .item-price .price > span {
+          font-size: {% if items_width >= 10 and items_width < 22 %}1{% elsif items_width >= 22 and items_width <= 32 %}1.25{% else %}1.5{% endif %}rem !important;            
+        }        
+      }
+    {% endstyle %}
+
+    <div class="dropdown-inner__product-list{% unless block.settings.show_block_on_mobile %} hidden-on-mobile{% endunless %}" data-block-index="{{ blockOrder }}">
+      {%- capture list -%}
+        {% render 'product-list'
+          ul_id: ulID
+          ul_class: ulClass
+          products: productList
+          limit: limit
+          image_ratio: imageRatio
+          show_slider_buttons: showSliderButtons
+          show_description: showDescription
+        %}
+      {%- endcapture -%}
+
+      {%- if link_url != blank -%}
+        {%- capture link_view_all -%}
+          {%- render 'header__dropdown--link-view-all'
+            link: link_url
+            link_appearance: link_appearance
+          -%}          
+          </ul>
+        {%- endcapture -%}
+        {% assign needle = '</ul>' %}
+        {% assign list = list | replace: needle, link_view_all %}
+      {%- endif -%}
+
+      {{- list -}}
+
+    </div>
+  {% endif -%}
+{{ 'component-dropdown-menu__product-list.css' | asset_url | stylesheet_tag }}
+{% endunless -%}

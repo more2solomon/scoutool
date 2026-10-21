@@ -1,0 +1,38 @@
+text-expandable.fallback--max-height {
+    display: block;
+    max-height: calc(var(--line-clamp, 3) * 1.5rem);
+    overflow: auto;
+}
+
+text-expandable[data-expanded="true"] {
+    -webkit-line-clamp: initial !important;
+    overflow: auto;
+}
+
+text-expandable.fallback--max-height[data-expanded="true"] {
+    max-height: none;
+}
+
+text-expandable > .expand,
+text-expandable > .narrow {
+    position: absolute;
+    bottom: 0;
+    right: 0;    
+    padding-left: 1rem;
+    background: linear-gradient(to right, transparent 0, var(--color-background) .5rem);
+}
+
+text-expandable > .expand:hover,
+text-expandable > .expand:focus,
+text-expandable > .expand:active,
+text-expandable > .narrow:hover,
+text-expandable > .narrow:focus,
+text-expandable > .narrow:active {
+    box-shadow: none;
+}
+
+/* fix for RTE last paragraph */
+
+text-expandable.rte > p:nth-last-child(2) {
+    margin-bottom: 0;
+}

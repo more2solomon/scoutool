@@ -8,3 +8,6 @@ desktop/node_modules/
 desktop/dist/
 
 *.exe
+.vercel
+.env*
+!.env.example

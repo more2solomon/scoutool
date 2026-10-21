@@ -1,0 +1,81 @@
+{% style %}
+    /* DEFAULT (CHARGE) THEME */
+    {%- if settings.current_presets == 'default' -%}
+    .swatch-attribute-options,
+    [data-mode="grid"] .grid-item .item-price,
+    [data-mode="grid"] select-color-variants {
+      justify-content: center;
+    }
+
+    .footer-contacts__image-title {
+      position: absolute;
+      top: 0;
+    }
+    /* Product card->Enable hover effect */
+    {%- if settings.product_card_hover_effect -%}
+    @media only screen and (min-width: 990px) {
+      [data-mode="grid"] .swatch-attribute-options .swatch-option_more,
+      [data-mode="grid"] .swatch-attribute-options:hover .swatch-option_more,
+      [data-mode="grid"] .swatch-attribute-options input[type=radio] + label {
+        display: none;
+      }
+    }{%- endif -%}
+    .footer-contacts i {
+      color: rgba(var(--footer-contacts--foreground-color-rgb),.75);
+    }
+    @media only screen and (min-width: 990px) {
+      footer .footer-contacts {
+        padding: 2rem 0 0;
+      }
+    }
+    {% elsif settings.current_presets == 'metalware' %}
+    @media only screen and (min-width: 990px) {
+      footer .footer-contacts {
+        padding: 2rem 0 0;
+      }
+    }
+    {%- else -%}
+    /* OTHER THEME PRESETS */
+    /* color swatches in the product grid */
+    .facets__list .facet-checkbox:not(.facet-checkbox--disabled) .facet__swatch-option[type=radio] + label::before,
+    .grid-item .swatch-option[type=radio]:checked + label::before,
+    .grid-item .swatch-option[type=radio] + label:hover::before {
+      padding: 1rem;
+    }
+
+    @media only screen and (max-width: 989px) {
+      .footer-section .footer-inner {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+      }
+
+      .footer-contacts .footer-contacts__address i {
+        background: transparent;
+        padding: 0.5rem;
+      }
+
+      .footer-contacts .footer-contacts__address > div {
+        display: flex;
+        flex-direction: column-reverse;
+      }
+
+      .footer-contacts__address .email {
+        order: 1;
+      }
+
+      .footer-contacts__address .h4 {
+        margin-top: .5rem;
+      }
+
+      .footer-contacts .footer-contacts__address i {
+        margin: 0 0 0 -3rem;
+      }
+    }
+
+    @media only screen and (min-width: 990px) {
+      footer .footer-contacts {
+        padding: 2rem 0 2rem;
+      }
+    }
+    {%- endif -%}
+{% endstyle %}

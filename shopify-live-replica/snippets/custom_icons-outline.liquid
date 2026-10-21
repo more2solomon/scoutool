@@ -1,0 +1,15 @@
+{% comment %}
+    Render Custom icons outline (Icons Bar)
+
+    Accepts:
+    - image:      {Object}
+{% endcomment %}
+
+{%- liquid
+    assign iconW = image.width
+    assign iconW_2x = iconW | times: 2
+    assign iconSizes = iconW | append: 'px'
+    assign iconWidths = iconW | append: ', ' | append: iconW_2x
+-%}
+
+{{ image | image_url: width: iconW | image_tag: sizes: iconSizes, loading: 'lazy', widths: iconWidths }}

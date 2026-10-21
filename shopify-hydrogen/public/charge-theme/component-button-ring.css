@@ -1,0 +1,15 @@
+:is(.border--outline),
+.shopify-payment-button__button,
+.shopify-challenge__button {
+  --outline-color: transparent;
+  outline-color: var(--outline-color);
+  outline: 1px solid var(--outline-color);
+  outline-offset: 1px;
+  transition: outline-color .35s ease-out;
+}
+
+.border--outline:hover,
+.shopify-payment-button__button:hover,
+.shopify-challenge__button:hover {
+  --outline-color: var(--color-base-accent-1);
+}

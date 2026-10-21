@@ -1,0 +1,627 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+    "general": {
+        "breadcrumbs": {
+            "home_page": "Ana sayfa",
+            "home_link": "Ana sayfa"
+        },
+        "password_page": {
+            "login_form_heading": "Parola ile mağazaya girin",
+            "login_password_button": "Parola ile giriş yap",
+            "login_form_password_label": "Parola",
+            "login_form_password_placeholder": "Parolanız",
+            "login_form_error": "Yanlış parola!",
+            "login_form_submit": "Giriş yap",
+            "modal": "Parola penceresi",
+            "admin_link_html": "Mağaza sahibi misiniz? <a href=\"/admin\" class=\"link underlined-link\">Buradan giriş yapın</a>",
+            "powered_by_shopify_html": "Bu mağaza {{ shopify }} tarafından desteklenecektir"
+        },
+        "social": {
+            "alt_text": {
+                "share_on_facebook": "Facebook'ta paylaş",
+                "share_on_twitter": "Twitter'da tweetle",
+                "share_on_pinterest": "Pinterest'te sabitle"
+            },
+            "links": {
+                "twitter": "Twitter",
+                "facebook": "Facebook",
+                "pinterest": "Pinterest",
+                "instagram": "Instagram",
+                "tumblr": "Tumblr",
+                "snapchat": "Snapchat",
+                "youtube": "YouTube",
+                "vimeo": "Vimeo",
+                "tiktok": "TikTok"
+            },
+            "titles": {
+                "facebook": "Bizi Facebook'ta ziyaret edin",
+                "youtube": "YouTube kanalımıza göz atın",
+                "twitter": "Tweetlerimize bakın",
+                "instagram": "Instagram'dayız",
+                "pinterest": "Bizi sabitleyebilirsiniz",
+                "snapchat": "Bizimle sohbet edin",
+                "tumblr": "Tumblr sayfamıza göz atın",
+                "vimeo": "Vimeo hesabımız var",
+                "tiktok": "TikTok hesabımız var",
+                "linkedin": "LinkedIn hesabımıza göz atın"
+            }
+        },
+        "continue_shopping": "Alışverişe devam et",
+        "pagination": {
+            "label": "Sayfalandırma",
+            "label_next": "Sonraki",
+            "label_previous": "Önceki",
+            "page": "Sayfa {{ number }}",
+            "next": "Sonraki sayfa",
+            "previous": "Önceki sayfa"
+        },
+        "search": {
+            "search": "Mağazamızda ara...",
+            "label": "Arama",
+            "filter-category": {
+                "label": "Kategori filtrele",
+                "results-options": {
+                    "all": "Tümü",
+                    "all_collections": "Tüm koleksiyonlar"
+                }
+            }
+        },
+        "cart": {
+            "view": "Sepetimi görüntüle ({{ count }})",
+            "item_added": "Ürün sepetinize eklendi"
+        },
+        "cart_sidebar": {
+            "submit": "Ödemeye geç",
+            "to_cart": "Sepeti görüntüle",
+            "cart_items": "Ürün(ler)"
+        },
+        "share": {
+            "copy_to_clipboard": "Bağlantıyı kopyala",
+            "share": "Paylaş",
+            "share_url": "Bağlantı",
+            "success_message": "Bağlantı panoya kopyalandı!"
+        }
+    },
+    "date_formats": {
+        "month_year": "%B %Y",
+        "day_month_year": "%d %B %Y"
+    },
+    "newsletter": {
+        "heading": "Bülten",
+        "garage_heading": "Bültenimiz",
+        "metalware_heading": "Bülten kaydı",
+        "label": "E-postanız...",
+        "success": "Abonelik için teşekkürler",
+        "already_registered": "Zaten bültenimize abonesiniz.",
+        "button_label": "Abone ol",
+        "email": {
+            "validation": "Geçerli format: user@example.com"
+        },
+        "blocks": {
+            "heading": {
+                "label": "Başlık"
+            },
+            "maintenance_image": {
+                "settings": {
+                    "title": "Bakım görseli",
+                    "image_position": {
+                        "label": "Görsel konumu",
+                        "option_1": {
+                            "label": "Üst"
+                        },
+                        "option_2": {
+                            "label": "İçeride"
+                        },
+                        "option_3": {
+                            "label": "Alt"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "accessibility": {
+        "skip_to_text": "İçeriğe geç",
+        "skip_to_product_info": "Ürün bilgilerine geç",
+        "close": "Kapat",
+        "zoom": "Yakınlaştır",
+        "unit_price_separator": "başına",
+        "vendor": "Satıcı:",
+        "error": "Hata",
+        "refresh_page": "Bir seçim yapmak sayfanın yenilenmesine neden olur.",
+        "link_messages": {
+            "new_window": "Yeni bir pencerede açılır.",
+            "external": "Harici bir web sitesini açar."
+        },
+        "of": " / ",
+        "next_slide": "Sağa kaydır",
+        "previous_slide": "Sola kaydır",
+        "loading": "Yükleniyor..."
+    },
+    "blogs": {
+        "article": {
+            "all_articles": "Tüm gönderiler",
+            "blog": "Blog",
+            "tags": "Etiketler",
+            "read_next": "Sonraki yazıyı oku",
+            "social_sharing": "Paylaş",
+            "read_more_title": "Daha fazlasını oku: {{ title }}",
+            "read_more": "Devamını oku",
+            "comments": {
+                "one": "{{ count }} yorum",
+                "other": "{{ count }} yorum"
+            },
+            "moderated": "Lütfen dikkat edin, yorumlar yayımlanmadan önce onaylanmalıdır.",
+            "comment_form_title": "Yorum yapın",
+            "name": "Ad",
+            "email": "E-posta",
+            "message": "Yorum",
+            "post": "Yorumu gönder",
+            "back_to_blog": "Bloga geri dön",
+            "share": "Bu yazıyı paylaş",
+            "success": "Yorumunuz başarıyla gönderildi! Teşekkür ederiz!",
+            "success_moderated": "Yorumunuz başarıyla gönderildi. Blogumuz moderasyon altında olduğu için kısa süre sonra yayımlanacaktır."
+        }
+    },
+    "onboarding": {
+        "product_title": "Örnek ürün başlığı",
+        "collection_title": "Koleksiyonunuzun adı"
+    },
+    "products": {
+        "product": {
+            "add_to_cart": "Sepete ekle",
+            "description": "Açıklama",
+            "select_product": "Ürün(leri) seçin",
+            "has_options_message": "Bu ürün için seçenek seçmelisiniz.",
+            "swatch_option_more": "+ {{ qty }} daha fazla",
+            "product_variants": "Ürün varyantları",
+            "_more": "...daha fazla",
+            "_less": "...daha az",
+            "message_label": "Bir mesaj bırakın",
+            "message_placeholder": "Buraya bir açıklama yazın...",
+            "load_more": "Daha fazla yükle..",
+            "quick_view": "Hızlı görünüm",
+            "view_product": "Ürünü görüntüle",
+            "media": {
+                "open_featured_media": "Öne çıkan medyayı galeri görünümünde aç",
+                "open_media": "{{ index }} numaralı medyayı galeri görünümünde aç",
+                "play_model": "3D Görüntüleyiciyi oynat",
+                "play_video": "Videoyu oynat"
+            },
+            "quantity": {
+                "label": "Miktar",
+                "input_label": "{{ product }} için miktar",
+                "increase": "{{ product }} miktarını artır",
+                "decrease": "{{ product }} miktarını azalt"
+            },
+            "pickup_availability": {
+                "view_store_info": "Mağaza bilgilerini görüntüle",
+                "check_other_stores": "Diğer mağazalarda uygunluğu kontrol et",
+                "pick_up_available": "Teslim alma mevcut",
+                "pick_up_available_at_html": "<span class=\"color-foreground\">{{ location_name }}</span> mağazasında teslim alma mevcut",
+                "pick_up_unavailable_at_html": "<span class=\"color-foreground\">{{ location_name }}</span> mağazasında teslim alma şu anda mevcut değil",
+                "unavailable": "Teslim alma uygunluğu yüklenemedi",
+                "refresh": "Yenile"
+            },
+            "price": {
+                "from_price_html": "<span class=\"_lighter\">Başlangıç</span> {{ price }}",
+                "regular_price": "Normal fiyat",
+                "sale_price": "İndirimli fiyat",
+                "unit_price": "Birim fiyat"
+            },
+            "stock": {
+                "in": "Stokta var",
+                "in_html": "<strong>Stokta var</strong> {{ stock_qty }} adet kaldı",
+                "out": "Stokta yok",
+                "left_in_stock_html": "Yalnızca <strong>{{ stock_qty }}</strong> adet kaldı"
+            },
+            "share": "Bu ürünü paylaş",
+            "sku": "Stok Kodu",
+            "sold_out": "Tükendi",
+            "pre_sale": "Ön sipariş",
+            "unavailable": "Mevcut değil",
+            "vendor": "Satıcı",
+            "video_exit_message": "{{ title }} aynı pencerede tam ekran video açar.",
+            "view_full_details": "Tüm detayları görüntüle",
+            "xr_button": "Alanınızda görüntüle",
+            "xr_button_label": "Alanınızda görüntüle, artırılmış gerçeklik penceresinde açılır"
+        },
+        "modal": {
+            "label": "Medya galerisi"
+        },
+        "similar_products": "Benzer ürünler",
+        "product_recommendations": {
+            "empty_list": "Hiç ürün bulunamadı."
+        },
+        "badges": {
+            "new": "Yeni",
+            "new_arrival": "Yeni geliş",
+            "preorder": "Ön sipariş",
+            "pre_order": "Ön sipariş",
+            "custom": "Özel"
+        }
+    },
+    "templates": {
+        "404": {
+            "title": "Sayfa bulunamadı",
+            "subtext": "404"
+        },
+        "search": {
+            "no_results": "“{{ terms }}” için sonuç bulunamadı. Yazımı kontrol edin veya farklı bir kelime ya da ifade kullanın.",
+            "view_all": "Tüm sonuçları görüntüle",
+            "page": "Sayfa",
+            "results_with_count": {
+                "one": "{{ count }} sonuç bulundu",
+                "other": "{{ count }} sonuç bulundu"
+            },
+            "results": {
+                "products": "Ürünler",
+                "collections": "Koleksiyonlar",
+                "pages": "Sayfalar",
+                "articles": "Blog Yazıları"
+            },
+            "title": "“{{ terms }}” için arama sonuçları"
+        },
+        "cart": {
+            "cart": "Sepet"
+        },
+        "contact": {
+            "form": {
+                "name": "Ad",
+                "email": "E-posta",
+                "phone": "Telefon numarası",
+                "company_info": "Şirket Bilgileri",
+                "contact_info": "İletişim Bilgileri",
+                "comment": "Yorum",
+                "follow": "Bizi takip edin",
+                "send": "Mesaj gönder",
+                "post_success": "Bizimle iletişime geçtiğiniz için teşekkürler. En kısa sürede size geri döneceğiz.",
+                "error_heading": "Lütfen aşağıdakileri düzeltin:"
+            },
+            "location": {
+                "error_coordinates": "Harita özel koordinatlar kullanıyor. Mağazayı bulmak için koordinat girişlerini doğrulayın."
+            }
+        },
+        "faqs_page": {
+            "empty": "Hiç SSS öğesi eklenmemiş.",
+            "input_empty_result": "SSS bulunamadı. Lütfen arama isteğinizi doğrulayın.",
+            "input_search": "SSS adı ara..",
+            "input_title": "SSS filtreleri"
+        }
+    },
+    "sections": {
+        "header": {
+            "announcement": "Duyuru",
+            "menu": "Menü",
+            "title": "Kategoriler",
+            "cart_count": {
+                "one": "{{ count }} ürün",
+                "other": "{{ count }} ürün"
+            },
+            "settings": "Ayarlar",
+            "item_menu": {
+                "image_title": "Görsel başlığı"
+            }
+        },
+        "overlay": {
+            "countdown_timer": {
+                "days": "Gün",
+                "hours": "Saat",
+                "minutes": "Dakika",
+                "seconds": "Saniye"
+            }
+        },
+        "cart": {
+            "flow_notification": "Ürün başarıyla sepetten kaldırıldı",
+            "title": "Sepetiniz",
+            "caption": "Sepet ürünleri",
+            "remove_title": "{{ title }} ürününü kaldır",
+            "subtotal": "Ara toplam",
+            "new_subtotal": "Yeni ara toplam",
+            "note": "Sipariş özel talimatları",
+            "checkout": "Satın al",
+            "empty": "Alışveriş Sepeti",
+            "empty_message": "Alışveriş sepetinizde ürün bulunmuyor.",
+            "cart_error": "Sepet güncellenirken bir hata oluştu. Lütfen tekrar deneyin.",
+            "cart_quantity_error_html": "Bu üründen daha fazla ekleyemezsiniz.",
+            "taxes_and_shipping_policy_at_checkout_html": "Vergiler ve <a href=\"{{ link }}\">kargo</a> ödeme sırasında hesaplanır",
+            "taxes_included_but_shipping_at_checkout": "Vergiler dahil, kargo ödeme sırasında hesaplanır",
+            "taxes_included_and_shipping_policy_html": "Vergiler dahil. <a href=\"{{ link }}\">Kargo</a> ödeme sırasında hesaplanır.",
+            "taxes_and_shipping_at_checkout": "Vergiler ve kargo ödeme sırasında hesaplanır",
+            "taxes_included": "Vergiler dahil",
+            "taxes_excluded": "Vergiler hariç",
+            "taxes_included_html": "KDV dahil:&nbsp;<strong>{{ price }}</strong>",
+            "taxes_excluded_html": "KDV hariç:&nbsp;<strong>{{ price }}</strong>",
+            "discount_apply": "Kupon uygula",
+            "discount_remove": "Kaldır",
+            "discount_error": "Kupon kodu geçerli değil. Kodu doğrulayın ve tekrar deneyin.",
+            "enter_discount_code": "Kupon kodunu girin",
+            "headings": {
+                "product": "Ürün",
+                "price": "Fiyat",
+                "total": "Toplam",
+                "quantity": "Adet"
+            },
+            "update": "Güncelle"
+        },
+        "compare": {
+            "link_title": "Ürünleri karşılaştır",
+            "link_text": "Karşılaştır",
+            "remove_items": "Sil",
+            "add_to_compare": "Karşılaştırmaya ekle",
+            "no_reviews": "-",
+            "popup": {
+                "title": "Karşılaştır",
+                "empty_list": "Karşılaştırılacak ürün yok",
+                "lack_items": "Karşılaştırmak için yeterli ürün yok",
+                "featured_image": "Görsel",
+                "link_remove_item": "Ürünü kaldır",
+                "product_title": "Başlık",
+                "product_price": "Fiyat",
+                "product_form": "Form",
+                "item_added_to_cart": "Ürün sepete eklendi",
+                "product_description": "Açıklama",
+                "product_vendor": "Satıcı",
+                "product_sku": "Stok Kodu",
+                "product_rating": "Değerlendirme",
+                "not_available": "Yok"
+            }
+        },
+        "footer": {
+            "social_placeholder": "Bizi sosyal medyada takip edin!",
+            "payment": "Ödeme yöntemleri",
+            "theme_settings": "Tema Ayarları",
+            "menu": "Menü öğesi",
+            "instructions_for_linklist_html": "{{ theme_settings_link }} içindeki {{ theme_settings_footer_linklist_path }} altında burada gösterilecek bir bağlantı listesi seçin.",
+            "instructions_for_text_content_html": "{{ theme_settings_link }} içindeki burada gösterilecek bir metin ekleyin.",
+            "contacts": {
+                "social_heading": "Bizimle bağlantı kurun",
+                "title": "Yardım mı gerekiyor?",
+                "address": "Adres",
+                "mail": "E-posta",
+                "phone_number": "Telefon Numarası"
+            }
+        },
+        "featured_blog": {
+            "view_all": "Tümünü görüntüle",
+            "onboarding_title": "Yeni akıllı telefonunuzu 10 kolay adımda kurun",
+            "onboarding_content": "Müşterilerinize blog yazınızın bir özetini verin",
+            "onboarding_author": "Swissuplabs"
+        },
+        "modern": {
+            "view_all": "Tümünü görüntüle"
+        },
+        "featured_collection": {
+            "view_all": "Tümünü görüntüle",
+            "view_all_label": "{{ collection_name }} koleksiyonundaki tüm ürünleri görüntüle"
+        },
+        "collection_list": {
+            "view_all": "Tümünü görüntüle",
+            "product_count": {
+                "zero": "Ürün yok",
+                "one": "{{ count }} ürün",
+                "other": "{{ count }} ürün"
+            }
+        },
+        "collection_template": {
+            "show_more": "Daha fazla göster",
+            "show_less": "Daha az göster",
+            "apply": "Uygula",
+            "clear": "Temizle",
+            "clear_all": "Tümünü temizle",
+            "empty": "Üzgünüz, aramanızla eşleşen sonuç bulunamadı.",
+            "from": "Başlangıç",
+            "filter_and_sort": "Filtrele ve sırala",
+            "filter_by_label": "Filtrele",
+            "filter_button": "Filtre",
+            "filters_selected": {
+                "one": "{{ count }} seçildi",
+                "other": "{{ count }} seçildi"
+            },
+            "max_price": "En yüksek fiyat {{ price }}",
+            "product_count": {
+                "one": "{{ count }} ürünün {{ product_count }} tanesi gösteriliyor",
+                "other": "{{ count }} ürünün {{ product_count }} tanesi gösteriliyor"
+            },
+            "product_count_simple": {
+                "one": "{{ count }} ürün",
+                "other": "{{ count }} ürün"
+            },
+            "reset": "Sıfırla",
+            "shopping_by_label": "Alışveriş kriterleri",
+            "sort_button": "Sırala",
+            "sort_by_label": "Sıralama ölçütü",
+            "title": "Koleksiyon",
+            "to": "Bitiş",
+            "use_fewer_filters_html": "Eşleşen ürün yok. Daha az filtre kullanın veya <a class=\"{{ class }}\" href=\"{{ link }}\">tümünü temizleyin</a>."
+        },
+        "main-product": {
+            "title": {
+                "reviews": "Ürün yorumları"
+            }
+        },
+        "product-bought-together": {
+            "choose_product": "\"{{ name }}\" ürününü seçin",
+            "total_price": "Toplam fiyat"
+        },
+        "product-tabs": {
+            "faq": {
+                "read_more": "Sonrakini oku"
+            },
+            "shopify-product-reviews": {
+                "heading": "Müşteri Yorumları"
+            },
+            "unknown-block": {
+                "heading": "Sekme Başlığı"
+            }
+        },
+        "collage": {
+            "video": {
+                "not_supported": "Tarayıcınız video etiketini desteklemiyor."
+            }
+        }
+    },
+    "localization": {
+        "country_label": "Ülke/bölge",
+        "language_label": "Dil",
+        "update_language": "Dili güncelle",
+        "update_country": "Ülke/bölgeyi güncelle",
+        "update_currency": "Para birimini güncelle",
+        "currency_label": "Para birimi etiketi",
+        "search_placeholder": "Ara..."
+    },
+    "customer": {
+        "account": {
+            "title": "Hesap",
+            "details": "Hesap detayları",
+            "view_addresses": "Adresleri görüntüle",
+            "return": "Hesap detaylarına dön"
+        },
+        "account_fallback": "Hesap",
+        "activate_account": {
+            "title": "Hesabı etkinleştir",
+            "subtext": "Hesabınızı etkinleştirmek için şifrenizi oluşturun.",
+            "password": "Şifre",
+            "password_confirm": "Şifreyi onayla",
+            "submit": "Hesabı etkinleştir",
+            "cancel": "Daveti reddet"
+        },
+        "addresses": {
+            "title": "Adresler",
+            "default": "Varsayılan",
+            "add_new": "Yeni adres ekle",
+            "edit_address": "Adresi düzenle",
+            "first_name": "Ad",
+            "last_name": "Soyad",
+            "company": "Şirket",
+            "address1": "Adres 1",
+            "address2": "Adres 2",
+            "city": "Şehir",
+            "country": "Ülke/bölge",
+            "province": "Eyalet",
+            "zip": "Posta Kodu",
+            "phone": "Telefon",
+            "set_default": "Varsayılan adres olarak ayarla",
+            "add": "Adres ekle",
+            "update": "Adresi güncelle",
+            "cancel": "İptal",
+            "edit": "Düzenle",
+            "delete": "Sil",
+            "delete_confirm": "Bu adresi silmek istediğinize emin misiniz?"
+        },
+        "log_in": "Giriş yap",
+        "log_out": "Çıkış yap",
+        "login_page": {
+            "cancel": "İptal",
+            "create_account": "Hesap oluştur",
+            "email": "E-posta",
+            "forgot_password": "Şifrenizi mi unuttunuz?",
+            "guest_continue": "Devam et",
+            "guest_title": "Misafir olarak devam et",
+            "password": "Şifre",
+            "title": "Giriş",
+            "sign_in": "Giriş yap",
+            "submit": "Gönder"
+        },
+        "order": {
+            "title": "{{ name }} siparişi",
+            "date_html": "{{ date }} tarihinde verildi",
+            "cancelled_html": "{{ date }} tarihinde iptal edildi",
+            "cancelled_reason": "Sebep: {{ reason }}",
+            "billing_address": "Fatura Adresi",
+            "payment_status": "Ödeme Durumu",
+            "shipping_address": "Teslimat Adresi",
+            "fulfillment_status": "Sipariş Durumu",
+            "discount": "İndirim",
+            "shipping": "Kargo",
+            "tax": "Vergi",
+            "product": "Ürün",
+            "sku": "Stok Kodu",
+            "price": "Fiyat",
+            "quantity": "Adet",
+            "total": "Toplam",
+            "fulfilled_at_html": "{{ date }} tarihinde gönderildi",
+            "track_shipment": "Kargoyu takip et",
+            "tracking_url": "Takip bağlantısı",
+            "tracking_company": "Taşıyıcı",
+            "tracking_number": "Takip numarası",
+            "subtotal": "Ara toplam"
+        },
+        "orders": {
+            "title": "Sipariş geçmişi",
+            "order_number": "Sipariş",
+            "order_number_link": "Sipariş numarası {{ number }}",
+            "date": "Tarih",
+            "payment_status": "Ödeme durumu",
+            "fulfillment_status": "Teslimat durumu",
+            "total": "Toplam",
+            "none": "Henüz bir sipariş vermediniz."
+        },
+        "recover_password": {
+            "title": "Şifrenizi sıfırlayın",
+            "subtext": "Şifrenizi sıfırlamak için size bir e-posta göndereceğiz",
+            "success": "Şifrenizi güncellemek için bağlantı içeren bir e-posta gönderdik."
+        },
+        "register": {
+            "title": "Hesap oluştur",
+            "first_name": "Ad",
+            "last_name": "Soyad",
+            "email": "E-posta",
+            "password": "Şifre",
+            "submit": "Oluştur"
+        },
+        "reset_password": {
+            "title": "Hesap şifresini sıfırla",
+            "subtext": "{{ email }} için yeni bir şifre girin",
+            "password": "Şifre",
+            "password_confirm": "Şifreyi onayla",
+            "submit": "Şifreyi sıfırla"
+        }
+    },
+    "gift_cards": {
+        "issued": {
+            "title": "{{ shop }} için {{ value }} hediye kartınız burada!",
+            "subtext": "Hediye kartınız",
+            "gift_card_code": "Hediye kartı kodu",
+            "shop_link": "Alışverişe devam et",
+            "remaining_html": "Kalan bakiye {{ balance }}",
+            "add_to_apple_wallet": "Apple Wallet’a ekle",
+            "qr_image_alt": "QR kod — hediye kartını kullanmak için tarayın",
+            "copy_code": "Kodu kopyala",
+            "expired": "Süresi doldu",
+            "copy_code_success": "Kod başarıyla kopyalandı",
+            "print_gift_card": "Yazdır"
+        },
+        "recipient": {
+            "form": {
+                "checkbox": "Hediye olarak gönder",
+                "email": "Alıcının e-postası",
+                "email_label": "Alıcının e-postası",
+                "email_label_optional_for_no_js_behavior": "Alıcının e-postası (isteğe bağlı)",
+                "name": "Alıcı adı (isteğe bağlı)",
+                "name_label": "Alıcı adı (isteğe bağlı)",
+                "message": "Mesaj (isteğe bağlı)",
+                "message_label": "Mesaj (isteğe bağlı)",
+                "send_on": "aa/gg/yy",
+                "send_on_label": "Gönderim tarihi (isteğe bağlı)",
+                "max_characters": "En fazla {{ max_chars }} karakter"
+            }
+        }
+    },
+    "header_top": {
+        "contact_phone": {
+            "title": "Bizi arayın"
+        },
+        "contact_email": {
+            "title": "Bize e-posta gönderin"
+        }
+    }
+}

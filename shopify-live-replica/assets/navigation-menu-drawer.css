@@ -1,0 +1,17 @@
+.menu-drawer {
+  left: 0px;
+}
+
+@media all and (max-width: 989px) {
+  .menu-drawer {
+    transform-origin: 1rem -2.5rem;
+  }
+
+  .menu-drawer::after {
+    left: 1.5rem;
+  }
+
+  .menu-drawer-toggler[data-label=true]::after {
+    content: attr(aria-label);
+  }
+}

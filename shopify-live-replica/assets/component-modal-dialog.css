@@ -1,0 +1,113 @@
+.popup-modal__content {
+    background: var(--popup-banner-background, var(--color-background));
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: 100%;
+    overflow-y: auto;
+    max-height: 85%;
+    width: calc(100% - 1rem);
+    border-radius: 4px;
+    box-shadow: 0 0 1rem var(--color-foreground-50);    
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    transition: all .75s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media screen and (min-width: 768px) {
+    .popup-modal__content {
+        width: 85%;
+    }
+}
+
+.popup-banner__text > * {
+    color: var(--popup-banner-foreground);
+}
+
+.popup-modal__content .modal__close-button {
+    background: transparent;
+}
+
+[open] .popup-modal__content{
+    opacity: 1;
+    transform: translate(-50%, -50%);
+}
+
+.popup-modal__content-padding {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 1rem;
+}
+
+@media (min-width: 768px) {
+
+    .popup-modal__content-padding {
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }
+}
+
+.popup-modal__toggle {
+    position: sticky;
+    right: 0px;
+    top: 0px;
+    z-index: 50;
+    float: right;
+    margin-left: -100%;
+}
+
+.popup-modal__content-padding .popup-modal__toggle {
+    display: block;
+    margin: 0 -1.5rem -1.5rem calc(100% - .5rem);
+}
+
+.popup-modal__content-padding .popup-modal__content-info {
+    padding-bottom: 2rem;
+}
+
+.password-modal__content > a,
+.password-modal__content input,
+.password__footer-text {
+    color: initial;
+}
+
+@media all and (min-width: 768px) {
+    .popup-modal__content-padding .popup-modal__toggle {
+        margin: 0 -2rem -1.5rem calc(100%);
+    }
+}
+
+@media all and (min-width: 990px) {
+    .popup-modal__content {
+        max-height: 67%;
+    }
+}
+
+/* scrollbar styles */
+
+#PopupModal-quickView [role=dialog]::-webkit-scrollbar,
+.compare-link__products::-webkit-scrollbar,
+#compare-popup .compare-products-list::-webkit-scrollbar {
+    width: .5rem;
+    height: .5rem;
+}
+
+#PopupModal-quickView [role=dialog]::-webkit-scrollbar-thumb,
+.compare-link__products::-webkit-scrollbar-thumb,
+#compare-popup .compare-products-list::-webkit-scrollbar-thumb {
+    background: var(--color-foreground-50);
+}
+
+#PopupModal-quickView [role=dialog]::-webkit-scrollbar-thumb:hover,
+.compare-link__products::-webkit-scrollbar-thumb:hover,
+#compare-popup .compare-products-list::-webkit-scrollbar-thumb:hover {
+    background: var(--color-foreground-75);
+}
+
+#PopupModal-quickView [role=dialog]::-webkit-scrollbar-track,
+.compare-link__products::-webkit-scrollbar-track,
+#compare-popup .compare-products-list::-webkit-scrollbar-track {
+    background: var(--color-foreground-20);
+}
+
+/* end scrollbar styles */

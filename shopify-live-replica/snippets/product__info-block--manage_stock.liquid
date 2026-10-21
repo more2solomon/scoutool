@@ -1,0 +1,99 @@
+{%- comment -%}
+    Render product stock info using block settings
+
+    Accepts:
+     - block:      {Object}
+     - blockOrder: {Number}
+     - sectionId:  {String}
+     - product:    {Object}
+{%- endcomment -%}
+{% style %}
+    .stock__counter {
+        color: {{ settings.in_stock_label_color }};
+    }
+    .stock__counter:before {
+        background: {{ settings.in_stock_label_color }};
+    }
+    .stock__counter[data-stock-qty="0"] {
+        color: {{ settings.out_of_stock_label_color }};
+    }
+    .stock__counter[data-stock-qty="0"]:before {
+        background: {{ settings.out_of_stock_label_color }};
+    }
+{% endstyle %}
+<div class="product__info-block product__info-block-stock reveal-item" {{ block.shopify_attributes }}>
+    {% liquid
+        assign stock_threshold_qty = block.settings.stock_counter | plus: 0
+        assign productQty = 0
+        assign configurableProduct = false
+
+        if product.variants.size > 1
+            # configurable products
+            assign configurableProduct = true
+        else
+            # simple products
+            assign variant = product.variants | first
+            if variant.inventory_quantity > 0
+                assign productQty = productQty | plus: variant.inventory_quantity
+            endif
+        endif
+    %}
+
+    {% if configurableProduct %}
+        {% for variant in product.variants %}
+            <input
+                type="hidden"
+                class="variant__configurable"
+                value="{{ variant.title }}"
+                data-variant-id="{{ variant.id }}"
+                data-variant-qty="{{ variant.inventory_quantity }}"
+            >
+        {% endfor %}
+        <div
+            class="stock__counter configurable"
+            data-threshold-qty="{{ stock_threshold_qty }}"
+            data-title="{{ 'products.product.stock.left_in_stock_html' | t: stock_qty: 'X' }}"
+            data-title-in-stock="{{ 'products.product.stock.in_html' | t }}"
+            data-title-out-of-stock="{{ 'products.product.stock.out' | t }}"
+            data-stock-qty
+        ></div>
+    {% else %}
+        <div
+            class="
+                stock__counter simple{%- if variant.inventory_management == null %} not_tracked{% endif -%}
+                {%- if block.settings.show_social_sharing %} with__social-sharing{% endif -%}
+            "
+            data-updatable="true"
+            {%- if variant.inventory_management != null %}
+                data-stock-qty="{{ productQty }}"
+            {% endif %}
+        >
+            {%- if variant.inventory_management != null -%}
+                {% if productQty > 0 %}
+                    {% if productQty > stock_threshold_qty %}
+                        {{ 'products.product.stock.in_html' | t: stock_qty: productQty }}
+                    {% else %}
+                        {{ 'products.product.stock.left_in_stock_html' | t: stock_qty: productQty }}
+                    {% endif %}
+                {% else %}
+                    {{ 'products.product.stock.out' | t }}
+                {% endif %}
+            {%- else -%}
+                {% if product.selected_or_first_available_variant.available %}
+                    {{ 'products.product.stock.in' | t }}
+                {% else %}
+                    {{ 'products.product.stock.out' | t }}
+                {% endif %}
+            {%- endif -%}
+        </div>
+    {% endif %}
+    {%- if block.settings.show_social_sharing -%}
+        <div class="product__info-block-social-sharing">
+            {%- render 'social-sharing',
+                share_title: product.title,
+                share_permalink: product.url,
+                share_image: product.images[0]
+            -%}
+        </div>
+    {%- endif -%}
+</div>

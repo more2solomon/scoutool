@@ -1,0 +1,26 @@
+.price-plan-wrapper .description-items {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.price-plan-wrapper .description-items > li {
+    word-break: break-all;
+}
+
+slider-component .plan-items {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-around;
+    gap: 0.5rem;
+}
+
+.plan-items .plan-price {
+    font-size: 2rem;
+}
+
+.plan-items .period {
+    font-size: 1rem;
+    line-height: 1.5rem;
+}

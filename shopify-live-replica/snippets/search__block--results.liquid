@@ -1,0 +1,421 @@
+{%- comment -%}
+    Render search results using block settings
+
+    Accepts:
+     - block:           {Object}
+     - blockOrder:      {Number}
+     - has_side_column: {Boolean}
+     - show_articles:   {Boolean}
+     - show_pages:      {Boolean}
+{%- endcomment -%}
+
+{%- liquid
+    assign filtersBlocks = section.blocks | where: 'type', 'filters'
+    assign currentMode = block.settings.mode
+    assign currentColumns = block.settings.columns
+    assign imageRatio = block.settings.image_ratio
+    assign badgeSize = block.settings.badge_size
+    assign showVendor = settings.product_card_vendor
+    assign showDescription = block.settings.show_description
+    assign showArticles = block.settings.show_articles
+    assign showPages = block.settings.show_pages
+    assign mainCollectionProductsId = 'main-collection-products'
+    assign productsSize = false
+    assign articleSize = false
+    assign pageSize = false
+    assign secondaryResultsTypeArticles = ''
+    assign secondaryResultsTypePages = ''
+    capture image_sizes_config
+        render 'grid-item--item-image--sizes', mode: currentMode, columns: currentColumns, has_side_column: has_side_column
+    endcapture
+
+    for result in search.results
+        if result != nill
+            assign item = result
+        endif
+        case item.object_type
+            when 'product'
+                assign productsSize = true
+            when 'article'
+                assign articleSize = true
+                assign secondaryResultsTypeArticles = 'articles'
+            when 'page'
+                assign pageSize = true
+                assign secondaryResultsTypePages = 'pages'
+        endcase
+    endfor
+-%}
+
+{{ 'component-pagination.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+
+<div
+    id="CollectionProducts"
+    class="search__block search__block--results{% if block.settings.animation_on_reveal %} reveal-slide-in{% endif %}"
+    style="order: {{ blockOrder }}"
+    {{ block.shopify_attributes }}
+>
+    {%- paginate search.results by block.settings.per_page -%}
+        {% if productsSize == false and articleSize == false and pageSize == false -%}
+            {% style %}
+                .search--results-empty,
+                .collection--empty .form__message {
+                    position: relative;
+                    max-width: 600px;
+                    margin: 0 auto;
+                    margin-bottom: 2.5rem;
+                }
+            {% endstyle %}
+            <div class="collection collection--empty" id="main-collection-products" data-id="{{ section.id }}">
+                <form
+                    action="{{ routes.search_url }}"
+                    method="get"
+                    role="search"
+                    class="search search--results-empty"
+                >
+                    <input
+                        type="search"
+                        name="q"
+                        placeholder="{{ 'general.search.search' | t }}"
+                        value="{{ search.terms }}"
+                        autocomplete="off"
+                        autofocus
+                    >
+                    <input name="options[prefix]" type="hidden" value="last">
+                    <button
+                        type="submit"
+                        class="search__button field__button"
+                        aria-label="{{ 'general.search.search' | t }}"
+                    >
+                        <svg aria-hidden="true" focusable="false" role="presentation">
+                            <use href="#icon-search" />
+                        </svg>
+                    </button>
+                </form>
+                <div class="form__message">
+                    {% render 'icons-outline', name: 'exclamation-circle' %}
+                    <p>
+                        {% if collection.filters.size > 0 -%}
+                            {{
+                                'sections.collection_template.use_fewer_filters_html'
+                                | t: link: collection.url, class: 'underlined-link link'
+                            }}
+                        {%- else -%}
+                            {{ 'sections.collection_template.empty' | t }}
+                        {%- endif %}
+                    </p>
+                </div>
+            </div>
+        {% else -%}
+            <div class="main-collection">
+                <div class="collection-toolbar collection-toolbar-top">
+                    <p class="collection-product-count">
+                        {{ 'templates.search.results_with_count' | t: count: search.results_count }}
+                    </p>
+                    {% if productsSize -%}
+                        {% if block.settings.show_mode -%}
+                            <collection-modes class="modes" data-label="View">
+                                {%- if block.settings.mode == 'grid' -%}
+                                    {%- assign typeMode = 'grid' -%}
+                                    <span class="mode mode-grid active" data-mode="{{ typeMode }}">
+                                        {%- render 'icons-charge', name: 'view-grid' -%}
+                                    </span>
+                                    <a
+                                        href="{{ collection.url }}?view=mode-list"
+                                        class="mode mode-list"
+                                        title="View mode list"
+                                    >
+                                        {%- render 'icons-charge', name: 'view-list' -%}
+                                    </a>
+                                {%- else -%}
+                                    {%- assign typeMode = 'list' -%}
+                                    <a
+                                        href="{{ collection.url }}?view=mode-grid"
+                                        class="mode mode-grid"
+                                        title="View mode grid"
+                                    >
+                                        {%- render 'icons-charge', name: 'view-grid' -%}
+                                    </a>
+                                    <span class="mode mode-list active" data-mode="{{ typeMode }}">
+                                        {%- render 'icons-charge', name: 'view-list' -%}
+                                    </span>
+                                {%- endif -%}
+                            </collection-modes>
+                        {%- endif %}
+
+                        {% if block.settings.show_sorting -%}
+                            {% if filtersBlocks.size > 0 %}
+                                {% render 'collection-sorting', collection: search, form: 'CollectionFiltersForm' %}
+                            {% else %}
+                                <collection-filters-form class="sorting">
+                                    <form id="CollectionFiltersForm" class="sorting__form">
+                                        {% render 'collection-sorting', collection: search %}
+                                    </form>
+                                </collection-filters-form>
+                            {% endif %}
+                        {%- endif %}
+                    {%- endif %}
+                </div>
+
+                {% render 'grid-items',
+                    ul_id: mainCollectionProductsId,
+                    ul_class: 'products',
+                    has_side_column: has_side_column,
+                    items: search.results,
+                    mode: typeMode,
+                    columns: currentColumns,
+                    badge_size: badgeSize,
+                    image_ratio: imageRatio,
+                    product_secondary_image: settings.product_card_secondary_image,
+                    product_to_cart_button: block.settings.show_to_cart_button,
+                    swatch_option_color: block.settings.show_swatch_options_color,
+                    product_show_vendor: showVendor,
+                    product_description: showDescription,
+                    compare_products: settings.compare_products,
+                    quick_view: settings.enable_quick_view
+                %}
+
+                {%- if paginate.pages > 1 -%}
+                    {% if block.settings.pagination_type == 'pagination_list' %}
+                        {% render 'pagination', paginate: paginate, anchor: '', class: '' %}
+                    {% else %}
+                        {% render 'pagination-load-more',
+                            type: block.settings.pagination_type,
+                            paginate: paginate,
+                            class: block.settings.pagination_type
+                        %}
+                    {% endif %}
+                {%- endif -%}
+            </div>
+        {%- endif -%}
+    {%- endpaginate -%}
+    {% comment %} render secondary search result types: articles and pages {% endcomment %}
+    {% if search.performed %}
+        {%- if showArticles or showPages -%}
+            {% unless secondaryResultsTypeArticles == blank or secondaryResultsTypePages == blank %}
+                {% style %}
+                        .secondary--results .rows-divider {
+                            background-color: var(--color-foreground-8);
+                            display: block;
+                            height: 1px;
+                            margin: 1rem auto;
+                            width: 100%;
+                        }
+
+                        .secondary--results {
+                            display: flex;
+                            flex-wrap: wrap;
+                            gap: 1rem;
+                        }
+
+                        .secondary--results li {
+                            width: 100%;
+                        }
+
+                        .secondary--results li .item-date {
+                            font-size: .875rem;
+                            line-height: 1.25rem;
+                        }
+
+                        .secondary--results[data-mode="grid"]  .item-details-wrapper {
+                            padding: 0 .5rem;
+                        }
+
+                        .secondary--results .item-details-wrapper .item-description {
+                            font-size: calc(1rem - 1px);
+                        }{% if typeMode == 'list' %}
+
+                        .secondary--results li a {
+                            display: flex;
+                            width: 100%;
+                            align-items: center;
+                            padding: .75rem 1.5rem;
+                        }
+
+                        .secondary--results li .item-image {
+                            width: calc(35% - 1rem);
+                        }
+
+                        .secondary--results li .item-details-wrapper {
+                            width: calc(65% - 2px);
+                            padding: 1rem;
+                        }{% else %}
+
+                        .secondary--results li {
+                            position: relative;
+                            width: calc(50% - .5rem);
+                        }
+
+                        .secondary--results li .item-image {
+                            padding: .5rem;
+                        }
+
+                        .secondary--results squama-item:after {
+                            background-image: none;
+                        }
+
+                        .secondary--results .item-page {
+                            padding: .5rem 1rem;
+                            border: 1px solid var(--color-foreground-8);
+                        }
+
+                        .secondary--results .item-details-wrapper .item-description {
+                            display: -webkit-box;
+                            overflow: hidden;
+                            -webkit-box-orient: vertical;
+                            -webkit-line-clamp: 2;
+                            word-break: break-word;
+                        }
+
+                        .secondary--results li:hover {
+                            --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / .1), 0 4px 6px -4px rgb(0 0 0 / .1);
+                            --tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);
+                            box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow);
+                        }
+
+                        .secondary--results li .item-link {
+                            border: 0;
+                        }
+
+                        .secondary--results li:not(.item-page),
+                        .secondary--results li .item-link:not(.item-page) {
+                            padding-bottom: 1rem;
+                        }
+
+                        .secondary--results li .item-link:focus {
+                            display: block;
+                        }{% endif %}
+
+                        .secondary--results .item-page .item-title {
+                            font-size: 1rem;
+                            text-align: {% if typeMode == 'list' %}center{% else %}left{% endif %};
+                            font-weight: bold;
+                            text-transform: capitalize;
+                        }
+
+                        .secondary--results .item-page .item-details-wrapper {
+                            text-align: left;
+                        }
+
+                    @media (max-width: 475px), print {
+                        .secondary--results .item-details-wrapper .item-description {
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                        }
+                    }
+
+                    @media (min-width: 768px), print {
+                    {% if typeMode == 'list' %}
+                        .secondary--results {
+                            gap: 0;
+                        }
+
+                        .secondary--results .rows-divider {
+                            margin: 1rem auto;
+                        }
+
+                        .secondary--results li .item-details-wrapper {
+                            padding: 2rem;
+                        }{% else %}
+
+                        .secondary--results {
+                            gap: 1.5rem;
+                        }
+
+                        .secondary--results li:not(.item-page) {
+                            width: calc(100% / {{ currentColumns }} - 2% - 4px);
+                        }
+
+                        .secondary--results li.item-page {
+                            width: calc(50% - 1rem);
+                        }{% endif %}
+                    }{% if typeMode == 'grid' or typeMode == null %}
+                    @media (min-width: 1024px), print {
+                        .secondary--results li.item-page {
+                            width: calc(33% - 1rem);
+                        }
+                    }
+
+                    @media (min-width: 1200px), print {
+                        .secondary--results li:not(.item-page) {
+                            width: calc(100% / {{ currentColumns }} - 2%);
+                        }
+                    }{% endif %}
+                {% endstyle %}
+            {% endunless %}
+            {% unless secondaryResultsTypeArticles == blank %}
+                {%- assign ul_ID = 'collection-types__' | append: secondaryResultsTypeArticles | prepend: '#' -%}
+                {%- assign arcticles = search.results | where: 'object_type', 'article' -%}
+                {% if arcticles.size > 0 %}
+                    <h3 class="search-secondary-results-heading">{{ 'templates.search.results.articles' | t }}</h3>
+                    <ul
+                        id="{{ ul_ID }}"
+                        class="secondary--results list-{{ secondaryResultsTypeArticles }}"
+                        data-mode="{{ typeMode }}"
+                        data-columns="{{ currentColumns }}"
+                        data-id="{{ section.id }}"
+                    >
+                        {%- for result in search.results -%}
+                            {% case result.object_type %}
+                                {% when 'article' %}
+                                    {%- capture item_html -%}
+                    {%- render 'grid-item-article'
+                        article: result
+                        image_ratio: block.settings.image_ratio
+                        image_sizes_config: image_sizes_config
+                        show_article_date: true
+                        show_author: block.settings.show_vendor
+                        show_description: block.settings.show_description
+                    -%}
+                {%- endcapture -%}
+
+                                    {{ item_html | replace: '<!-- badges_html -->', '' }}
+
+                                    {%- if forloop.last == false and typeMode == 'list' -%}
+                                        <li class="rows-divider"></li>
+                                    {%- endif -%}
+                            {% endcase %}
+                        {%- endfor -%}
+                    </ul>
+                {% endif %}
+            {% endunless %}
+            {% unless secondaryResultsTypePages == blank %}
+                {%- assign ul_ID = 'collection-types__' | append: secondaryResultsTypePages | prepend: '#' -%}
+                {%- assign pages = search.results | where: 'object_type', 'page' -%}
+                {% if pages.size > 0 %}
+                    <h3 class="h3 search-secondary-results-heading reveal-item{% if settings.show_uppercase_heading %} uppercase{% endif %}">
+                        {{ 'templates.search.results.pages' | t }}
+                    </h3>
+                    <ul
+                        id="{{ ul_ID }}"
+                        class="secondary--results list-{{ secondaryResultsTypePages }}"
+                        data-mode="{{ typeMode }}"
+                        data-columns="{{ currentColumns }}"
+                        data-id="{{ section.id }}"
+                    >
+                        {%- for result in search.results -%}
+                            {% case result.object_type %}
+                                {% when 'page' %}
+                                    {%- capture item_html -%}
+                    {%- render 'grid-item-page'
+                        page: result
+                        image_ratio: block.settings.image_ratio
+                        image_sizes_config: image_sizes_config
+                        show_description: true
+                    -%}
+                {%- endcapture -%}
+
+                                    {{ item_html | replace: '<!-- badges_html -->', '' }}
+
+                                    {%- if forloop.last == false and typeMode == 'list' -%}
+                                        <li class="rows-divider"></li>
+                                    {%- endif -%}
+                            {% endcase %}
+                        {%- endfor -%}
+                    </ul>
+                {% endif %}
+            {% endunless %}
+        {%- endif -%}
+    {% endif %}
+</div>

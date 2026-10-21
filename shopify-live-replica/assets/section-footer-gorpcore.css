@@ -1,0 +1,28 @@
+@media (max-width: 989px), print {
+    .footer-contacts__image {
+        grid-area: footer-logo;
+    }
+
+    .footer-contacts__address {
+        grid-area: footer-address;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .footer-contacts__social {
+        grid-area: footer-social;
+    }
+
+    .footer-contacts__newsletter {
+        grid-area: footer-newsletter;
+    }
+
+    .footer-contacts__inner {
+        grid-template-areas:'footer-logo .'
+                            'footer-address footer-address'
+                            'footer-newsletter footer-newsletter'
+                            'footer-social footer-social';
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+    }
+}

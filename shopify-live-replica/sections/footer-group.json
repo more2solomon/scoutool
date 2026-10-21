@@ -1,0 +1,61 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.footer.name",
+  "type": "footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "footer-contacts": {
+          "type": "footer-contacts",
+          "settings": {
+            "color_bg": "#072f43",
+            "image_show": false,
+            "image": "shopify://shop_images/512073420129521389.jpg",
+            "image_width": 194,
+            "image_align": "bottom",
+            "show_logo_above_contacts_on_mobile": false,
+            "address": "<p><br/>Online Store<br/>Worldwide Shipping<br/></p>",
+            "show_email": true,
+            "show_phone": true,
+            "show_newsletter": true,
+            "show_contacts_in_row": false,
+            "enable_stack_on_mobile": false
+          }
+        }
+      },
+      "block_order": [
+        "footer-contacts"
+      ],
+      "settings": {
+        "full_width": false,
+        "section_max_width": 1280,
+        "animation_on_reveal": false,
+        "show_uppercase_heading": false,
+        "use_background_image": false,
+        "footer_bottom_background_image": "shopify://shop_images/794815034281825159.jpg",
+        "footer_bottom_paddings": 25,
+        "gradient_to": 30,
+        "gradient_transparency": 45,
+        "line_height": 2.5,
+        "align_items_menu": "left",
+        "show_policy": false,
+        "follow_on_shop": false,
+        "payment_enable": true,
+        "custom_payment_icon": "",
+        "control_icon_width": 60
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

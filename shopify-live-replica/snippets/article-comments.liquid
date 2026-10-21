@@ -1,0 +1,199 @@
+{% comment %}
+    Renders Article comments content
+
+    Accepts:
+    - article: {Object} Article object
+    - customer_comments:
+{% endcomment %}
+{%- liquid
+    assign iconFlag = false
+    assign commentsIconWidth = 64
+-%}
+
+<div
+    class="article-template__comment-wrapper{% if section.settings.animation_on_reveal %} reveal-slide-in{% endif %}"
+    {{ customer_comments.shopify_attributes }}
+>
+    <div id="comments">
+        {%- if article.comments_count > 0 -%}
+            {%- assign anchorId = '#Comments-' | append: article.id -%}
+            <div class="comments-wrapper">
+                <h2 id="Comments-{{ article.id }}" class="reveal-item">
+                    {{ 'blogs.article.comments' | t: count: article.comments_count }}
+                </h2>
+                {% paginate article.comments by 5 %}
+                    <div class="article-template__comments">
+                        {%- if comment.status == 'pending' and comment.content -%}
+                            <article id="{{ comment.id }}" class="article-template__comments-comment reveal-item">
+                                {{ comment.content }}
+                                <div class="article-template__comments-comment-footer">
+                                    <span class="article-template__comments-comment-author">{{ comment.author }}</span>
+                                </div>
+                            </article>
+                        {%- endif -%}
+
+                        {%- for comment in article.comments -%}
+                            {%- if customer_comments.settings.comment_icon != null -%}
+                                {%- assign icon = customer_comments.settings.comment_icon
+                                    | image_url: commentsIconWidth
+                                -%}
+                                {%- assign iconFlag = true -%}
+                            {%- endif -%}
+                            <article
+                                id="{{ comment.id }}"
+                                class="article-template__comments-comment reveal-item"
+                                {% if iconFlag %}
+                                    data-icon="true"
+                                {% endif %}
+                            >
+                                {%- if iconFlag -%}
+                                    <div class="article-template__comments-comment-icon">
+                                        {{
+                                            icon
+                                            | image_url: width: commentsIconWidth
+                                            | image_tag: class: 'icon-comment', loading: 'lazy'
+                                        }}
+                                    </div>
+                                {%- endif -%}
+                                <div class="article-template__comments-comment-header">
+                                    <span class="article-template__comment-author">
+                                        {{- comment.author -}}
+                                    </span>
+                                </div>
+                                <div class="article-template__comments-comment-content">
+                                    <span class="article-template__comment-content">
+                                        {{- comment.content -}}
+                                    </span>
+                                </div>
+                                <div class="article-template__comments-comment-footer">
+                                    <span class="article-template__comment-create-at">
+                                        {{- comment.created_at | time_tag: format: 'long' -}}
+                                    </span>
+                                </div>
+                            </article>
+                        {%- endfor -%}
+                        {% render 'pagination', paginate: paginate, anchor: anchorId %}
+                    </div>
+                {% endpaginate %}
+            </div>
+        {%- endif -%}
+        {% form 'new_comment', article %}
+            {%- liquid
+                assign post_message = 'blogs.article.success'
+                if blog.moderated? and comment.status == 'unapproved'
+                    assign post_message = 'blogs.article.success_moderated'
+                endif
+            -%}
+            <h2 class="title{% if settings.show_uppercase_heading %} uppercase{% endif %}">
+                {{ 'blogs.article.comment_form_title' | t }}
+            </h2>
+            {%- if form.posted_successfully? -%}
+                <div class="form-status-list form__message form__message--success" role="status" autofocus>
+                    {% render 'icons-outline', name: 'check-circle' %}
+                    {{ post_message | t }}
+                </div>
+            {%- endif -%}
+
+            <div
+                {% if blog.moderated? == false %}
+                    class="article-template__comments-fields"
+                {% endif %}
+            >
+                <div class="article-template__comment-fields">
+                    <div class="field field--with-error">
+                        <label class="field__label reveal-item" for="CommentForm-author">
+                            {{- 'blogs.article.name' | t -}}
+                        </label>
+                        <input
+                            type="text"
+                            name="comment[author]"
+                            id="CommentForm-author"
+                            class="field__input reveal-item"
+                            autocomplete="name"
+                            value="{{ form.author }}"
+                            aria-required="true"
+                            required
+                            {% if form.errors contains 'author' %}
+                                aria-invalid="true"
+                                aria-describedby="CommentForm-author-error"
+                            {% endif %}
+                            placeholder="{{ 'blogs.article.name' | t }}"
+                        >
+                        {%- if form.errors contains 'author' -%}
+                            <small id="CommentForm-author-error">
+                                <span class="form__message form__message--error" autofocus>
+                                    {% render 'icons-outline', name: 'x-circle' %}
+                                    {{ form.errors.messages.author }}
+                                </span>
+                            </small>
+                        {%- endif -%}
+                    </div>
+                    <div class="field field--with-error">
+                        <label class="field__label reveal-item" for="CommentForm-email">
+                            {{- 'blogs.article.email' | t -}}
+                        </label>
+                        <input
+                            type="email"
+                            name="comment[email]"
+                            id="CommentForm-email"
+                            autocomplete="email"
+                            class="field__input reveal-item"
+                            value="{{ form.email }}"
+                            autocorrect="off"
+                            autocapitalize="off"
+                            aria-required="true"
+                            required
+                            {% if form.errors contains 'email' %}
+                                aria-invalid="true"
+                                aria-describedby="CommentForm-email-error"
+                            {% endif %}
+                            placeholder="{{ 'blogs.article.email' | t }}"
+                        >
+                        {%- if form.errors contains 'email' -%}
+                            <small id="CommentForm-email-error">
+                                <span class="form__message form__message--error" autofocus>
+                                    {% render 'icons-outline', name: 'x-circle' %}
+                                    {{ form.errors.messages.email }}
+                                </span>
+                            </small>
+                        {%- endif -%}
+                    </div>
+                </div>
+                <div class="field field--with-error">
+                    <label class="form__label field__label reveal-item" for="CommentForm-body">
+                        {{- 'blogs.article.message' | t -}}
+                    </label>
+                    <textarea
+                        rows="5"
+                        name="comment[body]"
+                        id="CommentForm-body"
+                        class="text-area field__input reveal-item"
+                        aria-required="true"
+                        required
+                        {% if form.errors contains 'body' %}
+                            aria-invalid="true"
+                            aria-describedby="CommentForm-body-error"
+                        {% endif %}
+                        placeholder="{{ 'blogs.article.message' | t }}"
+                    >{{ form.body }}</textarea>
+                </div>
+                {%- if form.errors contains 'body' -%}
+                    <small id="CommentForm-body-error">
+                        <span class="form__message form__message--error" autofocus>
+                            {% render 'icons-outline', name: 'x-circle' %}
+                            {{ form.errors.messages.body }}
+                        </span>
+                    </small>
+                {%- endif -%}
+            </div>
+            {%- if blog.moderated? -%}
+                <p class="article-template__comment-warning caption reveal-item">{{ 'blogs.article.moderated' | t }}</p>
+            {%- endif -%}
+            <input
+                type="submit"
+                class="button{% if settings.show_button_ring_on_hover %} border--outline{% endif %} reveal-item"
+                value="{{ 'blogs.article.post' | t }}"
+            >
+        {% endform %}
+    </div>
+</div>

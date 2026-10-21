@@ -1,0 +1,12 @@
+@media (min-width: 768px) {
+
+    .classic slider-component ul > li {
+        display: inline-block;
+    }
+}
+
+@media all and (min-width: 640px) {
+    .classic .title-wrapper .view-all {
+        white-space: nowrap;
+    }
+}

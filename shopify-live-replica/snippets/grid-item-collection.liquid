@@ -1,0 +1,181 @@
+{% comment %}
+    Renders an item for articles grid.
+
+    Accepts:
+    - collection:               Object} Collection Liquid object
+    - grid_columns:             {Number} Number of columns in grid. Used to figure out additional tailwind classes and image widths for IMG scrcset.
+    - block:                    {Object} (optional)
+    - image_position:           {String} (contain / cover)
+    - item_bg_color:            {String}
+    - display_items_quantity:   {Boolean}
+    - item_link_appearence:     {String}
+{% endcomment %}
+{%- liquid
+    assign item_link_appearence = item_link_appearence | default: 'link'
+    case grid_columns
+        when 2
+            assign image_width = '574'
+            assign image_sizes = '(max-width: 767px) calc((100vw - 1rem - 2rem) / 2), (max-width: 1279px) calc((100vw - 1rem - 6rem) / 2), {image_width}px'
+        when 3
+            assign image_width = '574'
+            assign image_sizes = '(max-width: 767px) calc((100vw - 1rem - 2rem) / 2), (max-width: 1279px) calc((100vw - 2rem - 6rem) / 3), 371px'
+        when 4
+            assign image_width = '574'
+            assign image_sizes = '(max-width: 767px) calc((100vw - 1rem - 2rem) / 2), (max-width: 1023px) calc((100vw - 2rem - 6rem) / 3), (max-width: 1279px) calc((100vw - 3rem - 8rem) / 4), 270px'
+        when 5
+            assign image_width = '574'
+            assign image_sizes = '(max-width: 767px) calc((100vw - 1rem - 2rem) / 2), (max-width: 1023px) calc((100vw - 2rem - 6rem) / 3), (max-width: 1279px) calc((100vw - 3rem - 8rem) / 4), 214px'
+    endcase
+    assign image_sizes = image_sizes | replace: '{image_width}', image_width
+
+    assign button_class = 'view-all reveal-item'
+    case item_link_appearence
+        when 'button'
+            assign button_class = button_class | append: ' button button--primary animate-arrow'
+        when 'link'
+            assign button_class = button_class | append: ' link'
+    endcase
+
+    if settings.show_button_ring_on_hover
+        assign button_class = button_class | append: ' border--outline'
+    endif
+    if settings.cut_button_corners
+        assign button_class = button_class | append: ' border--with-cut-corners'
+    endif
+
+    if label == blank
+        assign button_class = button_class | append: ' btn-with-no-label'
+    endif
+-%}
+
+{%- capture item_image_html %}
+    {%- if image_position == 'contain' %}<div class="item-image">{% endif -%}
+    {%- if settings.enable_preload_images and collection.featured_image -%}{%- render 'loading-overlay' -%}{%- endif -%}
+    {%- if collection.featured_image %}
+        {%- liquid
+            assign media_styles = 'padding-bottom:'
+            if image_ratio == 'adapt-to-image'
+                assign padding = 100 | divided_by: collection.featured_image.aspect_ratio
+                assign media_styles = media_styles | append: padding
+                assign media_styles = media_styles | append: '%;'
+            else
+                assign media_styles = media_styles | append: '100%;'
+            endif
+
+            assign media_class = 'media'
+            if settings.use_media_transparent
+                assign media_class = media_class | append: ' media--transparent'
+            endif
+
+            unless request.design_mode
+                if settings.enable_preload_images
+                    assign media_class = media_class | append: ' media--blur-image'
+                endif
+            endunless
+        -%}
+        <div class="{{ media_class }}" style="{{ media_styles }}">
+            {% assign widths = '480,640,#iw#' | replace: '#iw#', collection.featured_image.width %}
+            {%- render 'render-image'
+                image: collection.featured_image
+                width: image_width
+                widths: widths
+                sizes: image_sizes
+                css_class: image_css_class
+            -%}
+        </div>
+    {% else %}
+        <div class="media" style="padding-bottom:100%">
+            {{ 'collection-1' | placeholder_svg_tag }}
+        </div>
+    {% endif -%}
+    {%- if image_position == 'contain' %}</div>{% endif -%}
+{% endcapture -%}
+
+{%- capture item_content_html %}    
+    {%- if collection_type == 'slider' -%}         
+    <span class="h3 item-title" style="{% if title_color != blank %}color: {{ title_color }};{% endif %}{% if title_bg_color != blank %}background: {{ title_bg_color }}{% endif %}">
+        {% if collection.title -%}
+            {{ collection.title }}
+        {%- else -%}
+            {{ 'onboarding.collection_title' | t }}
+        {%- endif %}
+        <br>
+            {% if display_items_quantity %}
+                <span style="font-weight:normal; font-size:14px;">
+                    {{ collection.products_count }}
+                    {% if collection.products_count > 1 %}
+                        products
+                    {% else %}
+                        product
+                    {% endif %}
+                </span>
+            {% endif %}
+    </span>
+    {%- endif -%}
+
+    {%- unless collection_type == 'slider' -%}
+    <div class="item-guide">
+        <div class="item-title" style="font-size: {{ section.settings.collection_title_size }}px">{% if collection.title -%}
+            {{ collection.title }}
+        {%- else -%}
+            {{ 'onboarding.collection_title' | t }}
+        {%- endif %}
+        {%- assign product_count = collection.all_products_count | default: 0 -%}
+        <span class="products-count">{{ 'sections.collection_list.product_count' | t: count: product_count }}</span>
+        </div>
+        {% if collection.description %}
+        <p class="item-description">
+            {%- assign truncatewords = truncate_desc | plus: 0 -%}
+            {%- if truncatewords > 0 -%}
+            {{ collection.description | strip_html | truncatewords: truncatewords }}
+            {%- else -%}
+            {{ collection.description | strip_html }}
+            {%- endif -%}
+        </p>
+        {% endif %}
+    </div>
+    {%- endunless -%}    
+{% endcapture -%}
+
+<li
+    class="{% if collection_type == 'slider' %}grid-item{% else %}item-collection{% endif %} reveal-item"
+    data-collection-id="{{ collection.id }}"
+    {{ block.shopify_attributes }}
+    {% if show_border %}
+        style="border: 1px solid var(--color-foreground)"
+    {% endif %}
+>
+    {%- if item_link_appearence == 'link' %}
+        <a
+            href="{{ collection.url }}"
+            class="item-link"
+            aria-label="collection--{{ collection.id }}"
+            {% if item_bg_color %}
+                style="background:{{ item_bg_color }};"
+            {% endif %}
+        >
+            {{- item_image_html -}}
+            {{- item_content_html -}}
+        </a>
+    {% else %}
+        {{- item_image_html -}}
+        <div class="content-wrapper">
+            {{- item_content_html -}}
+
+            <a
+                href="{{ collection.url }}"
+                class="{{ button_class }}"
+                title="{{ section.settings.button_label | default: "Explore" }}"
+                aria-label="{{ section.settings.button_label | default: "Explore" }}"
+            >
+                {% unless section.settings.button_label == blank %}
+                    <span>{{ section.settings.button_label }}</span>
+                {% endunless %}
+                {% render 'icons-solid', name: 'arrow-right', css_class: 'icon-arrow' %}
+            </a>
+        </div>
+    {% endif -%}
+    {%- if show_elements_design %}
+        <a href="{{ collection.url }}" aria-label="collection--{{ collection.id }}" class="corner"></a>
+    {% endif -%}
+</li>

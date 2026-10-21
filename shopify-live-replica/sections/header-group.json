@@ -1,0 +1,110 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement_bar": {
+          "type": "announcement",
+          "disabled": true,
+          "settings": {
+            "text": "Use announcement bar to share news and promotions",
+            "color_scheme": "accent-1",
+            "link": "",
+            "link_target": "_no"
+          }
+        }
+      },
+      "block_order": [
+        "announcement_bar"
+      ],
+      "settings": {}
+    },
+    "header_top": {
+      "type": "header-top",
+      "settings": {
+        "full_width": false,
+        "message": "Demo announcement message",
+        "show_phone": true,
+        "show_email": true,
+        "add_border_bottom": true,
+        "link": "",
+        "button_label": "Find out more",
+        "link_appearence": "button"
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "full_width": false,
+        "header_max_width": 1200,
+        "logo": "shopify://shop_images/ChatGPT_Image_Jun_5_2026_06_21_36_AM.png",
+        "logo_width": 70,
+        "mobile_logo_width": 220,
+        "justify_logo": "center",
+        "center_logo_on_mobile": true,
+        "show_drawer_label_on_mobile": false,
+        "dislay_shopname_on_mobile": false,
+        "enable_sticky_header": true,
+        "add_border_searchfield": false,
+        "add_menu_dividers": true,
+        "add_border_bottom": false,
+        "mobile_drawer_show_social_media": false,
+        "show_header_line_divider": false,
+        "show_icons_line_divider": false,
+        "menu": "main-menu",
+        "menu_2": "",
+        "type_menu": "navigation",
+        "second_level_menu_width": "full-width",
+        "megamenu_items": "",
+        "smallmenu_items": "",
+        "megamenu_items_use_layout_width": false,
+        "enable_menu_items_uppercase": false,
+        "activate_top_level_menu": "on_hover",
+        "first_item_bg_highlighted": true,
+        "enable_dropdown_menu_animation": false,
+        "show_overlay": false,
+        "show_collection_icon": false,
+        "collection_icon": "shopify://shop_images/34551122141105833.jpg",
+        "collection_icon_width": 30,
+        "collection_icon_possition": "center",
+        "center_collection_title": false,
+        "show_collection_image": false,
+        "collection_image": "shopify://shop_images/Scrapbook_page_spring_themed.jpg",
+        "main_items_per_row": 4,
+        "second_dropdown_limit_qty_categories_link": "Shop All",
+        "second_dropdown_limit_qty_categories": 5,
+        "item_menu_name": "",
+        "phone_number": "",
+        "use_default_phone_icon": true,
+        "phone_icon": "shopify://shop_images/Travel_journals.jpg",
+        "phone_number_menu_foreground": "",
+        "phone_number_menu_background": "",
+        "phone_number_menu_background_gradient": ""
+      }
+    },
+    "breadcrumbs": {
+      "type": "breadcrumbs",
+      "settings": {
+        "show_breadcrumbs_on_mobile": true,
+        "show_border_bottom": true
+      }
+    }
+  },
+  "order": [
+    "announcement",
+    "header_top",
+    "header",
+    "breadcrumbs"
+  ]
+}

@@ -1,0 +1,66 @@
+quantity-input {
+    border-radius: 2px;
+    display: inline-flex;
+    align-items: stretch;
+    background-color: rgb(255 255 255 / .1);
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+    --tw-ring-inset: inset;
+    --tw-ring-color: var(--color-foreground-20)}
+
+quantity-input .quantity__button {
+    border-style: none;
+    background-color: transparent;
+    color: currentColor;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}
+
+quantity-input .quantity__button:hover {
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}
+
+quantity-input .quantity__button:focus {
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}
+
+quantity-input .quantity__button svg {
+    height: .75rem;
+    width: .75rem;
+    pointer-events: none}
+
+quantity-input .quantity__input {
+    border-width: 0 1px;
+    padding: .25rem 0;
+    width: 3rem;
+    background-color: transparent;
+    text-align: center}
+
+quantity-input .quantity__input:focus {
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}
+
+html.no-js quantity-input .quantity__input {
+    width: 4rem}
+
+quantity-input .quantity__button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+quantity-input .quantity__button {
+    margin: .25rem;
+}
+
+[data-theme-preset="metalware"] .quantity__input {
+        border-left: 0;
+        border-right: 0;
+    }
+
+[data-theme-preset="metalware"] .quantity__button {
+        background: var(--color-foreground-20);    
+    }

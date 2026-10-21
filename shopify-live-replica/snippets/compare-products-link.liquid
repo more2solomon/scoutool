@@ -1,0 +1,35 @@
+{%- comment -%}
+    Render Compare products link as a fixed block on the page
+{%- endcomment -%}
+
+<compare-products-link class="compare-link wrapper" id="compare-link">
+    <details>
+        <summary class="compare-link__title">
+            <span class="count count--bubble" aria-hidden="true"></span>
+            <span class="text">{{ 'sections.compare.link_title' | t }}</span>
+            <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+                <use href="#icon-caret"/>
+            </svg>
+        </summary>
+
+        <div class="compare-link__products"></div>
+        <div class="compare-link__actions">
+            <button
+                type="button{% if settings.cut_button_corners %} border--with-cut-corners{% endif %}"
+                class="remove-items"
+                aria-label="{{ 'sections.compare.remove_items' | t }}"
+                onclick="document.querySelector('compare-popup')?.removeCompareItems?.();return false;"
+            >
+                {{ 'sections.compare.remove_items' | t }}
+            </button>
+            <button
+                type="button{% if settings.cut_button_corners %} border--with-cut-corners{% endif %}"
+                class="compare-items"
+                aria-label="{{ 'sections.compare.link_text' | t }}"
+                onclick="this.closest('.compare-link').showComparePopup?.();return false;"
+            >
+                {{ 'sections.compare.link_text' | t }}
+            </button>
+        </div>
+    </details>
+</compare-products-link>

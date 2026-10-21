@@ -1,0 +1,260 @@
+{% style %}
+    .popup-modal {
+      background: rgba(0,0,0,{{ settings.overlay_transparenty }});{% if settings.enable_overlay_blur %}
+      backdrop-filter: blur({{ settings.overlay_blur | times: 10 | append: 'px' }});{% endif %}
+    }
+{% endstyle %}
+
+{% for block in section.blocks %}
+    {% if forloop.first %}
+        {{ 'section-popup-banner.css' | asset_url | stylesheet_tag }}
+        {% unless settings.enable_quick_view %}
+            {{ 'component-modal-dialog.css' | asset_url | stylesheet_tag }}
+        {% endunless %}
+        {% if block.settings.show_countdown_timer %}
+            {{ 'component-countdown-timer.css' | asset_url | stylesheet_tag }}
+        {% endif %}
+    {% endif %}
+
+    {% case block.type %}
+        {% when 'popup' %}
+            {% render 'overlay__block-popup', block: block %}
+    {% endcase %}
+{% endfor %}
+
+{% schema %}
+{
+  "name": "t:sections.overlay.name",
+  "tag": "section",
+  "blocks": [
+    {
+      "type": "popup",
+      "name": "t:sections.overlay.blocks.popup.name",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<h4>Subscribe to our emails</h4><p>Sign up for our newsletter to get the latest news about our company, your favorite products, and great deals.</p>",
+          "label": "t:sections.overlay.blocks.popup.settings.text.label"
+        },
+        {
+          "type": "checkbox",
+          "id": "subscribe_newsletter",
+          "label": "t:sections.overlay.blocks.popup.settings.subscribe_newsletter.label",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "t:sections.overlay.blocks.popup.settings.header_countdown_timer.content"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_countdown_timer",
+          "label": "t:sections.overlay.blocks.popup.settings.show_countdown_timer.label",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "day_starts",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 22,
+          "unit": "d",
+          "label": "t:sections.overlay.blocks.popup.settings.day_starts.label",
+          "info": "t:sections.overlay.blocks.popup.settings.day_starts.info"
+        },
+        {
+          "type": "select",
+          "id": "hours_start",
+          "label": "t:sections.overlay.blocks.popup.settings.hours_start.label",
+          "options": [
+            {
+              "value": "0",
+              "label": "0"
+            },
+            {
+              "value": "1",
+              "label": "1"
+            },
+            {
+              "value": "2",
+              "label": "2"
+            },
+            {
+              "value": "3",
+              "label": "3"
+            },
+            {
+              "value": "4",
+              "label": "4"
+            },
+            {
+              "value": "5",
+              "label": "5"
+            },
+            {
+              "value": "6",
+              "label": "6"
+            },
+            {
+              "value": "7",
+              "label": "7"
+            },
+            {
+              "value": "8",
+              "label": "8"
+            },
+            {
+              "value": "9",
+              "label": "9"
+            },
+            {
+              "value": "10",
+              "label": "10"
+            },
+            {
+              "value": "11",
+              "label": "11"
+            },
+            {
+              "value": "12",
+              "label": "12"
+            },
+            {
+              "value": "13",
+              "label": "13"
+            },
+            {
+              "value": "14",
+              "label": "14"
+            },
+            {
+              "value": "15",
+              "label": "15"
+            },
+            {
+              "value": "16",
+              "label": "16"
+            },
+            {
+              "value": "17",
+              "label": "17"
+            },
+            {
+              "value": "18",
+              "label": "18"
+            },
+            {
+              "value": "19",
+              "label": "19"
+            },
+            {
+              "value": "20",
+              "label": "20"
+            },
+            {
+              "value": "21",
+              "label": "21"
+            },
+            {
+              "value": "22",
+              "label": "22"
+            },
+            {
+              "value": "23",
+              "label": "23"
+            }
+          ],
+          "default": "10"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "t:sections.overlay.blocks.popup.settings.text_color.label",
+          "default": "#E13124"
+        },
+        {
+          "type": "color",
+          "id": "period_item_background",
+          "label": "t:sections.overlay.blocks.popup.settings.period_item_background.label",
+          "default": "#E2E2E2"
+        },
+        {
+          "type": "header",
+          "content": "t:sections.overlay.blocks.popup.settings.header_image.content"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.overlay.blocks.popup.settings.image.label"
+        },
+        {
+          "type": "url",
+          "id": "image_url",
+          "label": "t:sections.overlay.blocks.popup.settings.image_url.label"
+        },
+        {
+          "type": "header",
+          "content": "t:sections.overlay.blocks.popup.settings.header_behavior.content"
+        },
+        {
+          "type": "radio",
+          "id": "showup_when",
+          "label": "t:sections.overlay.blocks.popup.settings.showup_when.label",
+          "default": "exit_intent",
+          "options": [
+            {
+              "value": "immediately",
+              "label": "t:sections.overlay.blocks.popup.settings.showup_when.option.immediately"
+            },
+            {
+              "value": "exit_intent",
+              "label": "t:sections.overlay.blocks.popup.settings.showup_when.option.exit_intent"
+            }
+          ]
+        },
+        {
+          "type": "radio",
+          "id": "showup_frequency",
+          "label": "t:sections.overlay.blocks.popup.settings.showup_frequency.label",
+          "options": [
+            {
+              "value": "daily",
+              "label": "t:sections.overlay.blocks.popup.settings.showup_frequency.option.daily"
+            },
+            {
+              "value": "weekly",
+              "label": "t:sections.overlay.blocks.popup.settings.showup_frequency.option.weekly"
+            }
+          ],
+          "default": "weekly"
+        },
+        {
+          "type": "header",
+          "content": "t:sections.overlay.blocks.popup.settings.popup_styles.content"
+        },
+        {
+          "type": "color",
+          "id": "popup_background",
+          "label": "t:sections.overlay.blocks.popup.settings.popup_background.label",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "color",
+          "id": "popup_foreground",
+          "label": "t:sections.overlay.blocks.popup.settings.popup_foreground.label",
+          "default": "#000000"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "popup"
+      }
+    ]
+  }
+}
+{% endschema %}

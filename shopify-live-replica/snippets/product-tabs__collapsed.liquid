@@ -1,0 +1,43 @@
+{%- comment -%}
+    Render tabs when layout is expanded.
+
+    Accepts:
+    - block:            {Object}
+    - section:          {Object}
+    - is_opened:        {Boolean}
+    - forloop_index:    {Numb}
+{%- endcomment -%}
+
+{%- liquid
+    capture tabContent
+        render 'product-tabs__tab-content', block: block
+    endcapture
+    assign tabContent = tabContent | strip
+-%}
+{% if tabContent != blank %}
+    <input
+        type="radio"
+        id="tab-{{ block.id }}"
+        name="tabs-{{ section.id }}"
+        class="hidden"
+        {% if is_opened or forloop_index == 1 %}
+            checked
+        {% endif %}
+        data-index="{{ forloop_index }}"
+    >
+    <h2
+        id="tab-label-{{ block.id }}"
+        class="tab-title{% if settings.show_uppercase_heading %} uppercase{% endif %}"
+        aria-controls="tab-content-{{ block.id }}"
+    >
+        <label id="tab-label-{{ block.id }}-title" for="tab-{{ block.id }}">
+            <span>{% render 'product-tabs__tab-heading', block: block %}</span>
+            <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+                <use href="#icon-caret" />
+            </svg>
+        </label>
+    </h2>
+    <div id="tab-content-{{ block.id }}" class="tab-content" {{ block.shopify_attributes }}>
+        {{ tabContent }}
+    </div>
+{% endif %}

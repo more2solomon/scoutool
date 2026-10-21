@@ -1,0 +1,103 @@
+@media (min-width: 990px), print {
+    .full-width .container--grid,
+    .full-width .container--grid .list-menu--disclosure,
+    .full-width .container--grid .col-items {
+        display: flex;
+        width: 100%;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .full-width .dropdown-inner summary {
+        padding-bottom: 0.5rem;
+    }
+
+    .full-width .menu-childitem {
+        font-weight: 600;
+    }
+
+    .full-width .header__submenu .header__menu-item {
+        overflow-wrap: break-word;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .full-width .header__submenu .header__menu-item.center--collection-title {
+        justify-content: center;
+    }
+
+    .dropdown-inner.full-width .list-menu--disclosure > li summary {
+        --color-foreground: var(--header--dropdown-color);
+    }
+
+    .dropdown-inner.full-width .list-menu--disclosure > li summary,
+    .dropdown-inner.full-width .list-menu--disclosure > li > a {
+        display: block;
+        padding-left: 0px;
+    }
+
+    [data-theme-preset]:not([data-theme-preset="metalware"]).dropdown-inner.full-width .list-menu--disclosure > li summary,
+    [data-theme-preset]:not([data-theme-preset="metalware"]) .dropdown-inner.full-width .list-menu--disclosure > li > a {
+        font-weight: 600;
+    }
+    
+    .list-menu:not(.with--dropdown__menu-animation) .dropdown-inner.full-width:has(.item--with-image) {
+        overflow-y: auto;
+    }
+
+    .dropdown-inner.full-width .list-menu--disclosure .icon-caret {
+        display: none;
+    }
+
+    .dropdown-inner.full-width:not(.with--layout-width) {
+        left: 0px;
+        right: 0px;
+    }
+
+    :not(.with--dropdown__menu-animation) .dropdown-inner.full-width.with--layout-width {
+        width: clamp(990px, 100%, 1200px);
+        left: 50%;
+        --tw-translate-x: -50%;
+        transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}
+    
+    .full-width .header__submenu summary {
+        padding-top: 0px;
+    }
+
+    .full-width .list-menu--disclosure > li {
+        width: 100%;
+    }
+
+    .full-width .container--grid .header__submenu > li summary > img {
+        float: left;
+        margin-right: 0.5rem;
+    }
+
+    .full-width .container--grid .header__submenu > li summary > img + a {
+        padding-left: 0px;
+    }
+
+    .dropdown-inner.full-width ul.header__submenu > li > details > summary {
+        padding: 0px;
+    }
+
+    .list-menu__item:not(.collection-icon__center) :is(collection-icon) {
+        margin-right: .25rem;
+    }
+
+    .list-menu--collection-icon:is(.collection-icon__center) {
+        margin: 0 auto;
+        transition: scale .25s;
+    }
+
+    .collection-icon__center:hover,
+    .collection-icon__center:focus {
+        scale: 0.95;
+    }
+
+    .header__submenu > li > a.collection-icon__center {
+        padding: 0 !important;
+    }
+}

@@ -1,0 +1,80 @@
+.customer-reviews-container .reviews-image-block {
+    width: 100%;
+    position: relative;    
+}
+
+.customer-reviews-container .review-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.customer-reviews-container .review-item {
+    width: 100%;
+    height: -moz-max-content;
+    height: max-content;
+}
+
+.customer-reviews-container .main-content {
+    padding: 2rem 1rem;
+}
+
+@media screen and (min-width: 768px) {
+    .customer-reviews-container .review-item:nth-child(2n) {
+        margin-bottom: 1rem;
+        margin-top: -1rem;
+    }
+
+    .customer-reviews-container .reviews-image-block .media{
+        display: contents;    
+    }
+}
+
+.customer-reviews-container .review-content .review-img {
+    height: 197px;
+}
+
+@media screen and (min-width:400px) and (max-width: 767px) {
+    .customer-reviews-container .review-content .review-img {
+        height: 350px;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .customer-reviews-container .review-content .main-content {
+        padding: 2rem;
+    }
+}
+
+.customer-reviews-container .review-content .main-content p:not(:last-child) {
+    margin-bottom: 1.5rem;
+}
+
+.customer-reviews-container .review-content .rating {
+    display: flex;
+    flex-direction: row;
+    gap: 1px;
+}
+
+.customer-reviews-container .rating .star {
+    position: relative;   
+}
+
+.customer-reviews-container .rating .star.full svg,
+.customer-reviews-container .rating .star.half .half-fill svg {
+    color: var(--color-base-accent_1);
+}
+
+.customer-reviews-container .rating .star.half svg {
+    color: var(--color-background);
+}
+
+.customer-reviews-container .rating .star.half .half-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+}

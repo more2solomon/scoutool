@@ -1,0 +1,62 @@
+{%- comment -%}
+    Render collection filters using block settings
+
+    Accepts:
+        - block:            {Object}
+        - blockOrder:       {Number}
+        - is_sidemenu:      {Object}
+{%- endcomment -%}
+
+{%- liquid
+    assign type = 'accordion'
+    assign position = block.settings.position | split: '-' | first
+    if position == 'main'
+        assign type = 'buttons'
+    endif
+    assign state = block.settings.position | split: '-' | last
+    if state == 'open'
+        assign opened = true
+    else
+        assign opened = false
+    endif
+
+    assign showColorAsSwatches = block.settings.show_colors_as_swatches
+    assign showColorSwatchLabels = block.settings.show_color_swatch_labels
+
+    assign __class__ = 'collection__block collection__block--filters collection-filters'
+    unless position == 'main'
+        if block.settings.animation_on_reveal
+            assign __class__ = __class__ | append: ' reveal-slide-in'
+        endif
+    endunless
+
+    unless is_sidemenu == blank
+        assign __class__ = __class__ | append: ' with--side-menu'
+    endunless
+
+    if block.settings.sticky_filter_block
+        assign __class__ = __class__ | append: ' sticky-block-filters'
+    endif
+-%}
+
+{% if collection.filters.size > 0 %}
+    <div
+        id="main-collection-filters"
+        class="{{ __class__ }}"
+        style="order: {{ blockOrder }}"
+        data-id="{{ section.id }}"
+        {{ block.shopify_attributes }}
+        data-position="{{ block.settings.position }}"
+    >
+        {% render 'facets',
+            enable_filtering: true,
+            collection: collection,
+            filters: collection.filters,
+            show_sorting_desktop: false,
+            desktop_facets_type: type,
+            desktop_facets_open: opened,
+            show_color_as_swatches: showColorAsSwatches,
+            show_color_swatch_labels: showColorSwatchLabels
+        %}
+    </div>
+{% endif %}

@@ -1,0 +1,189 @@
+{%- comment -%}
+    Render collection featured products using block settings
+
+    Accepts:
+     - block:           {Object}
+     - blockOrder:      {Number}
+     - has_side_column: {Boolean}
+{%- endcomment -%}
+
+{%- liquid
+    assign items = block.settings.source
+    assign preloadItemsImage = 0
+    if block.settings.is_preload
+        assign preloadItemsImage = 2
+    endif
+
+    if items.count == 0 and block.settings.is_random
+        capture handels
+            render 'helper__get-similar-products', limit: block.settings.products_per_page
+        endcapture
+        assign items = handels | split: '|'
+    endif
+
+    assign columns = block.settings.columns
+    assign ulId = 'featured-products-' | append: section.id
+-%}
+
+{%- if items.count > 0 or items.size > 0 %}
+    {% style %}
+        .collection__block--featured {
+            position: relative;
+            --header-foreground-rgb: {{ block.settings.cover_text_color.red }}, {{ block.settings.cover_text_color.green }}, {{ block.settings.cover_text_color.blue }};
+            --header-background-rgb: {{ block.settings.cover_background.red }}, {{ block.settings.cover_background.green }}, {{ block.settings.cover_background.blue }};
+        }
+
+        .collection__block--featured :is(.slider) {
+            scroll-behavior: smooth;
+        }
+
+        {% if settings.current_presets == 'gorpcore' %}
+        .collection__block--featured .title-wrapper {
+            border-radius: 4px;
+            margin-right: .15rem;
+        }{% endif %}
+
+        #{{ ulId }} {
+            flex-wrap: nowrap;
+            margin: 0;
+        }
+
+        .collection__block--featured .slideshow .slider-button--stucked {
+            min-width: 0;
+        }
+        {% if request.locale.iso_code contains 'ar' %}
+        .collection__block--featured h2 {
+            padding: 1rem;
+        }{% else %}
+
+        .collection__block--featured h2 {
+            padding: .75rem 5rem .75rem .75rem;
+        }
+
+        @media all and (min-width: 768px) {
+            .collection__block--featured h2 {
+                padding: 1rem 7rem 1rem 1rem;
+            }
+        }
+        {% endif %}
+        .collection__block--featured .slider-buttons .icon {
+            height: 2rem;
+            width: 2rem;
+        }{% if settings.current_presets == 'default' %}
+
+        .collection__block--featured {
+            box-shadow: 0px 0px 0px 1px var(--color-foreground-10);
+        }{% endif %}
+
+        @media all and (max-width: 989px) {
+            .collection__block--featured #{{ ulId }} {
+                margin-right: 0;
+                margin-left: 0;
+            }
+        }
+
+        @media only screen and (min-width: 990px) {
+            .collection__block--featured {
+                display: grid;
+                grid-template-columns: calc(25% - 3rem - 2px) calc(75% + 3rem + 2px);
+            }
+
+            #{{ ulId }}:has(squama-item:hover, squama-item[data-focused]),
+            #{{ ulId }}.squama-hovered {
+                padding-bottom: 10rem;
+                margin-bottom: -10rem;
+            }
+
+            #{{ ulId }} .grid-item {
+                width: calc(100% / {{ columns }} - var(var(--items-card-gap))) !important;
+            }
+            /* set item max-height for better look when Item card height is applied in the settings*/
+            #{{ ulId }} .grid-item > squama-item {
+                max-height: 300px;
+            }
+
+            .collection__block--featured .title-wrapper > h2 {
+                line-height: 1.35
+            }
+
+            .collection__block--featured .title-wrapper :is(.highlight-last-word) {
+                color: currentColor;
+            }
+
+            .collection__block--featured .slider-buttons:has(.slider-button--next):has(.slider-button--prev) {
+                display: none;
+            }
+        }
+    {% endstyle %}
+    <div
+        class="collection__block collection__block--featured{% if block.settings.animation_on_reveal %} reveal-slide-in{% endif %}"
+        style="order: {{ blockOrder }}"
+        {{ block.shopify_attributes }}
+    >
+        <div class="title-wrapper">
+            <h2 class="reveal-item">
+                {% render 'helper__decorate-heading', heading: block.settings.heading %}
+            </h2>
+            {%- if block.settings.cover_image -%}
+                <div class="title-image">
+                    <div class="media media--transparent">
+                        {% render 'render-image',
+                            image: block.settings.cover_image,
+                            widths: '480,640,960,#iw#',
+                            sizes: '50vw',
+                            loading_strategy: 'auto',
+                            fetchpriority_strategy: 'high'
+                        %}
+                    </div>
+                </div>
+            {%- endif -%}
+        </div>
+        <slider-component class="slideshow" data-loop="false">
+            {% capture innerHtml %}
+                {% render 'grid-items'
+                    ul_id: ulId
+                    ul_class: 'products slider slider--desktop slider--tablet'
+                    has_side_column: has_side_column
+                    items: items
+                    mode: 'grid'
+                    columns: columns
+                    limit: block.settings.products_per_page
+                    badge_size: block.settings.badge_size
+                    image_ratio: block.settings.image_ratio
+                    product_secondary_image: settings.product_card_secondary_image
+                    product_to_cart_button: block.settings.show_to_cart_button
+                    swatch_option_color: settings.show_swatch_colors
+                    product_show_vendor: settings.product_card_vendor
+                    product_description: block.settings.show_description
+                    preload_items_image: preloadItemsImage
+                    compare_products: settings.compare_products
+                    quick_view: settings.enable_quick_view
+                %}
+            {% endcapture %}
+            {{ innerHtml | replace: 'class="grid-item', 'class="grid-item slider__slide' }}
+
+            <div class="slider-buttons no-js-hidden">
+                <button
+                    type="button"
+                    class="slider-button slider-button--prev button--tertiary slider-button--stucked"
+                    name="previous"
+                    aria-label="{{ 'accessibility.previous_slide' | t }}"
+                >
+                    <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+                        <use href="#icon-caret" />
+                    </svg>
+                </button>
+                <button
+                    type="button"
+                    class="slider-button slider-button--next button--tertiary slider-button--stucked"
+                    name="next"
+                    aria-label="{{ 'accessibility.next_slide' | t }}"
+                >
+                    <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+                        <use href="#icon-caret" />
+                    </svg>
+                </button>
+            </div>
+        </slider-component>
+    </div>
+{% endif -%}

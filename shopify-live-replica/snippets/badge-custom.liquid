@@ -1,0 +1,26 @@
+{% comment %}
+    Renders custom badge.
+
+    Accepts:
+    - size: {String} small | large
+{% endcomment %}
+
+{%- liquid
+    assign text = settings.badge_custom__text | escape
+    assign bgColor = settings.colors_badge_custom_background
+    assign textColor = settings.colors_badge_custom_foreground
+    assign position = settings.badge_custom__position
+    assign border_radius = settings.badges_border_radius_value | append: 'rem'
+
+    assign styles = 'color:' | append: textColor | append: ';background:' | append: bgColor
+    assign styles = styles | append: ';border-radius:' | append: border_radius
+-%}
+{% unless text == blank or position == 'none' %}
+    <div
+        class="badge badge-size-{{ size }} badge-custom {{ position }}"
+        style="{{ styles }}"
+        aria-hidden="true"
+    >
+        {{ text }}
+    </div>
+{% endunless %}

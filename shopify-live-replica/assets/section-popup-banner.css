@@ -1,0 +1,84 @@
+popup-banner .popup-modal__content {
+    width: 91.666667%;
+}
+
+@media (min-width: 768px) {
+
+    popup-banner .popup-modal__content {
+        max-width: 768px;
+    }
+}
+
+popup-banner .popup-modal__content:is(.border--with-cut-corners) {
+    --edge-size: 1rem;
+}
+
+popup-banner .popup-modal__toggle {
+    top: .5rem;
+    margin-right: .5rem;
+}
+
+popup-banner[open] [role=dialog] {    
+    height: -moz-fit-content;    
+    height: fit-content;
+}
+
+.popup-banner__text {
+    flex-grow: 1;
+    padding: 1rem 1.5rem;
+}
+
+.popup-banner__text > * {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.popup-banner__text .newsletter-form {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 20rem;
+}
+
+.popup-banner__content {
+    display: flex;
+    align-items: center;
+}
+
+.popup-banner__content > *,
+.popup-banner__text .newsletter-form__button {
+    width: 100%;
+}
+
+.popup-banner__content > .media {
+    display: none;
+}
+
+.popup-banner__content > .media:last-child {
+    display: block;
+    padding-bottom: var(--media--padding-bottom);
+}
+
+popup-banner[data-image-only="true"] .popup-modal__toggle {
+    background-color: rgba( var(--color-background-rgb), .75);
+}
+
+popup-banner .newsletter-form:has(.form__message--success) .newsletter-form__field-wrapper {
+    display: none;
+}
+
+@media all and (min-width: 480px) {
+    .popup-banner__content > .media:not(:last-child) {
+        display: block;
+    }
+}
+
+@media all and (min-width: 640px) {
+    popup-banner .popup-modal__toggle {
+        top: 1rem;
+        margin-right: 1rem;
+    }
+
+    .popup-banner__text {
+        padding: 2rem;
+    }
+}

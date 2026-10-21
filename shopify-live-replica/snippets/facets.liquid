@@ -1,0 +1,858 @@
+{% comment %}
+    Render collection filters
+
+    Accepts:
+    - filters:                    {Array}
+    - show_sorting_desktop:       {Boolean}
+    - form_after_open_html:       {String}
+    - desktop_facets_type:        {String}
+    - desktop_facets_open:        {Boolean}
+    - show_color_as_swatches:     {Boolean}
+    - show_color_swatch_labels:   {Boolean}
+    - show_metaobjects_swatches:  {Boolean}
+{% endcomment %}
+
+{%- liquid
+    assign form_after_open_html = form_after_open_html | default: ''
+    assign desktop_facets_type = desktop_facets_type | default: 'button'
+    assign total_active_values = 0
+
+    capture htmlFacetsActive
+        render 'facets__active', filters: filters
+    endcapture
+
+    assign htmlFacetsActive = htmlFacetsActive | strip
+    assign possibleOptionNames = settings.list_color_option_names | default: 'color,colour'
+-%}
+
+{{ 'component-facets.css' | asset_url | stylesheet_tag }}
+
+{% unless desktop_facets_type == 'toggler' %}
+    <collection-filters-form class="facets desktop-only facets__type-{{ desktop_facets_type }}">
+        <form id="CollectionFiltersForm" class="facets__form">
+            {{- form_after_open_html -}}
+
+            <div class="active-facets active-facets-desktop">
+                {%- if htmlFacetsActive != '' %}
+                    <p class="active-facets__heading">{{ 'sections.collection_template.shopping_by_label' | t }}</p>
+                    {{ htmlFacetsActive }}
+                    {% render 'facets__button--clear-all', collection: collection %}
+                {% endif -%}
+            </div>
+
+            <div class="facets__wrapper{% if section.settings.animation_on_reveal %} reveal-slide-in{% endif %}">
+                {%- unless filters == empty -%}
+                    <p class="facets__heading">{{ 'sections.collection_template.filter_by_label' | t }}</p>
+                {%- endunless -%}
+
+                {%- for filter in filters -%}
+                    {% case filter.type %}
+                        {% when 'boolean', 'list' %}
+                            {%- assign total_active_values = total_active_values | plus: filter.active_values.size -%}
+                            {%- assign filterLabel = filter.label | downcase | escape -%}
+                            <details
+                                class="facets__disclosure js-filter reveal-item"
+                                data-index="{{ forloop.index }}"
+                                {% if desktop_facets_open
+                                    or desktop_facets_type == 'accordion'
+                                    and filter.active_values.size > 0
+                                %}
+                                    open
+                                {% endif %}
+                            >
+                                <summary class="facets__summary{% if desktop_facets_type == 'buttons' %} button button--tertiary{% else %} collapsible{% endif %}{% if settings.show_uppercase_heading %} uppercase{% endif %}">
+                                    <span>{{ filter.label | escape }}</span>
+                                    <div class="count-bubble color-inverse">
+                                        {%- if filter.active_values.size > 0 -%}
+                                            <span>{{ filter.active_values.size }}</span>
+                                        {%- endif -%}
+                                    </div>
+                                    {% if desktop_facets_type == 'accordion' -%}
+                                        {% render 'facets__button--reset', filter: filter %}
+                                    {%- endif %}
+                                    <svg
+                                        aria-hidden="true"
+                                        focusable="false"
+                                        role="presentation"
+                                        class="icon icon-caret"
+                                    >
+                                        <use href="#icon-caret" />
+                                    </svg>
+                                </summary>
+                                <div class="facets__display">
+                                    <div class="facets__header">
+                                        <span class="facets__selected no-js-hidden">
+                                            {%- if filter.active_values.size > 0 -%}
+                                                {{
+                                                    'sections.collection_template.filters_selected'
+                                                    | t: count: filter.active_values.size
+                                                }}
+                                            {%- endif -%}
+                                        </span>
+                                        {% render 'facets__button--reset', filter: filter %}
+                                    </div>
+                                    {%- liquid
+                                        assign swatchLabelsHiddenClass = ''
+                                        if filter.presentation == 'swatch' and show_color_swatch_labels == false
+                                            assign swatchLabelsHiddenClass = 'color-swatch-labels__hidden'
+                                        endif
+
+                                        if possibleOptionNames contains filterLabel and show_color_swatch_labels == false
+                                            assign swatchLabelsHiddenClass = 'color-swatch-labels__hidden'
+                                        endif
+                                    -%}
+                                    {% comment %} render swatches built on the metaobjects {% endcomment %}
+                                    <ul
+                                        class="facets__list list-unstyled {{ filter.presentation }}{% unless swatchLabelsHiddenClass == empty %} {{ swatchLabelsHiddenClass }}{% endunless%}"
+                                        role="list"
+                                    >
+                                        {%- for value in filter.values -%}
+                                            {%- if filter.presentation == 'swatch' or filter.presentation == 'image' -%}
+                                                {%- unless value.count == 0 and value.active == false -%}
+                                                    <li class="list-menu__item facets__item">
+                                                        <label
+                                                            for="Filter-{{ value.param_name | downcase }}-desktop-{{ forloop.index }}"
+                                                            class="facet-checkbox{% if value.count == 0 and value.active == false %} facet-checkbox--disabled{% endif %}"
+                                                        >
+                                                            {%- comment -%}
+                                                                Render Color swatches based on the metaobjects
+                                                            {%- endcomment -%}
+
+                                                            {%- liquid
+                                                                assign swatchesWidth = 50
+                                                                assign size_limit = value.display.value.size | at_most: 4
+                                                                assign rotation = '0deg'
+                                                                if size_limit == 2
+                                                                    assign rotation = '45deg'
+                                                                endif
+
+                                                                assign angle_increment = 360 | divided_by: size_limit
+                                                                assign angle = 0
+                                                            -%}
+                                                            {%- case value.display.type -%}
+                                                                    {% comment %} swatch colors {% endcomment %}
+                                                                {%- when 'colors' -%}
+                                                                    {%- capture bgColorGradient -%}
+      {%- for color in value.display.value limit: size_limit -%}
+        {{ color }} {{ angle }}deg
+        {%- assign angle = angle | plus: angle_increment %}
+        {{ angle }}deg
+        {%- unless forloop.last %}, {%- endunless -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        id="Filter-{{ value.param_name | downcase }}-desktop-{{ forloop.index }}"
+                                                                        class="facet__swatch-option visually-hidden"
+                                                                        name="{{ value.param_name }}"
+                                                                        value="{{ value.value }}"
+                                                                        {% if value.active %}
+                                                                            checked
+                                                                        {% endif %}
+                                                                        {% if value.count == 0
+                                                                            and value.active == false
+                                                                        %}
+                                                                            disabled
+                                                                        {% endif %}
+                                                                    >
+                                                                    <span
+                                                                        class="label"
+                                                                        data-color="{{ value.display.value }}"
+                                                                        style="background: conic-gradient({{ bgColorGradient }}); transform: rotateZ({{ rotation }});"
+                                                                    >
+                                                                        {% render 'icons-outline',
+                                                                            name: 'check',
+                                                                            css_class: 'icon checkmark'
+                                                                        %}
+                                                                    </span>
+                                                                    <span class="mobile-facets__highlight"></span>
+                                                                    {%- if show_color_swatch_labels -%}
+                                                                        {{ value.label | downcase | escape }}
+                                                                        <span class="count">{{ value.count }}</span>
+                                                                    {%- endif -%}
+
+                                                                    {% comment %} swatch images {% endcomment %}
+                                                                {%- when 'image' -%}
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        id="Filter-{{ value.param_name | downcase }}-desktop-{{ forloop.index }}"
+                                                                        class="facet__swatch-option image visually-hidden"
+                                                                        name="{{ value.param_name }}"
+                                                                        value="{{ value.value }}"
+                                                                        {% if value.active %}
+                                                                            checked
+                                                                        {% endif %}
+                                                                        {% if value.count == 0
+                                                                            and value.active == false
+                                                                        %}
+                                                                            disabled
+                                                                        {% endif %}
+                                                                    >
+                                                                    <span class="label">
+                                                                        {{
+                                                                            value.display.value
+                                                                            | image_url: width: swatchesWidth
+                                                                            | image_tag: alt: value.display.value.alt
+                                                                        }}
+                                                                    </span>
+
+                                                                {%- else -%}
+                                                                    <input
+                                                                        class="mobile-facets__checkbox"
+                                                                        type="checkbox"
+                                                                        name="{{ value.param_name }}"
+                                                                        value="{{ value.value }}"
+                                                                        id="Filter-{{ value.param_name }}-desktop-{{ forloop.index }}"
+                                                                        {% if value.active %}
+                                                                            checked
+                                                                        {% endif %}
+                                                                        {% if value.count == 0
+                                                                            and value.active == false
+                                                                        %}
+                                                                            disabled
+                                                                        {% endif %}
+                                                                    >
+                                                                    <span class="mobile-facets__highlight"></span>
+
+                                                                    {% render 'icons-outline',
+                                                                        name: 'check',
+                                                                        css_class: 'icon icon-checkmark'
+                                                                    %}
+                                                                    {{ value.label | downcase | escape }}
+                                                                    <span class="count">{{ value.count }}</span>
+                                                            {%- endcase -%}
+                                                        </label>
+                                                    </li>
+                                                {%- endunless -%}
+
+                                            {%- else -%}
+                                                {% comment %} render swatches use the theme way: based on a product variant name: Color / Colour {% endcomment %}
+
+                                                {%- assign filterValueForloop = filter.values[forloop.index].value
+                                                    | downcase
+                                                    | remove: ' '
+                                                -%}
+                                                {%- assign filterValue = value.value
+                                                    | downcase
+                                                    | remove: ' '
+                                                    | remove: '-'
+                                                    | remove: ','
+                                                    | replace: '.'
+                                                -%}
+
+                                                {%- unless filterValueForloop == filterValue -%}
+                                                    {% unless value.count == 0 and value.active == false %}
+                                                        <li class="list-menu__item facets__item {% if possibleOptionNames contains filterLabel %}facets__item-swatch{% endif %}">
+                                                            <label
+                                                                for="Filter-{{ filterLabel }}-desktop-{{ forloop.index }}"
+                                                                class="facet-checkbox{% if value.count == 0 and value.active == false %} facet-checkbox--disabled{% endif %}"
+                                                            >
+                                                                {%- comment -%}
+                                                                    Render Colors: as Swatches or as Checkboxes
+                                                                {%- endcomment -%}
+
+                                                                {%- if show_color_as_swatches
+                                                                    and possibleOptionNames contains filterLabel
+                                                                -%}
+                                                                    {% #  Render Colors as swatches %}
+
+                                                                    {% capture background_color %}
+    {% render 'color-swatches-background' color_value: value.value %}
+  {% endcapture %}
+
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        id="Filter-{{ filter.label | downcase  | escape }}-desktop-{{ forloop.index }}"
+                                                                        class="facet__swatch-option {{ filterLabel }} visually-hidden"
+                                                                        name="{{ value.param_name }}"
+                                                                        value="{{ value.value }}"
+                                                                        {% if value.active %}
+                                                                            checked
+                                                                        {% endif %}
+                                                                        {% if value.count == 0
+                                                                            and value.active == false
+                                                                        %}
+                                                                            disabled
+                                                                        {% endif %}
+                                                                    >
+                                                                    <span
+                                                                        class="label"
+                                                                        data-color="{{ value.value }}"
+                                                                        {%- if background_color != blank %}
+                                                                            style="{{ background_color | strip }}"
+                                                                        {% endif -%}
+                                                                    >
+                                                                        {% render 'icons-outline',
+                                                                            name: 'check',
+                                                                            css_class: 'icon checkmark'
+                                                                        %}
+                                                                    </span>
+                                                                    <span class="mobile-facets__highlight"></span>
+                                                                    {%- if show_color_swatch_labels -%}
+                                                                        {{ value.label | downcase | escape }}
+                                                                        <span class="count">{{ value.count }}</span>
+                                                                    {%- endif -%}
+                                                                {%- else -%}
+                                                                    {% #  Render Colors as checkboxes %}
+
+                                                                    <input
+                                                                        class="mobile-facets__checkbox"
+                                                                        type="checkbox"
+                                                                        name="{{ value.param_name }}"
+                                                                        value="{{ value.value }}"
+                                                                        id="Filter-{{ filter.label | downcase | escape }}-desktop-{{ forloop.index }}"
+                                                                        {% if value.active %}
+                                                                            checked
+                                                                        {% endif %}
+                                                                        {% if value.count == 0
+                                                                            and value.active == false
+                                                                        %}
+                                                                            disabled
+                                                                        {% endif %}
+                                                                    >
+                                                                    <span class="mobile-facets__highlight"></span>
+
+                                                                    {% render 'icons-outline',
+                                                                        name: 'check',
+                                                                        css_class: 'icon icon-checkmark'
+                                                                    %}
+                                                                    {{ value.label | downcase | escape }}
+                                                                    <span class="count">{{ value.count }}</span>
+                                                                {%- endif -%}
+                                                            </label>
+                                                        </li>
+                                                    {% endunless %}
+                                                {%- endunless -%}
+                                            {%- endif -%}
+                                        {%- endfor -%}
+                                    </ul>
+                                </div>
+                            </details>
+                        {% when 'price_range' %}
+                            {%- if filter.min_value.value != null or filter.max_value.value != null -%}
+                                {%- assign total_active_values = total_active_values | plus: 1 -%}
+                            {% endif %}
+                            <details
+                                class="facets__disclosure js-filter js-filter-price reveal-item"
+                                data-index="{{ forloop.index }}"
+                                {% if desktop_facets_open
+                                    or desktop_facets_type == 'accordion'
+                                    and filter.min_value.value
+                                    or desktop_facets_type == 'accordion'
+                                    and filter.max_value.value
+                                %}
+                                    open
+                                {% endif %}
+                            >
+                                <summary class="facets__summary{% if desktop_facets_type == 'buttons' %} button button--tertiary{% else %} collapsible{% endif %}{% if settings.show_uppercase_heading %} uppercase{% endif %}">
+                                    <span>{{ filter.label | escape }}</span>
+                                    <span
+                                        class="count-bubble color-inverse {%- if filter.min_value.value or filter.max_value.value -%}{{ filter.active_values.size }} count-bubble--dot{% endif %}"
+                                    ></span>
+                                    {% render 'facets__button--reset', filter: filter %}
+                                    <svg
+                                        aria-hidden="true"
+                                        focusable="false"
+                                        role="presentation"
+                                        class="icon icon-caret"
+                                    >
+                                        <use href="#icon-caret" />
+                                    </svg>
+                                </summary>
+                                <div class="facets__display">
+                                    <div class="facets__header">
+                                        {%- assign max_price_amount = filter.range_max | money | strip_html -%}
+                                        <span
+                                            class="facets__selected"
+                                            {% if filter.min_value.value or filter.max_value.value %}
+                                                data-range-applied="true"
+                                            {% endif %}
+                                        >
+                                            {{-
+                                                'sections.collection_template.max_price'
+                                                | t: price: max_price_amount
+                                            -}}
+                                        </span>
+                                        {% render 'facets__button--reset', filter: filter %}
+                                    </div>
+                                    {% render 'facets__facet--price-range',
+                                        filter: filter,
+                                        index: forloop.index,
+                                        collection_title: collection.title
+                                    %}
+                                </div>
+                            </details>
+                    {% endcase %}
+                {%- endfor -%}
+                <noscript>
+                    <button type="submit" class="facets__button button button--small">
+                        {{ 'sections.collection_template.filter_button' | t }}
+                    </button>
+                </noscript>
+            </div>
+
+            {% if collection.current_vendor or collection.current_type %}
+                <input type="hidden" name="q" value="{{ collection.current_vendor }}{{ collection.current_type }}">
+            {% endif %}
+        </form>
+    </collection-filters-form>
+{% endunless %}
+
+<menu-drawer class="mobile-facets__wrapper">
+    <details>
+        <summary class="button button--tertiary">
+            <div class="mobile-facets__open">
+                {% render 'icons-outline', name: 'adjustments' %}
+                <span>{{ 'sections.collection_template.filter_and_sort' | t }}</span>
+                {%- if total_active_values > 0 -%}
+                    <span class="count-bubble text-sm color-inverse">{{ total_active_values }}</span>
+                {%- endif -%}
+            </div>
+        </summary>
+        <collection-filters-form>
+            <form id="CollectionFiltersFormMobile" class="mobile-facets">
+                {{- form_after_open_html -}}
+
+                <div class="mobile-facets__inner">
+                    <div class="mobile-facets__header">
+                        <div class="mobile-facets__header-inner">
+                            <h2 class="mobile-facets__heading{% if settings.show_uppercase_heading %} uppercase{% endif %}">
+                                {{ 'sections.collection_template.filter_and_sort' | t }}
+                            </h2>
+                            <p class="mobile-facets__count">
+                                {%- if collection.results_count -%}
+                                    {{
+                                        'templates.search.results_with_count'
+                                        | t: terms: collection.terms, count: collection.results_count
+                                    }}
+                                {%- elsif collection.products_count == collection.all_products_count -%}
+                                    {{
+                                        'sections.collection_template.product_count_simple'
+                                        | t: count: collection.products_count
+                                    }}
+                                {%- else -%}
+                                    {{
+                                        'sections.collection_template.product_count'
+                                        | t:
+                                            product_count: collection.products_count,
+                                            count: collection.all_products_count
+                                    }}
+                                {%- endif -%}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mobile-facets__main">
+                        {%- for filter in filters -%}
+                            {%- assign filterLabel = filter.label | downcase | escape -%}
+                            {% case filter.type %}
+                                {% when 'boolean', 'list' %}
+                                    <details
+                                        class="mobile-facets__details js-filter"
+                                        data-index="mobile-{{ forloop.index }}"
+                                    >
+                                        <summary class="mobile-facets__summary{% if settings.show_uppercase_heading %} uppercase{% endif %}">
+                                            <div>
+                                                <span>{{ filter.label | escape }}</span>
+                                                <span class="count-bubble text-sm color-inverse">
+                                                    {%- if filter.active_values.size > 0 -%}
+                                                        {{ filter.active_values.size }}
+                                                    {%- endif -%}
+                                                </span>
+                                                <span class="mobile-facets__arrow no-js-hidden">
+                                                    <svg aria-hidden="true" focusable="false" role="presentation">
+                                                        <use href="#icon-caret" />
+                                                    </svg>
+                                                </span>
+                                                <noscript>
+                                                    <svg
+                                                        aria-hidden="true"
+                                                        focusable="false"
+                                                        role="presentation"
+                                                        class="icon icon-caret"
+                                                    >
+                                                        <use href="#icon-caret" />
+                                                    </svg>
+                                                </noscript>
+                                            </div>
+                                        </summary>
+                                        <div class="mobile-facets__submenu">
+                                            <button
+                                                class="mobile-facets__close-button button--small"
+                                                aria-expanded="true"
+                                                type="button"
+                                            >
+                                                <svg
+                                                    aria-hidden="true"
+                                                    focusable="false"
+                                                    role="presentation"
+                                                    class="icon icon-caret"
+                                                >
+                                                    <use href="#icon-caret" />
+                                                </svg>
+                                                {{ filter.label | escape }}
+                                            </button>
+                                            <ul
+                                                class="mobile-facets__list list-unstyled {{ filter.presentation }}{% unless swatchLabelsHiddenClass == empty %} {{ swatchLabelsHiddenClass }}{% endunless %}"
+                                                role="list"
+                                            >
+                                                {%- for value in filter.values -%}
+                                                    {%- if filter.presentation == 'swatch'
+                                                        or filter.presentation == 'image'
+                                                    -%}
+                                                        <li class="mobile-facets__item list-menu__item">
+                                                            <label
+                                                                for="Filter-{{ value.param_name | downcase }}-mobile-{{ forloop.index }}"
+                                                                class="facet-checkbox mobile-facets__label{% if value.count == 0 and value.active == false %} mobile-facets__label--disabled{% endif %}"
+                                                            >
+                                                                {%- comment -%}
+                                                                    Render Color swatches based on the metaobjects
+                                                                {%- endcomment -%}
+
+                                                                {%- liquid
+                                                                    assign swatchesWidth = 50
+                                                                    assign size_limit = value.display.value.size | at_most: 4
+                                                                    assign rotation = '0deg'
+                                                                    if size_limit == 2
+                                                                        assign rotation = '45deg'
+                                                                    endif
+
+                                                                    assign angle_increment = 360 | divided_by: size_limit
+                                                                    assign angle = 0
+                                                                -%}
+                                                                {%- case value.display.type -%}
+                                                                        {% comment %} swatch colors {% endcomment %}
+                                                                    {%- when 'colors' -%}
+                                                                        {%- capture bgColorGradient -%}
+      {%- for color in value.display.value limit: size_limit -%}
+        {{ color }} {{ angle }}deg
+        {%- assign angle = angle | plus: angle_increment %}
+        {{ angle }}deg
+        {%- unless forloop.last %}, {%- endunless -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            id="Filter-{{ value.param_name | downcase }}-mobile-{{ forloop.index }}"
+                                                                            class="facet__swatch-option visually-hidden"
+                                                                            name="{{ value.param_name }}"
+                                                                            value="{{ value.value }}"
+                                                                            {% if value.active %}
+                                                                                checked
+                                                                            {% endif %}
+                                                                            {% if value.count == 0
+                                                                                and value.active == false
+                                                                            %}
+                                                                                disabled
+                                                                            {% endif %}
+                                                                        >
+                                                                        <span
+                                                                            class="label"
+                                                                            data-color="{{ value.display.value }}"
+                                                                            style="background: conic-gradient({{ bgColorGradient }}); transform: rotateZ({{ rotation }});"
+                                                                        >
+                                                                            {% render 'icons-outline',
+                                                                                name: 'check',
+                                                                                css_class: 'icon checkmark'
+                                                                            %}
+                                                                        </span>
+                                                                        <span class="mobile-facets__highlight"></span>
+                                                                        {%- if show_color_swatch_labels -%}
+                                                                            {{ value.label | downcase | escape }}
+                                                                            <span class="count">{{ value.count }}</span>
+                                                                        {%- endif -%}
+
+                                                                        {% comment %} swatch images {% endcomment %}
+                                                                    {%- when 'image' -%}
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            id="Filter-{{ value.param_name | downcase }}-mobile-{{ forloop.index }}"
+                                                                            class="facet__swatch-option image visually-hidden"
+                                                                            name="{{ value.param_name }}"
+                                                                            value="{{ value.value }}"
+                                                                            {% if value.active %}
+                                                                                checked
+                                                                            {% endif %}
+                                                                            {% if value.count == 0
+                                                                                and value.active == false
+                                                                            %}
+                                                                                disabled
+                                                                            {% endif %}
+                                                                        >
+                                                                        <span class="label">
+                                                                            {{
+                                                                                value.display.value
+                                                                                | image_url: width: swatchesWidth
+                                                                                | image_tag:
+                                                                                    alt: value.display.value.alt
+                                                                            }}
+                                                                        </span>
+
+                                                                    {%- else -%}
+                                                                        <input
+                                                                            class="mobile-facets__checkbox"
+                                                                            type="checkbox"
+                                                                            name="{{ value.param_name }}"
+                                                                            value="{{ value.value }}"
+                                                                            id="Filter-{{ value.param_name }}-mobile-{{ forloop.index }}"
+                                                                            {% if value.active %}
+                                                                                checked
+                                                                            {% endif %}
+                                                                            {% if value.count == 0
+                                                                                and value.active == false
+                                                                            %}
+                                                                                disabled
+                                                                            {% endif %}
+                                                                        >
+                                                                        <span class="mobile-facets__highlight"></span>
+
+                                                                        {% render 'icons-outline',
+                                                                            name: 'check',
+                                                                            css_class: 'icon icon-checkmark'
+                                                                        %}
+                                                                        {{ value.label | downcase | escape }}
+                                                                        <span class="count">{{ value.count }}</span>
+                                                                {%- endcase -%}
+                                                            </label>
+                                                        </li>
+                                                    {%- else -%}
+                                                        {% comment %} render swatches use the theme way: based on a product variant name: Color / Colour {% endcomment %}
+
+                                                        {%- assign filterValueForloop = filter.values[forloop.index].value
+                                                            | downcase
+                                                            | remove: ' '
+                                                        -%}
+                                                        {%- assign filterValue = value.value
+                                                            | downcase
+                                                            | remove: ' '
+                                                            | remove: '-'
+                                                            | remove: ','
+                                                            | replace: '.'
+                                                        -%}
+
+                                                        {%- unless filterValueForloop == filterValue -%}
+                                                            <li class="mobile-facets__item list-menu__item {% if possibleOptionNames contains filterLabel %}facets__item-swatch{% endif %}">
+                                                                <label
+                                                                    for="Filter-{{ filterLabel }}-mobile-{{ forloop.index }}"
+                                                                    class="facet-checkbox mobile-facets__label{% if value.count == 0 and value.active == false %} mobile-facets__label--disabled{% endif %}"
+                                                                >
+                                                                    {%- comment -%}
+                                                                        Render Colors: as Swatches or as Checkboxes
+                                                                    {%- endcomment -%}
+
+                                                                    {%- if show_color_as_swatches
+                                                                        and possibleOptionNames contains filterLabel
+                                                                    -%}
+                                                                        {% #  Render Colors as swatches %}
+
+                                                                        {% capture background_color %}
+    {% render 'color-swatches-background' color_value: value.value %}
+  {% endcapture %}
+
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            id="Filter-{{ filter.label | downcase  | escape }}-mobile-{{ forloop.index }}"
+                                                                            class="facet__swatch-option {{ filterLabel }} visually-hidden"
+                                                                            name="{{ value.param_name }}"
+                                                                            value="{{ value.value }}"
+                                                                            {% if value.active %}
+                                                                                checked
+                                                                            {% endif %}
+                                                                            {% if value.count == 0
+                                                                                and value.active == false
+                                                                            %}
+                                                                                disabled
+                                                                            {% endif %}
+                                                                        >
+                                                                        <span
+                                                                            class="label"
+                                                                            data-color="{{ value.value }}"
+                                                                            {%- if background_color != blank %}
+                                                                                style="{{ background_color | strip }}"
+                                                                            {% endif -%}
+                                                                        >
+                                                                            {% render 'icons-outline',
+                                                                                name: 'check',
+                                                                                css_class: 'icon checkmark'
+                                                                            %}
+                                                                        </span>
+                                                                        <span class="mobile-facets__highlight"></span>
+                                                                        {%- if show_color_swatch_labels -%}
+                                                                            {{ value.label | downcase | escape }}
+                                                                            <span class="count">{{ value.count }}</span>
+                                                                        {%- endif -%}
+                                                                    {%- else -%}
+                                                                        {% #  Render Colors as checkboxes %}
+
+                                                                        <input
+                                                                            class="mobile-facets__checkbox"
+                                                                            type="checkbox"
+                                                                            name="{{ value.param_name }}"
+                                                                            value="{{ value.value }}"
+                                                                            id="Filter-{{ filter.label | downcase | escape }}-mobile-{{ forloop.index }}"
+                                                                            {% if value.active %}
+                                                                                checked
+                                                                            {% endif %}
+                                                                            {% if value.count == 0
+                                                                                and value.active == false
+                                                                            %}
+                                                                                disabled
+                                                                            {% endif %}
+                                                                        >
+                                                                        <span class="mobile-facets__highlight"></span>
+
+                                                                        {% render 'icons-outline',
+                                                                            name: 'check',
+                                                                            css_class: 'icon icon-checkmark'
+                                                                        %}
+                                                                        {{ value.label | downcase | escape }}
+                                                                        <span class="count">{{ value.count }}</span>
+                                                                    {%- endif -%}
+                                                                </label>
+                                                            </li>
+                                                        {%- endunless -%}
+                                                    {%- endif -%}
+                                                {%- endfor -%}
+                                            </ul>
+
+                                            <div class="no-js-hidden mobile-facets__footer">
+                                                <button
+                                                    type="button"
+                                                    class="no-js-hidden button button--primary min-w-0"
+                                                    onclick="this.closest('.mobile-facets__wrapper').querySelector('summary').click()"
+                                                >
+                                                    {{ 'sections.collection_template.apply' | t }}
+                                                </button>
+                                                <noscript
+                                                    ><button class="button button--primary">
+                                                        {{ 'sections.collection_template.apply' | t }}
+                                                    </button></noscript
+                                                >
+                                            </div>
+                                        </div>
+                                    </details>
+                                {% when 'price_range' %}
+                                    {%- assign max_price_amount = filter.range_max | money | strip_html -%}
+                                    <details
+                                        class="mobile-facets__details js-filter"
+                                        data-index="mobile-{{ forloop.index }}"
+                                    >
+                                        <summary class="mobile-facets__summary{% if settings.show_uppercase_heading %} uppercase{% endif %}">
+                                            <div>
+                                                <span>{{ filter.label | escape }}</span>
+                                                <span
+                                                    class="count-bubble text-sm color-inverse{% if filter.min_value.value or filter.max_value.value %} count-bubble--dot{% endif %}"
+                                                ></span>
+                                                <span class="mobile-facets__arrow no-js-hidden">
+                                                    <svg aria-hidden="true" focusable="false" role="presentation">
+                                                        <use href="#icon-caret" />
+                                                    </svg>
+                                                </span>
+                                                <noscript>
+                                                    <svg
+                                                        aria-hidden="true"
+                                                        focusable="false"
+                                                        role="presentation"
+                                                        class="icon icon-caret"
+                                                    >
+                                                        <use href="#icon-caret" />
+                                                    </svg>
+                                                </noscript>
+                                            </div>
+                                        </summary>
+                                        <div class="mobile-facets__submenu">
+                                            <button
+                                                class="mobile-facets__close-button button--small"
+                                                aria-expanded="true"
+                                                type="button"
+                                            >
+                                                <svg
+                                                    aria-hidden="true"
+                                                    focusable="false"
+                                                    role="presentation"
+                                                    class="icon icon-caret"
+                                                >
+                                                    <use href="#icon-caret" />
+                                                </svg>
+                                                {{ filter.label | escape }}
+                                            </button>
+
+                                            <div>
+                                                <p class="mobile-facets__info">
+                                                    {{
+                                                        'sections.collection_template.max_price'
+                                                        | t: price: max_price_amount
+                                                    }}
+                                                </p>
+                                                {% render 'facets__facet--price-range',
+                                                    filter: filter,
+                                                    index: forloop.index,
+                                                    type_facets: '_mobile'
+                                                %}
+                                            </div>
+                                            <div class="no-js-hidden mobile-facets__footer">
+                                                <button
+                                                    type="button"
+                                                    class="no-js-hidden button button--primary min-w-0"
+                                                    onclick="this.closest('.mobile-facets__wrapper').querySelector('summary').click()"
+                                                >
+                                                    {{ 'sections.collection_template.apply' | t }}
+                                                </button>
+                                                <noscript
+                                                    ><button class="button button--primary">
+                                                        {{ 'sections.collection_template.apply' | t }}
+                                                    </button></noscript
+                                                >
+                                            </div>
+                                        </div>
+                                    </details>
+                            {% endcase %}
+                        {%- endfor -%}
+
+                        {% comment %}
+                            <div class="mobile-facets__details js-filter" data-index="mobile-{{ forloop.index }}">
+                              {% render 'collection-sorting'
+                                collection: collection,
+                                select_id: 'SortBy-mobile'
+                              %}
+                            </div>
+                        {% endcomment %}
+
+                        <div class="mobile-facets__footer">
+                            {% render 'facets__button--clear-all', collection: collection %}
+                            <button
+                                type="button"
+                                class="no-js-hidden button button--primary button--small"
+                                onclick="this.closest('.mobile-facets__wrapper').querySelector('summary').click()"
+                            >
+                                {{ 'sections.collection_template.apply' | t }}
+                            </button>
+                            <noscript>
+                                <button class="button button--primary button--small">
+                                    {{ 'sections.collection_template.apply' | t }}
+                                </button>
+                            </noscript>
+                        </div>
+                    </div>
+
+                    {% if collection.current_vendor or collection.current_type %}
+                        <input
+                            type="hidden"
+                            name="q"
+                            value="{{ collection.current_vendor }}{{ collection.current_type }}"
+                        >
+                    {% endif %}
+                </div>
+            </form>
+        </collection-filters-form>
+    </details>
+</menu-drawer>
+
+<div class="active-facets active-facets-mobile">
+    {%- unless htmlFacetsActive == '' %}
+        <p class="active-facets__heading">{{ 'sections.collection_template.shopping_by_label' | t }}</p>
+        {{ htmlFacetsActive }}
+        {% render 'facets__button--clear-all', collection: collection %}
+    {% endunless -%}
+</div>

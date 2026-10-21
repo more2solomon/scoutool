@@ -1,0 +1,112 @@
+{% comment %}
+    Render Banner Image and Collection List in the dropdown content.
+
+    Accepts:
+     - block               {Object}
+     - blockOrder:         {Numb}
+     - parent_item_index:  {Numb}
+{% endcomment %}
+{%- liquid
+    assign useImage = block.settings.enabled
+    assign image = block.settings.item_image
+    assign collectionList = block.settings.collections
+    assign image_link = block.settings.image_link
+    assign image_title = block.settings.image_title
+    assign collectionItemsWidth = block.settings.collection_items_width
+    assign is_collection_item_with_border = block.settings.show_outline_border
+    assign selectedItemIndex = block.settings.item_menu_index
+    assign link_url = block.settings.collection_url
+    assign link_appearance = block.settings.view_all_appearance
+    assign banner_width = block.settings.banner_width
+    assign title_bg = 'transparent'
+    assign title_color = 'var(--color-foreground)'
+    assign media_condition = '(max-width: 989px)'
+
+    assign block_class = 'dropdown-inner__collections'
+    unless block.settings.show_block_on_mobile
+        assign block_class = block_class | append: ' hidden-on-mobile'
+    endunless
+-%}
+{%- if useImage and parent_item_index == selectedItemIndex -%}
+    {%- unless block.settings.show_block_on_mobile %}
+        <style media="{{ media_condition }}">
+            .dropdown-inner__collections:is(.hidden-on-mobile) {
+              display: none !important;
+            }
+        </style>
+    {% endunless -%}
+    {%- # Render Banner image -%}
+    {%- unless image == blank -%}
+        {% style %}
+            @media(min-width: 990px) {
+              .item--with-image {
+                width: {{ banner_width }}%;
+              }
+            }
+        {% endstyle %}
+        <div class="col-3 item--with-image" data-block-index="{{ blockOrder }}">
+            {% unless image_link == blank -%}
+                <a href="{{ image_link }}" class="image-link" title="{{'sections.collection_list.view_all' | t }}">
+            {%- endunless %}
+            {%- liquid
+                assign media_class = 'media'
+                if settings.use_media_transparent
+                    assign media_class = media_class | append: ' media--transparent'
+                endif
+            -%}
+            <div
+                class="{{ media_class }}"
+                style="padding-bottom:{% if image != blank %}{{ 100 | divided_by: image.aspect_ratio }}{% else %}100{% endif %}%"
+            >
+                {% render 'render-image', image: image, widths: image.width %}
+            </div>
+            {% unless image_link == blank %}</a>{% endunless %}
+            {% unless image_title == blank %}
+                <span class="title h6">{{ image_title | escape }}</span>
+            {% endunless %}
+        </div>
+    {%- endunless -%}
+
+    {%- # Render Collection List -%}
+    {%- unless collectionList.count == 0 -%}
+        {% style %}
+            .dropdown-inner__collections[data-block-index="{{ blockOrder }}"] li:not(.dropdown-inner__action) {
+              width: clamp(150px, {{ collectionItemsWidth | append: '%' }},  300px);
+            }{%- if is_collection_item_with_border %}
+            .dropdown-inner__collections[data-block-index] li:not(.dropdown-inner__action) {
+              border: 1px solid var(--color-foreground-10);
+            }{% endif -%}
+
+            @media(min-width: 990px) {
+             .dropdown-inner__collections[data-block-index="{{ blockOrder }}"] li:not(.dropdown-inner__action) {
+                padding: {% if collectionItemsWidth > 40 %}.8{% elsif collectionItemsWidth >= 30 and collectionItemsWidth < 40 %}.6{% elsif collectionItemsWidth <30 and collectionItemsWidth >= 20 %}.4{% else %}.2{% endif %}rem;
+              }
+            }
+        {% endstyle %}
+        <div class="{{ block_class }}" data-block-index="{{ blockOrder }}">
+            <div class="wrapper">
+                <ul>
+                    {%- for collectionItem in collectionList -%}
+                        {%- render 'grid-item-collection',
+                            collection: collectionItem,
+                            collection_type: 'slider',
+                            title_color: title_color,
+                            title_bg_color: title_bg,
+                            item_bg_color: 'transparent'
+                        -%}
+                    {%- endfor -%}
+                    {%- unless link_url == blank -%}
+                        {%- render 'header__dropdown--link-view-all',
+                            link: link_url,
+                            link_appearance: link_appearance
+                        -%}
+                    {%- endunless -%}
+                </ul>
+            </div>
+        </div>
+        {%- unless image == blank -%}
+            {{ 'component-dropdown-menu__image.css' | asset_url | stylesheet_tag }}
+        {%- endunless -%}
+        {{ 'component-dropdown-menu__collection-list.css' | asset_url | stylesheet_tag }}
+    {%- endunless -%}
+{%- endif -%}

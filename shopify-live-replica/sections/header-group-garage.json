@@ -1,0 +1,109 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement_bar": {
+          "type": "announcement",
+          "disabled": true,
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "announcement_bar"
+      ],
+      "settings": {}
+    },
+    "header_top": {
+      "type": "header-top",
+      "settings": {
+        "full_width": false
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "header_max_width": 1400,
+        "logo_width": 130,
+        "mobile_logo_width": 130,
+        "justify_logo": "start",
+        "center_logo_on_mobile": false,
+        "show_drawer_label_on_mobile": true,
+        "add_menu_dividers": false,
+        "show_icons_line_divider": true,
+        "type_menu": "combined",
+        "enable_menu_items_uppercase": true,
+        "use_default_phone_icon": true,
+        "phone_number_menu_foreground": "#FFFFFF",
+        "phone_number_menu_background": "",
+        "phone_number_menu_background_gradient": "linear-gradient(125deg, hsla(0, 77%, 35%, 1) 65%, hsla(358, 79%, 26%, 1) 65%)"
+      }
+    },
+    "icons_bar": {
+      "type": "icons-bar",
+      "blocks": {
+        "icon-bar-1": {
+          "type": "icon",
+          "settings": {
+            "icon": "check",
+            "text": "<p>Item bar title</p>"
+          }
+        },
+        "icon-bar-2": {
+          "type": "icon",
+          "settings": {
+            "icon": "check",
+            "text": "<p>Item bar title</p>"
+          }
+        },
+        "icon-bar-3": {
+          "type": "icon",
+          "settings": {
+            "icon": "check",
+            "text": "<p>Item bar title</p>"
+          }
+        },
+        "icon-bar-4": {
+          "type": "icon",
+          "settings": {
+            "icon": "check",
+            "text": "<p>Item bar title</p>"
+          }
+        }
+      },
+      "block_order": [
+        "icon-bar-1",
+        "icon-bar-2",
+        "icon-bar-3",
+        "icon-bar-4"
+      ],
+      "settings": {
+        "max_width": 1400,
+        "icons_color": "#9D1414",
+        "icons_width": 1.5
+      }
+    },
+    "breadcrumbs": {
+      "type": "breadcrumbs",
+      "settings": {}
+    }
+  },
+  "order": [
+    "announcement",
+    "header_top",
+    "header",
+    "icons_bar",
+    "breadcrumbs"
+  ]
+}

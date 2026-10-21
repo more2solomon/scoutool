@@ -1,0 +1,255 @@
+{% comment %}
+    Render Collage Product block
+
+    Accepts:
+    - block: {Object
+{% endcomment %}
+{%- liquid
+    if block.settings.product != blank
+        assign product_title = block.settings.product.title | escape
+    else
+        assign product_title = 'onboarding.product_title' | t
+    endif
+
+    assign paddingBottom = 75
+    if block.settings.product.featured_image
+        assign paddingBottom = 100 | divided_by: block.settings.product.featured_image.aspect_ratio
+        assign imageWidth = '652,978,1182,1340,1920,#iw#' | replace: '#iw#', block.settings.product.featured_image.width
+        assign imageSizes = '(max-width: 767px) calc(100vw - 2rem - 2px), (max-width: 1279px) calc(100vw - 6rem - 2px), 1182px'
+    endif
+
+    assign is_product_info_block = true
+    assign badge_size = block.settings.badge_size
+    assign product_form_id = 'product-form-' | append: section.id | append: '-' | append: block.settings.product.id
+
+    assign newProduct = false
+    assign preOrderProduct = false
+    assign customBadge = false
+
+    for variant in block.settings.product.variants
+        if variant.metafields.custom.new != blank
+            assign newProduct = true
+        endif
+
+        if variant.metafields.custom.preorder != blank
+            assign preOrderProduct = true
+        endif
+
+        if variant.metafields.custom.custom != blank
+            assign customBadge = true
+        endif
+    endfor
+-%}
+{% style %}
+    .collage-product .media > img + img {
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility .75s, opacity .75s !important;
+    }
+
+    .collage-product .media:hover > img,
+    .collage-product .media:focus > img {
+        scale: 1;
+    }
+
+    .collage-product:hover .media > img + img,
+    .collage-product:focus .media > img + img {
+        visibility: visible;
+        opacity: 1;
+
+    }{% if block.settings.color_scheme == 'accent-1' %}
+    :where(#shopify-section-{{ section.id }} :is(.price--final)) {
+        color: inherit !important;
+    }{% endif %}
+
+    .collage-product,
+    .collage-product .media :is(svg, img) {
+        border-radius: {{ section.settings.border_radius }}rem;
+        -webkit-border-radius: {{ section.settings.border_radius }}rem;
+    }
+{% endstyle %}
+<a
+    href="{{ block.settings.product.url }}"
+    title="{{ product_title }}"
+    class="collage-card collage-product color-{{ block.settings.color_scheme }} card-wrapper{% if focus_card_left %} collage-card--left{% elsif focus_card_right %} collage-card--right{% endif %}"
+    {{ block.shopify_attributes }}
+>
+    <div class="product-image animate-arrow">
+        {%- liquid
+            assign media_class = 'media'
+            if settings.use_media_transparent
+                assign media_class = media_class | append: ' media--transparent'
+            endif
+        -%}
+        {% if block.settings.product.featured_image %}
+            {%- liquid
+                unless request.design_mode
+                    if settings.enable_preload_images
+                        assign media_class = media_class | append: ' media--blur-image'
+                    endif
+                endunless
+            -%}
+            {%- if settings.enable_preload_images -%}{%- render 'loading-overlay' -%}{%- endif -%}
+            <div
+                class="{{ media_class }}"
+                {% if paddingBottom %}
+                    style="padding-bottom: {{ paddingBottom }}%;"
+                {% endif %}
+            >
+                {% render 'render-image',
+                    image: block.settings.product.featured_image,
+                    widths: imageWidth,
+                    sizes: imageSizes,
+                    css_class: 'product__main-image'
+                %}
+                {%- if settings.product_card_secondary_image -%}
+                    {% render 'render-image',
+                        image: block.settings.product.media[1].preview_image,
+                        widths: imageWidth,
+                        sizes: imageSizes,
+                        css_class: 'product__secondary-image'
+                    %}
+                {%- endif -%}
+                <div class="badge-container">
+                    {% render 'badge-onsale', product: block.settings.product, size: badge_size %}
+                    {% render 'badge-soldout', product: block.settings.product, size: badge_size %}
+
+                    {% if newProduct %}
+                        {% render 'badge-new', product: block.settings.product, size: badge_size %}
+                    {% endif %}
+
+                    {% if preOrderProduct %}
+                        {% render 'badge-preorder', product: block.settings.product, size: badge_size %}
+                    {% endif %}
+
+                    {% if customBadge %}
+                        {% render 'badge-custom', product: block.settings.product, size: badge_size %}
+                    {% endif %}
+                </div>
+            </div>
+        {% else %}
+            <div
+                class="{{ media_class }}"
+                {% if paddingBottom %}
+                    style="padding-bottom: {{ paddingBottom }}%;"
+                {% endif %}
+            >
+                {{
+                    block.settings.product.id
+                    | divided_by: 1000
+                    | modulo: 4
+                    | plus: 1
+                    | prepend: 'product-'
+                    | placeholder_svg_tag: 'placeholder-svg placeholder'
+                }}
+            </div>
+        {% endif %}
+        <div class="collage-card-title">
+            {%- if settings.product_card_vendor %}
+                <p class="item-vendor">
+                    <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
+                    <span>{{ block.settings.product.vendor | default: 'vendor' }}</span>
+                </p>
+            {% endif -%}
+            <span class="title product--title">
+                {{ product_title }}
+            </span>
+            {% if settings.product_card_rating -%}
+                <div class="judgeme-product-reviews-badge" data-id="{{ block.settings.product.id }}">
+                    <span class="jdgm-widget jdgm-preview-badge">
+                        {{- block.settings.product.metafields.judgeme.badge -}}
+                    </span>
+                </div>
+            {%- endif %}
+            {%- unless block.settings.product.has_only_default_variant == false %}
+                {%- if settings.enable_qty_selector %}
+                    <div class="item-quantity">
+                        {% render 'quantity-selector', product: block.settings.product, form_id: product_form_id %}
+                    </div>
+                {%- endif -%}
+            {% endunless -%}
+            {% if block.settings.show_price %}
+                {% render 'helper__decorate-product-price',
+                    product: block.settings.product,
+                    showPriceLabel: settings.price_label
+                %}
+            {% endif %}
+            {%- if block.settings.show_to_cart_button -%}
+                <div class="item-actions-wrapper listing">
+                    {% assign product = block.settings.product %}
+                    {%- liquid
+                        if product.has_only_default_variant
+                            assign buttonName = 'add'
+                            if product.selected_or_first_available_variant.available
+                                assign buttonText = 'products.product.add_to_cart' | t
+                                assign isButtonDisabled = false
+                            else
+                                assign buttonText = 'products.product.sold_out' | t
+                                assign isButtonDisabled = true
+                            endif
+                        else
+                            assign buttonName = 'view'
+                            assign buttonText = 'products.product.view_full_details' | t
+                            assign isButtonDisabled = false
+                        endif
+
+                        if isPreorder and product.selected_or_first_available_variant.available and product.selected_or_first_available_variant.inventory_quantity <= 0
+                            assign buttonName = 'pre-order'
+                            assign buttonText = 'products.product.pre_sale' | t
+                            assign isButtonDisabled = false
+                        endif
+                    -%}
+                    {%- capture html_button %}
+    {%- liquid 
+        assign button_class = 'button button--primary button--small'
+        if settings.show_button_ring_on_hover
+            assign button_class = button_class | append: ' border--outline'
+        endif
+        if settings.cut_button_corners
+            assign button_class = button_class | append: ' border--with-cut-corners'
+        endif
+    -%}
+    <button type="submit" name="{{ buttonName }}"
+        class="{{ button_class }}"
+        form="{{ product_form_id }}"
+        aria-label="{{ buttonText }}"
+        title="{{ buttonText }}"{% if isButtonDisabled %} disabled{% endif %}>
+        <span class="text">{{ buttonText }}</span>
+        {%- if show_cart_icon and buttonName == 'add' %}
+            {% render 'icons-charge' name: 'cart' css_class: "icon-cart" %}
+        {% endif -%}
+    </button>
+{% endcapture -%}
+
+                    {%- if show_to_cart_button != false and product.id != blank -%}
+                        {% if product.has_only_default_variant %}
+                            <product-form class="product-form">
+                                {% form 'product',
+                                    product,
+                                    id: product_form_id,
+                                    class: 'form',
+                                    novalidate: 'novalidate',
+                                    data-type: 'add-to-cart-form'
+                                %}
+                                    <input
+                                        type="hidden"
+                                        name="id"
+                                        value="{{ product.selected_or_first_available_variant.id }}"
+                                    >
+                                    {{ html_button }}
+                                {% endform %}
+                            </product-form>
+                        {% else %}
+                            <form
+                                id="{{ product_form_id }}"
+                                action="{{ product.url | within: current_collection }}#has-options"
+                            >
+                                {{ html_button }}
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            {%- endif -%}
+        </div>
+    </div>
+</a>

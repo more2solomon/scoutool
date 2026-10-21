@@ -1,0 +1,226 @@
+{% comment %}
+    Initialization scripts sources to be loaded demands on screen
+
+    Accepts:
+    - init_squama_script:                           {Bool}
+    - init_header_menu_script:                      {Bool}
+    - init_slider_script:                           {Bool}
+    - init_predictive_search_script:                {Bool}
+    - init_predictive_search_filter_category_script:{Bool}
+    - ini_predictive_search_results_tabs:           {Bool}
+    - init_searchresults_tabs_script:               {Bool}
+    - init_localization_form:                       {Bool}
+    - init_product_form:                            {Bool}
+    - init_overlay_banner:                          {Bool}
+    - init_deferred_media:                          {Bool}
+    - init_product_model:                           {Bool}
+    - init_pickup_availability:                     {Bool}
+    - init_text_expandable:                         {Bool}
+    - init_country_flags                            {Bool}
+    - init_animation_on_reveal:                     {Bool}
+    - init_compare_products:                        {Bool}
+    - init_quick_view:                              {Bool}
+    - init_recently_viewed:                         {Bool}
+    - init_menu_collection_icon:                    {Bool}
+    - init_minicart_upsell_products:                {Bool}
+{% endcomment %}
+
+{%- liquid
+    if init_header_menu_script
+        assign headerMenuSrc = 'header-menu.js' | asset_url
+    endif
+
+    if init_squama_script
+        assign squamaSrc = 'squama-item.js' | asset_url
+    endif
+
+    if init_slider_script
+        assign sliderSrc = 'slider.js' | asset_url
+    endif
+
+    if init_predictive_search_script
+        assign searchSrc = 'predictive-search.js' | asset_url
+    endif
+
+    if init_predictive_search_filter_category_script
+        assign searchFilterCategorySrc = 'search-filter-category.js' | asset_url
+    endif
+
+    if ini_predictive_search_results_tabs
+        assign searchResultsTabsSrc = 'search-results-tabs.js' | asset_url
+    endif
+
+    if init_localization_form
+        assign localizationFormSrc = 'define-localization-form.js' | asset_url
+    endif
+
+    if init_deferred_media
+        assign deferredMediaSrc = 'deferred-media.js' | asset_url
+    endif
+
+    if init_product_model
+        assign productModelSrc = 'product-model.js' | asset_url
+    endif
+
+    if init_pickup_availability
+        assign pickupAvailability = 'pickup-availability.js' | asset_url
+    endif
+
+    if init_text_expandable
+        assign textExpandable = 'text-expandable.js' | asset_url
+    endif
+
+    if init_animation_on_reveal
+        assign animationOnReveal = 'scroll-reveal.js' | asset_url
+    endif
+
+    if init_compare_products
+        assign compareUtils = 'compare-utils.js' | asset_url
+        assign comparelink = 'compare-link.js' | asset_url
+        assign compareAddButton = 'compare-add-button.js' | asset_url
+        assign comparePopup = 'compare-popup.js' | asset_url
+    endif
+
+    if init_quick_view
+        assign quickView = 'quick-view.js' | asset_url
+    endif
+
+    if init_overlay_banner
+        assign overlayBanner = 'popup-banner.js' | asset_url
+    endif
+
+    if init_quantity_input
+        assign qtyInput = 'quantity-input.js' | asset_url
+    endif
+
+    if init_country_flags
+        assign countryFlags = 'country-flags.js' | asset_url
+    endif
+
+    if init_recently_viewed
+        assign recentlyViewed = 'recently-viewed.js' | asset_url
+    endif
+
+    if init_menu_collection_icon
+        assign menuCollectionIcon = 'menu-collection-icon.js' | asset_url
+    endif
+
+    if init_minicart_upsell_products
+        assign minicartUpsellProducts = 'products-complementary.js' | asset_url
+    endif
+
+    if init_grid_swatches
+        assign grid_swatches_script = 'variants-grid-options.js' | asset_url
+    endif
+-%}
+
+<script type="application/json" id="desktop-only">
+    {
+        "squamaSrc"             : "{{ squamaSrc | default: 'null' }}",
+        "headerMenuSrc"         : "{{ headerMenuSrc | default: 'null' }}",
+        "searchResultsTabsSrc"  : "{{ searchResultsTabsSrc | default: 'null' }}"
+    }
+</script>
+<script type="application/json" id="primary--scripts">
+    {
+        "sliderSrc"             : "{{ sliderSrc | default: 'null' }}",
+        "searchSrc"             : "{{ searchSrc | default: 'null' }}",
+        "searchFilterCategorySrc":"{{ searchFilterCategorySrc | default: 'null' }}",
+        "localizationFormSrc"   : "{{ localizationFormSrc | default: 'null' }}",
+        "deferredMediaSrc"      : "{{ deferredMediaSrc | default: 'null' }}",
+        "productModelSrc"       : "{{ productModelSrc | default: 'null'}}",
+        "pickupAvailability"    : "{{ pickupAvailability | default: 'null' }}",
+        "textExpandable"        : "{{ textExpandable | default: 'null' }}",
+        "animationOnReveal"     : "{{ animationOnReveal | default: 'null' }}",
+        "compareUtils"          : "{{ compareUtils | default: 'null' }}",
+        "comparelink"           : "{{ comparelink | default: 'null' }}",
+        "compareAddButton"      : "{{ compareAddButton | default: 'null' }}",
+        "comparePopup"          : "{{ comparePopup | default: 'null' }}",
+        "quickView"             : "{{ quickView | default: 'null' }}",
+        "overlayBanner"         : "{{ overlayBanner | default: 'null' }}",
+        "qtyInput"              : "{{ qtyInput | default: 'null' }}",
+        "countryFlags"          : "{{ countryFlags | default: 'null' }}",
+        "recentlyViewed"        : "{{ recentlyViewed | default: 'null' }}",
+        "menuCollectionIcon"    : "{{ menuCollectionIcon | default: 'null' }}",
+        "minicartUpsellProducts": "{{ minicartUpsellProducts | default: 'null' }}",
+        "grid_swatches_script"  : "{{ grid_swatches_script | default: 'null' }}"
+    }
+</script>
+
+<script type="text/javascript">
+    const desktopScriptsObject = JSON.parse(document.getElementById("desktop-only").textContent);
+    // all screens demand
+    const primaryScriptsObject = JSON.parse(document.getElementById("primary--scripts").textContent);
+
+    let isDesktopScriptsLoaded = false;
+    let isPrimaryScriptsLoaded = false;
+
+    const _loadScript = (src) => {
+        return new Promise(function(resolve, reject) {
+            const s = document.createElement('script');
+            let isLoaded = false;
+            s.type = 'text/javascript';
+            s.src = src;
+            s.async = true;
+            s.onerror = function(err) {
+                console.warn('Script failed to load or was blocked:', s);
+                reject(err, s);
+            };
+            s.onload = s.onreadystatechange = function() {
+                if (!isLoaded && (!this.readyState || this.readyState == 'complete')) {
+                    isLoaded = true;
+                    resolve();
+                }
+            };
+
+            const tag = document.getElementsByTagName('script')[0];
+            tag.parentElement.insertBefore(s, tag);
+        })
+    }
+
+    const _initPrimaryScripts = async () => {
+        if (!isPrimaryScriptsLoaded) {
+            const scriptsCached = [];
+            for (const p in primaryScriptsObject) {
+                if (primaryScriptsObject[p] !== 'null') {
+                    await _loadScript(primaryScriptsObject[p]);
+                    scriptsCached.push(primaryScriptsObject[p]);
+                }
+            }
+            // cache script resources
+            if (scriptsCached.length > 0) _addResourcesToCache(scriptsCached);
+
+            isPrimaryScriptsLoaded = true;
+        }
+    }
+
+    const _addResourcesToCache = async (resources) => {
+        if (window.isSecureContext && 'caches' in window) {
+            try {
+                const cacheName = 'primary-scripts-cache';
+                const cacheStorage = await caches.open(cacheName);
+                // Cache the provided resources
+                await cacheStorage.addAll(resources);
+            } catch (error) {
+                console.error('Failed to cache resources:', error);
+            }
+        } else {
+            console.warn('Caching is not available. Ensure the context is secure and Cache API is supported.');
+        }
+    };
+
+    const _initSource =  async () => {
+        _initPrimaryScripts();
+
+        if(window.visualViewport.width < 989) return;
+
+        if (!isDesktopScriptsLoaded) {
+            for (const s in desktopScriptsObject) {
+                if (desktopScriptsObject[s] !== 'null') await _loadScript(desktopScriptsObject[s]);
+            }
+
+            isDesktopScriptsLoaded = true;
+        }
+    }
+    _initSource();
+</script>

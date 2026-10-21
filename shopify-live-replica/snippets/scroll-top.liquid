@@ -1,0 +1,32 @@
+<span class="page-scroll-up hidden" title="Scroll to top">
+    <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+        <use href="#icon-caret" /></use>
+    </svg>
+</span>
+
+<script type="text/javascript" defer="defer">
+    (() => {
+        const btn = document.querySelector('.page-scroll-up'),
+              quickAddAvailable = document.querySelector('.product-quick-add'),
+              scrollTrigger = 700;
+
+        function scrollTop() {
+            let scrollTop = window.scrollY;
+
+            if (scrollTop < scrollTrigger) btn.classList.add('hidden');
+            else btn.classList.remove('hidden');
+
+            /* fix overlapping scroll btn with product-quick-add container */
+            if(quickAddAvailable)
+                btn.style.bottom = quickAdd.offsetHeight + 20 + "px";
+        }
+
+        window.addEventListener('scroll', scrollTop);
+
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            window.scroll({top: 0, behavior: 'smooth'});
+        });
+    })()
+</script>

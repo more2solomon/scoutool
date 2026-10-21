@@ -1,0 +1,66 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+    "name": "t:sections.footer.name",
+    "type": "footer",
+    "sections": {
+        "footer": {
+            "type": "footer",
+            "settings": {
+                "line_height": 1.5,
+                "control_icon_width": 55
+            },
+            "blocks": {
+                "footer-contacts": {
+                    "type": "footer-contacts",
+                    "settings": {
+                        "image_show": true,
+                        "image_width": 274,
+                        "image_align": "bottom",
+                        "color_bg": "#2E2E2E",
+                        "enable_stack_on_mobile": true
+                    }
+                },
+                "menu-1": {
+                    "type": "menu",
+                    "settings": {
+                        "title": "Quick links"
+                    }
+                },
+                "menu-2": {
+                    "type": "menu",
+                    "settings": {
+                        "title": "Quick links"
+                    }
+                },
+                "menu-3": {
+                    "type": "menu",
+                    "settings": {
+                        "title": "Quick links"
+                    }
+                },
+                "menu-4": {
+                    "type": "menu",
+                    "settings": {
+                        "title": "Quick links"
+                    }
+                }
+            },
+            "block_order": [
+                "footer-contacts",
+                "menu-1",
+                "menu-2",
+                "menu-3",
+                "menu-4"
+            ]
+        }
+    },
+    "order": ["footer"]
+}

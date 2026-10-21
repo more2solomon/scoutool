@@ -1,0 +1,19 @@
+{%- comment -%}
+    Render search results title using block settings
+
+    Accepts:
+     - block:      {Object}
+     - blockOrder: {Number}
+{%- endcomment -%}
+
+<div
+    class="search__block search__block--title{% if settings.show_uppercase_heading %} uppercase{% endif %}"
+    style="order: {{ blockOrder }}"
+    {{ block.shopify_attributes }}
+>
+    {%- if search.results.size == 0 -%}
+        <h1 class="text-center">{{- 'general.search.search' | t -}}</h1>
+    {%- else -%}
+        <h1>{{- 'templates.search.title' | t: terms: search.terms | escape -}}</h1>
+    {%- endif -%}
+</div>

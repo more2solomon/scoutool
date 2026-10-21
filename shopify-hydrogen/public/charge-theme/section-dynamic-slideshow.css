@@ -1,0 +1,99 @@
+.dynamic-slideshow-container .card {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        transform: skewX(5deg);
+        transition: all 0.8s ease;
+    }
+
+        .dynamic-slideshow-container .card:hover .card-description,
+        .dynamic-slideshow-container .card:focus .card-description {
+            bottom: 0;
+        }
+
+        .dynamic-slideshow-container .card.with-height__auto .image--wrapper {
+                padding-bottom: 100%;
+            }
+
+        .dynamic-slideshow-container .card > video {
+            -o-object-fit: cover;
+               object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+    .dynamic-slideshow-container .card-description {
+        position: absolute;
+        bottom: 0;
+        top: unset;
+        width: 100%;
+        height: unset;
+        color: var(--color-foreground);
+        background: rgba(var(--color-base-background-1-rgb), .6);
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        transition: all 0.8s ease;
+        word-break: break-all;
+    }
+
+@media screen and (min-width: 768px) {
+        .dynamic-slideshow-container .slider-buttons__container {
+            display: none;
+        }
+
+        .dynamic-slideshow-container .card-description {
+            bottom: -100%;
+        }
+            .dynamic-slideshow-container .items .card {
+                flex-shrink: 1;
+                
+            }
+
+                .dynamic-slideshow-container .items .card:focus-within,
+                .dynamic-slideshow-container .items .card:hover {
+                    width: calc(100% / 0.15);
+                }
+
+                    .dynamic-slideshow-container .items .card:focus-within .card-description, .dynamic-slideshow-container .items .card:hover .card-description {
+                        bottom: 0;
+                    }
+
+                    .dynamic-slideshow-container .items .card:focus-within:before, .dynamic-slideshow-container .items .card:hover:before {
+                        display: none;
+                    }
+
+                .dynamic-slideshow-container .items .card:before {
+                    content: "";
+                    position: absolute;
+                    display: block;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: var(--color-foreground-20);
+                    z-index: 1;
+                }
+                .dynamic-slideshow-container .items .card.with-height__auto {
+                    height: 50vh;
+                }
+
+                    .dynamic-slideshow-container .items .card.with-height__auto .image--wrapper {
+                        display: contents;
+                    }
+
+    .dynamic-slideshow-container ul .card .card-description {
+        bottom: -100%;
+    }
+    .dynamic-slideshow-container ul .card:hover .card-description {
+        bottom: 0;
+    }
+    .dynamic-slideshow-container ul[data-blocks-size="1"] .card::before {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 990px) {
+            .dynamic-slideshow-container ul .items .card {
+                height: 100vh;
+            }
+}

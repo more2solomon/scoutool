@@ -1,0 +1,129 @@
+<div
+    id="main-cart-footer"
+    data-id="{{ section.id }}"
+    {% if cart == empty %}
+        class="is-empty"
+    {% endif %}
+>
+    <div class="cart__footer">
+        <div class="js-contents">
+            <div class="totals">
+                <h2 class="totals__subtotal h3">{{ 'sections.cart.subtotal' | t }}</h2>
+                <p class="totals__subtotal-value">
+                    {% render 'render-price', price: cart.total_price, css_class: 'price--final' %}
+                </p>
+            </div>
+            <div>
+                {%- if cart.cart_level_discount_applications.size > 0 -%}
+                    <ul class="discounts list-unstyled" role="list" aria-label="{{ 'customer.order.discount' | t }}">
+                        {%- for discount in cart.cart_level_discount_applications -%}
+                            <li class="discounts__discount discounts__discount--end">
+                                {%- render 'icon-discount' -%}
+                                {{ discount.title }}
+                                (-{{ discount.total_allocated_amount | money }})
+                            </li>
+                        {%- endfor -%}
+                    </ul>
+                {%- endif -%}
+            </div>
+            {%- if section.settings.show_discount_form %}
+                <discount-code class="cart__discount-code">
+                    <form id="discount-form" class="discount-form">
+                        <input
+                            type="text"
+                            id="discount-code"
+                            placeholder="{{ 'sections.cart.enter_discount_code' | t }}"
+                        >
+                        {%- liquid
+                            assign button_class = 'button button--primary button--small'
+                            if settings.show_button_ring_on_hover
+                                assign button_class = button_class | append: ' border--outline'
+                            endif
+                            if settings.cut_button_corners
+                                assign button_class = button_class | append: ' border--with-cut-corners'
+                            endif
+                        -%}
+                        <button type="submit" class="{{ button_class }}" disabled>
+                            <span>{{ 'sections.cart.discount_apply' | t }}</span>
+                        </button>
+                        <p id="discount-error" class="discount-error hidden" role="alert">
+                            {{ 'sections.cart.discount_error' | t }}
+                        </p>
+                    </form>
+                </discount-code>
+            {% endif -%}
+
+            <small class="tax-note caption-large rte">
+                {%- if cart.taxes_included and shop.shipping_policy.body != blank -%}
+                    {{ 'sections.cart.taxes_included_and_shipping_policy_html' | t: link: shop.shipping_policy.url }}
+                {%- elsif cart.taxes_included -%}
+                    {{ 'sections.cart.taxes_included_but_shipping_at_checkout' | t }}
+                {%- elsif shop.shipping_policy.body != blank -%}
+                    {{ 'sections.cart.taxes_and_shipping_policy_at_checkout_html' | t: link: shop.shipping_policy.url }}
+                {%- else -%}
+                    {{ 'sections.cart.taxes_and_shipping_at_checkout' | t }}
+                {%- endif -%}
+            </small>
+        </div>
+
+        {% if section.settings.show_cart_note %}
+            <cart-note class="cart__note field">
+                <details
+                    {% unless cart.note == null or cart.note == '' %}
+                        open
+                    {% endunless %}
+                >
+                    <summary>
+                        <span id="Cart-note-label">{{ 'sections.cart.note' | t }}</span>
+                        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-caret">
+                            <use href="#icon-caret" /></use>
+                        </svg>
+                    </summary>
+                    <div>
+                        <textarea
+                            class="text-area field__input"
+                            name="note"
+                            id="Cart-note"
+                            placeholder="{{ 'sections.cart.note' | t }}"
+                            aria-labelledby="Cart-note-label"
+                        >{{ cart.note }}</textarea>
+                    </div>
+                </details>
+            </cart-note>
+        {% endif %}
+
+        <div class="cart__ctas">
+            <noscript>
+                <button type="submit" class="cart__update-button button button--primary" form="cart">
+                    {{ 'sections.cart.update' | t }}
+                </button>
+            </noscript>
+            {%- liquid
+                assign button_class = 'cart__checkout-button button button--primary'
+                if settings.show_button_ring_on_hover
+                    assign button_class = button_class | append: ' border--outline'
+                endif
+                if settings.cut_button_corners
+                    assign button_class = button_class | append: ' border--with-cut-corners'
+                endif
+            -%}
+            <button
+                type="submit"
+                class="{{ button_class }}"
+                name="checkout"
+                {% if cart == empty %}
+                    disabled
+                {% endif %}
+                form="cart"
+            >
+                {{ 'sections.cart.checkout' | t }}
+            </button>
+        </div>
+        {%- if additional_checkout_buttons -%}
+            <div class="cart__dynamic-checkout-buttons additional-checkout-buttons">
+                {{ content_for_additional_checkout_buttons }}
+            </div>
+        {%- endif -%}
+        <div id="cart-errors"></div>
+    </div>
+</div>
