@@ -1,6 +1,6 @@
 "use client";
 
-import {useMemo, useState, useSyncExternalStore} from "react";
+import {useEffect, useMemo, useState, useSyncExternalStore} from "react";
 import {useSearchParams, useRouter} from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/Header";
@@ -32,6 +32,34 @@ function CheckoutContent() {
   const directProduct = params.get("product");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<"flutterwave" | "bank">(
+    "flutterwave",
+  );
+  const [rewardPercent, setRewardPercent] = useState(0);
+  const [rewardLabel, setRewardLabel] = useState("");
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/account/dashboard", {cache: "no-store"})
+      .then((response) => response.json())
+      .then(
+        (data: {
+          authenticated?: boolean;
+          loyalty?: {reward?: {percentOff: number; label?: string} | null};
+        }) => {
+          if (!active || !data?.authenticated) return;
+          const reward = data.loyalty?.reward;
+          if (reward?.percentOff) {
+            setRewardPercent(reward.percentOff);
+            setRewardLabel(reward.label || "");
+          }
+        },
+      )
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const cartSnapshot = useSyncExternalStore(
     subscribeToCart,
@@ -56,6 +84,16 @@ function CheckoutContent() {
         0,
       ),
     [cart],
+  );
+
+  const discount = useMemo(
+    () => Math.round(subtotal * (rewardPercent / 100) * 100) / 100,
+    [subtotal, rewardPercent],
+  );
+
+  const total = useMemo(
+    () => Math.round((subtotal - discount) * 100) / 100,
+    [subtotal, discount],
   );
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -95,6 +133,7 @@ function CheckoutContent() {
           country: form.get("country"),
           phone: form.get("phone"),
           lines,
+          paymentMethod,
         }),
       });
 
@@ -109,6 +148,26 @@ function CheckoutContent() {
         window.dispatchEvent(new Event("vj-cart-updated"));
       } catch {
         // storage failures should not block checkout
+      }
+
+      if (paymentMethod === "flutterwave" && result.intent) {
+        const paymentResponse = await fetch("/api/flutterwave/initialize", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({
+            intent: result.intent,
+            name: `${form.get("firstName") || ""} ${form.get("lastName") || ""}`.trim(),
+            phone: form.get("phone") || "",
+          }),
+        });
+
+        const payment = await paymentResponse.json();
+        if (!paymentResponse.ok || !payment.link) {
+          throw new Error(payment.error || "Unable to start the payment");
+        }
+
+        window.location.href = payment.link;
+        return;
       }
 
       router.push(
@@ -206,22 +265,71 @@ function CheckoutContent() {
 
             <h2>Payment</h2>
 
-            <div className="payment-placeholder">
-              <div className="payment-placeholder-icon">G</div>
+            {rewardPercent > 0 && (
+              <div className="checkout-reward">
+                <strong>{rewardPercent}% loyalty reward applied</strong>
+                <span>
+                  {rewardLabel || "Applied automatically when you place this order."}
+                </span>
+              </div>
+            )}
 
-              <h3>Pay by bank transfer</h3>
+            <div className="payment-options">
+              <label
+                className={
+                  paymentMethod === "flutterwave"
+                    ? "payment-option is-active"
+                    : "payment-option"
+                }
+              >
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="flutterwave"
+                  checked={paymentMethod === "flutterwave"}
+                  onChange={() => setPaymentMethod("flutterwave")}
+                />
+                <span className="payment-option-icon">F</span>
+                <span className="payment-option-copy">
+                  <strong>Card, mobile money or bank transfer</strong>
+                  <small>
+                    Pay securely with Flutterwave. You will be redirected to
+                    complete your payment and brought straight back.
+                  </small>
+                </span>
+              </label>
 
-              <p>
-                Place your order and you will receive our Grey bank account
-                details plus a unique payment reference. Send the exact amount
-                with any bank transfer — the reference is how your payment is
-                matched to your order.
-              </p>
-
-              <p className="payment-small">
-                Your order will remain on Velvet Journal Co. You will not be redirected to Shopify.
-              </p>
+              <label
+                className={
+                  paymentMethod === "bank"
+                    ? "payment-option is-active"
+                    : "payment-option"
+                }
+              >
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="bank"
+                  checked={paymentMethod === "bank"}
+                  onChange={() => setPaymentMethod("bank")}
+                />
+                <span className="payment-option-icon">G</span>
+                <span className="payment-option-copy">
+                  <strong>Pay by direct bank transfer</strong>
+                  <small>
+                    Place your order and you will receive our bank account
+                    details plus a unique payment reference.
+                  </small>
+                </span>
+              </label>
             </div>
+
+            {paymentMethod === "bank" && (
+              <p className="payment-small">
+                Your order will remain on Velvet Journal Co. You will not be
+                redirected to Shopify.
+              </p>
+            )}
 
             {error && <p className="checkout-error">{error}</p>}
 
@@ -266,6 +374,13 @@ function CheckoutContent() {
                 <strong>USD {subtotal.toFixed(2)}</strong>
               </div>
 
+              {rewardPercent > 0 && (
+                <div className="checkout-summary-line checkout-summary-discount">
+                  <span>Loyalty reward ({rewardPercent}%)</span>
+                  <strong>−USD {discount.toFixed(2)}</strong>
+                </div>
+              )}
+
               <div className="checkout-summary-line">
                 <span>Shipping</span>
                 <span>Calculated later</span>
@@ -273,7 +388,7 @@ function CheckoutContent() {
 
               <div className="checkout-summary-total">
                 <strong>Total</strong>
-                <strong>USD {subtotal.toFixed(2)}</strong>
+                <strong>USD {total.toFixed(2)}</strong>
               </div>
             </>
           )}

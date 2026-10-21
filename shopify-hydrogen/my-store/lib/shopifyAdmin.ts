@@ -154,14 +154,25 @@ type AdminOrderNode = {
 };
 
 function buildOrderInput(options: {
-  lineItems: Array<{variantId: string; quantity: number}>;
+  lineItems: Array<{variantId: string; quantity: number; unitPrice?: number}>;
   email: string;
   address: OrderAddress;
   reference: string;
   includeProvince: boolean;
   currency: string;
+  discountPercent?: number;
+  discountLabel?: string;
 }): Record<string, unknown> {
-  const {lineItems, email, address, reference, includeProvince, currency} = options;
+  const {
+    lineItems,
+    email,
+    address,
+    reference,
+    includeProvince,
+    currency,
+    discountPercent = 0,
+    discountLabel,
+  } = options;
 
   const shippingAddress: Record<string, unknown> = {
     firstName: address.firstName,
@@ -175,14 +186,43 @@ function buildOrderInput(options: {
   if (includeProvince && address.state) shippingAddress.provinceCode = address.state;
   if (address.phone) shippingAddress.phone = address.phone;
 
+  const percent = Math.min(90, Math.max(0, Number(discountPercent) || 0));
+
+  const orderLineItems = lineItems.map((line) => {
+    const item: Record<string, unknown> = {
+      variantId: line.variantId,
+      quantity: line.quantity,
+    };
+
+    if (percent > 0 && Number(line.unitPrice) > 0) {
+      const discounted = Math.round(
+        Number(line.unitPrice) * (1 - percent / 100) * 100,
+      ) / 100;
+      item.priceSet = {
+        shopMoney: {
+          amount: discounted.toFixed(2),
+          currencyCode: currency,
+        },
+      };
+    }
+
+    return item;
+  });
+
+  const tags = ["velvet-journal", `ref-${reference}`];
+  if (percent > 0) tags.push(`loyalty-${percent}pct`);
+
+  const notes = [`Velvet Journal order — payment reference ${reference}`];
+  if (percent > 0 && discountLabel) notes.push(discountLabel);
+
   return {
     currency,
     email,
     financialStatus: "PENDING",
     processedAt: new Date().toISOString(),
-    note: `Velvet Journal order — payment reference ${reference}`,
-    tags: ["velvet-journal", `ref-${reference}`],
-    lineItems,
+    note: notes.join(" · "),
+    tags,
+    lineItems: orderLineItems,
     shippingAddress,
     customer: {
       toUpsert: {
@@ -248,12 +288,14 @@ type DraftCompletePayload = {
 };
 
 export async function createPendingOrder(options: {
-  lineItems: Array<{variantId: string; quantity: number}>;
+  lineItems: Array<{variantId: string; quantity: number; unitPrice?: number}>;
   email: string;
   address: OrderAddress;
   reference: string;
   total: number;
   currency: string;
+  discountPercent?: number;
+  discountLabel?: string;
 }): Promise<CreatedOrder> {
   const input = buildOrderInput({...options, includeProvince: true});
 

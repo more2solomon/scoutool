@@ -29,8 +29,13 @@ type PaymentStatus = {
 function SuccessContent() {
   const search = useSearchParams();
   const reference = search.get("reference") || "";
+  const provider = search.get("provider") || "";
   const [payment, setPayment] = useState<PaymentStatus | null>(null);
   const [checking, setChecking] = useState(false);
+  const [flutterwave, setFlutterwave] = useState<{
+    status: string;
+    error?: string;
+  } | null>(null);
   const attempts = useRef(0);
 
   const check = useCallback(
@@ -69,6 +74,64 @@ function SuccessContent() {
     };
   }, [reference, check]);
 
+  useEffect(() => {
+    if (provider !== "flutterwave") return;
+
+    let stored: {intent?: string; reference?: string} | null = null;
+    try {
+      stored = JSON.parse(localStorage.getItem("vj_last_order") || "null");
+    } catch {
+      stored = null;
+    }
+
+    const intent = stored?.intent || "";
+    const txRef = search.get("tx_ref") || stored?.reference || "";
+    let settled = false;
+
+    const verify = async () => {
+      if (settled) return;
+      const transactionId = search.get("transaction_id") || "";
+      if (!transactionId) {
+        setFlutterwave({
+          status: "unknown",
+          error: "No transaction was returned",
+        });
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `/api/flutterwave/verify?transaction_id=${encodeURIComponent(
+            transactionId,
+          )}&tx_ref=${encodeURIComponent(txRef)}&intent=${encodeURIComponent(intent)}`,
+        );
+        const data = await response.json();
+        setFlutterwave(data);
+
+        if (data?.status === "paid") {
+          settled = true;
+          setPayment({
+            status: "paid",
+            reference: stored?.reference || reference,
+          });
+        }
+      } catch {
+        setFlutterwave({status: "unknown"});
+      }
+    };
+
+    const initial = setTimeout(() => {
+      void verify();
+    }, 0);
+    const interval = setInterval(() => {
+      void verify();
+    }, 20000);
+    return () => {
+      clearTimeout(initial);
+      clearInterval(interval);
+    };
+  }, [provider, search, reference]);
+
   const paid = payment?.status === "paid";
   const account = payment?.account;
 
@@ -92,7 +155,44 @@ function SuccessContent() {
           </>
         )}
 
-        {reference && !paid && (
+        {reference && !paid && provider === "flutterwave" && (
+          <>
+            <h1>
+              {flutterwave?.status === "pending"
+                ? "Payment not completed yet"
+                : "Confirming your payment"}
+            </h1>
+            <p>
+              Your order <strong>{payment?.orderName || reference}</strong> is
+              reserved. We are confirming your Flutterwave transaction — this
+              usually takes a few seconds.
+            </p>
+
+            <div className="payment-instructions">
+              <div className="payment-instructions-row">
+                <span>Reference</span>
+                <strong>{reference}</strong>
+              </div>
+              <div className="payment-instructions-row">
+                <span>Method</span>
+                <strong>Flutterwave — card, mobile money or bank transfer</strong>
+              </div>
+            </div>
+
+            {flutterwave?.error && <p className="checkout-error">{flutterwave.error}</p>}
+
+            <p className="payment-small">
+              If you closed the payment window, open the link in your Flutterwave
+              receipt email or contact us with your reference.
+            </p>
+
+            <Link className="charge-button" href="/account">
+              View your account
+            </Link>
+          </>
+        )}
+
+        {reference && !paid && provider !== "flutterwave" && (
           <>
             <h1>Complete your payment</h1>
             <p>
