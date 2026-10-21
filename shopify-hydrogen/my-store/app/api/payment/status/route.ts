@@ -18,7 +18,22 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({error: "reference is required"}, {status: 400});
     }
 
-    const order = await findOrderByReference(reference);
+    let order: Awaited<ReturnType<typeof findOrderByReference>> = null;
+    try {
+      order = await findOrderByReference(reference);
+    } catch (error) {
+      // The Admin token may not carry read_orders. Degrade gracefully so the
+      // customer still sees the payment instructions instead of an error.
+      return NextResponse.json({
+        status: "unknown",
+        reference,
+        warning:
+          error instanceof Error
+            ? error.message
+            : "Order status is not available for this reference",
+      });
+    }
+
     if (!order) {
       return NextResponse.json({status: "unknown", reference});
     }
