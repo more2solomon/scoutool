@@ -11,3 +11,4 @@ desktop/dist/
 .vercel
 .env*
 !.env.example
+.aider*

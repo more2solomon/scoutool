@@ -19,6 +19,7 @@ export default defineConfig({
     // without inlining assets as base64:
     assetsInlineLimit: 0,
   },
+  envDir: false,
   ssr: {
     optimizeDeps: {
       /**

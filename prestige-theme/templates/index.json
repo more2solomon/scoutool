@@ -1,0 +1,454 @@
+{
+  "sections": {
+    "slideshow": {
+      "type": "slideshow",
+      "blocks": {
+        "slide_1": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Vintage_Floral_Pattern_Spiral_Notebook___Ruled_Journal.jpg",
+            "mobile_image": "shopify://shop_images/Vintage_Floral_Pattern_Spiral_Notebook___Ruled_Journal.jpg",
+            "subheading": "Velvet Journal Co",
+            "title": "Capture Your Thoughts, Create Your Future",
+            "mobile_text_position": "place-self-center text-center",
+            "desktop_text_position": "sm:place-self-center sm:text-center",
+            "content_max_width": 700,
+            "button_1_text": "Shop Journals",
+            "button_1_link": "shopify://collections/all",
+            "button_1_style": "solid",
+            "button_2_text": "",
+            "button_2_link": "",
+            "button_2_style": "outline",
+            "background_opacity": 40,
+            "text_color": "#ffffff",
+            "gradient_overlay": "linear-gradient(0deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.15) 100%)"
+          }
+        },
+        "slide_2": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/desk_set_up.jpg",
+            "mobile_image": "shopify://shop_images/desk_set_up.jpg",
+            "subheading": "Goal Setting",
+            "title": "Design Your Best Life, One Page at a Time",
+            "mobile_text_position": "place-self-center text-center",
+            "desktop_text_position": "sm:place-self-center sm:text-center",
+            "content_max_width": 700,
+            "button_1_text": "Shop Planners",
+            "button_1_link": "shopify://collections/all",
+            "button_1_style": "solid",
+            "button_2_text": "",
+            "button_2_link": "",
+            "button_2_style": "outline",
+            "background_opacity": 40,
+            "text_color": "#ffffff",
+            "gradient_overlay": "linear-gradient(0deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.15) 100%)"
+          }
+        }
+      },
+      "block_order": [
+        "slide_1",
+        "slide_2"
+      ],
+      "settings": {
+        "allow_transparent_header": true,
+        "show_next_section_button": true,
+        "media_size": "fill",
+        "show_initial_transition": true,
+        "autoplay": true,
+        "autoplay_pause_on_video": true,
+        "cycle_speed": 6,
+        "background": "#1a1a1a",
+        "controls_color": "#ffffff"
+      }
+    },
+    "benefits": {
+      "type": "text-with-icons",
+      "blocks": {
+        "benefit_1": {
+          "type": "item",
+          "settings": {
+            "icon": "picto-delivery-truck",
+            "title": "Free Shipping",
+            "content": "<p>Free delivery on orders over $100. Ships in 3-7 business days.</p>"
+          }
+        },
+        "benefit_2": {
+          "type": "item",
+          "settings": {
+            "icon": "picto-customer-support",
+            "title": "24/7 Support",
+            "content": "<p>Fast, professional help whenever you need it</p>"
+          }
+        },
+        "benefit_3": {
+          "type": "item",
+          "settings": {
+            "icon": "picto-calendar",
+            "title": "Choose Delivery Date",
+            "content": "<p>Flexible delivery dates on every order</p>"
+          }
+        },
+        "benefit_4": {
+          "type": "item",
+          "settings": {
+            "icon": "picto-return",
+            "title": "14-Day Returns",
+            "content": "<p>Return within 14 days of purchase for a full refund</p>"
+          }
+        }
+      },
+      "block_order": [
+        "benefit_1",
+        "benefit_2",
+        "benefit_3",
+        "benefit_4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "separate_section_with_border": true,
+        "text_alignment": "center",
+        "stack_on_mobile": true
+      }
+    },
+    "featured_products": {
+      "type": "featured-collections",
+      "blocks": {
+        "all_products": {
+          "type": "collection",
+          "settings": {
+            "collection": "all",
+            "products_count": 8,
+            "title": "All Products",
+            "link_url": "shopify://collections/all",
+            "link_text": "View All"
+          }
+        }
+      },
+      "block_order": [
+        "all_products"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "separate_section_with_border": true,
+        "hide_product_information": false,
+        "stack_products": false,
+        "horizontal_spacing_factor": 1,
+        "vertical_spacing_factor": 1,
+        "subheading": "Our Collection",
+        "hide_collection_title": false
+      }
+    },
+    "about": {
+      "type": "image-with-text",
+      "blocks": {
+        "about_subheading": {
+          "type": "subheading",
+          "settings": {
+            "text": "Our Story"
+          }
+        },
+        "about_heading": {
+          "type": "heading",
+          "settings": {
+            "text": "Where Every Page Inspires Growth",
+            "heading_tag": "h2"
+          }
+        },
+        "about_content": {
+          "type": "richtext",
+          "settings": {
+            "content": "<p>At Velvet Journal Co, we create thoughtfully designed journals and planners that help you stay organized, set meaningful goals, and capture life as it happens. Every page is made to slow you down, clear your mind, and keep what matters close.</p>"
+          }
+        },
+        "about_button": {
+          "type": "button",
+          "settings": {
+            "style": "solid",
+            "text": "Shop Journals",
+            "url": "shopify://collections/all"
+          }
+        }
+      },
+      "block_order": [
+        "about_subheading",
+        "about_heading",
+        "about_content",
+        "about_button"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "separate_section_with_border": true,
+        "image": "shopify://shop_images/Journal_intro_page.jpg",
+        "image_position": "end",
+        "content_width": "md",
+        "reveal_on_scroll": true,
+        "remove_vertical_spacing": false
+      }
+    },
+    "story": {
+      "type": "rich-text",
+      "blocks": {
+        "story_heading": {
+          "type": "heading",
+          "settings": {
+            "text": "Designed for Intentional Living",
+            "heading_tag": "h2"
+          }
+        },
+        "story_content": {
+          "type": "richtext",
+          "settings": {
+            "content": "<p>We believe journaling is more than putting words on paper — it is a powerful tool for reflection, creativity, and personal growth. That is why every Velvet Journal Co product is designed around one idea: make it easy for you to sit down, slow down, and write down what matters. Beautiful paper, considered layouts, and prompts that keep you moving forward.</p><p>Whether you are building gratitude habits, working towards your goals, or simply making space for your thoughts, there is a journal for that. Start with the collection that meets you where you are.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "story_heading",
+        "story_content"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "separate_section_with_border": true,
+        "content_width": "md",
+        "text_position": "center",
+        "remove_vertical_spacing": false
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "question_1": {
+          "type": "question",
+          "settings": {
+            "question": "How long does delivery take?",
+            "answer": "<p>Orders are delivered within 3-7 business days. You will receive a tracking link by email as soon as your parcel leaves our studio.</p>"
+          }
+        },
+        "question_2": {
+          "type": "question",
+          "settings": {
+            "question": "Can I return a journal or planner?",
+            "answer": "<p>Yes. You have 14 days to return unused items in their original packaging. Send us a message through our contact page and we will arrange the return for you.</p>"
+          }
+        },
+        "question_3": {
+          "type": "question",
+          "settings": {
+            "question": "What kind of paper do you use?",
+            "answer": "<p>Our journals are printed on smooth, fountain-pen friendly paper that resists bleeding and keeps fine detail crisp, so you can write with any pen you prefer.</p>"
+          }
+        },
+        "question_4": {
+          "type": "question",
+          "settings": {
+            "question": "Can I choose my delivery date?",
+            "answer": "<p>Yes. At checkout you can select the delivery date that suits you best, and we will make sure your order arrives on the day you choose.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "question_1",
+        "question_2",
+        "question_3",
+        "question_4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "separate_section_with_border": true,
+        "show_categories": false,
+        "subheading": "Good to know",
+        "title": "Frequently asked questions"
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "blocks": {
+        "testimonial_1": {
+          "type": "testimonial",
+          "settings": {
+            "content": "<p>I absolutely love my Velvet Journal! The paper quality is amazing and the prompts really help me reflect on my day.</p>",
+            "author": "Sarah M.",
+            "role": "Daily Journal User"
+          }
+        },
+        "testimonial_2": {
+          "type": "testimonial",
+          "settings": {
+            "content": "<p>The goal setting planner has transformed how I approach my objectives. Beautiful design and practical layout.</p>",
+            "author": "James K.",
+            "role": "Entrepreneur"
+          }
+        },
+        "testimonial_3": {
+          "type": "testimonial",
+          "settings": {
+            "content": "<p>Best journal I've ever used. The attention to detail is incredible, from the paper to the binding.</p>",
+            "author": "Emily R.",
+            "role": "Writer"
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_1",
+        "testimonial_2",
+        "testimonial_3"
+      ],
+      "settings": {
+        "color_scheme": "scheme-2",
+        "separate_section_with_border": true,
+        "heading": "What Our Customers Say",
+        "subheading": "Join thousands of happy journalers"
+      }
+    },
+    "logo_list": {
+      "type": "logo-list",
+      "blocks": {
+        "logo_1": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/grace-newton.png"
+          }
+        },
+        "logo_2": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/grace-newton.png"
+          }
+        },
+        "logo_3": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/grace-newton.png"
+          }
+        },
+        "logo_4": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/grace-newton.png"
+          }
+        }
+      },
+      "block_order": [
+        "logo_1",
+        "logo_2",
+        "logo_3",
+        "logo_4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "separate_section_with_border": true,
+        "heading": "As Featured In"
+      }
+    },
+    "about_second": {
+      "type": "image-with-text",
+      "blocks": {
+        "about2_subheading": {
+          "type": "subheading",
+          "settings": {
+            "text": "Our Philosophy"
+          }
+        },
+        "about2_heading": {
+          "type": "heading",
+          "settings": {
+            "text": "Quality Meets Purpose",
+            "heading_tag": "h2"
+          }
+        },
+        "about2_content": {
+          "type": "richtext",
+          "settings": {
+            "content": "<p>Every Velvet Journal Co product is crafted with intention. We source premium materials, design thoughtful layouts, and create prompts that inspire meaningful reflection. Our commitment to quality means your journal will be a trusted companion on your journey of personal growth.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "about2_subheading",
+        "about2_heading",
+        "about2_content"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "separate_section_with_border": true,
+        "image": "shopify://shop_images/planners.png",
+        "image_position": "start",
+        "content_width": "md",
+        "reveal_on_scroll": true,
+        "remove_vertical_spacing": false
+      }
+    },
+    "coming_soon": {
+      "type": "image-with-text",
+      "blocks": {
+        "coming_soon_heading": {
+          "type": "heading",
+          "settings": {
+            "text": "Coming Soon",
+            "heading_tag": "h2"
+          }
+        },
+        "coming_soon_subheading": {
+          "type": "subheading",
+          "settings": {
+            "text": "New Collection"
+          }
+        },
+        "coming_soon_content": {
+          "type": "richtext",
+          "settings": {
+            "content": "<p>Be the first to experience our latest journal collection. Sign up for our newsletter to get notified when it launches.</p>"
+          }
+        },
+        "coming_soon_button": {
+          "type": "button",
+          "settings": {
+            "style": "solid",
+            "text": "Get Notified",
+            "url": "#newsletter"
+          }
+        }
+      },
+      "block_order": [
+        "coming_soon_heading",
+        "coming_soon_subheading",
+        "coming_soon_content",
+        "coming_soon_button"
+      ],
+      "settings": {
+        "color_scheme": "scheme-2",
+        "separate_section_with_border": true,
+        "image": "shopify://shop_images/journal2.png",
+        "image_position": "end",
+        "content_width": "md",
+        "reveal_on_scroll": true,
+        "remove_vertical_spacing": false
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "color_scheme": "scheme-3",
+        "separate_section_with_border": true,
+        "subheading": "Join Our Community",
+        "title": "Subscribe to Our Newsletter",
+        "content": "<p>Be the first to hear about new journals, planners and offers.</p>",
+        "button_text": "Subscribe"
+      }
+    }
+  },
+  "order": [
+    "slideshow",
+    "benefits",
+    "featured_products",
+    "about",
+    "story",
+    "about_second",
+    "testimonials",
+    "logo_list",
+    "faq",
+    "coming_soon",
+    "newsletter"
+  ]
+}

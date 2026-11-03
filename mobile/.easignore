@@ -1,0 +1,14 @@
+node_modules
+.git
+.next
+.env.local
+*.zip
+*.png
+*.jpg
+*.jfif
+shopify-*
+velvet-journal-*
+prestige-theme
+scoutool-batch
+SWE-agent
+bin

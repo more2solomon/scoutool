@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Scout Mail",
-  description: "Scoutool queue dashboard",
+  title: "Scoutool Batch",
+  description: "Scoutool-style mail link generator and batch launcher",
   verification: {
     google: "oOcGx7wm08vZ2eTeKoLbZaM9bqd_4VMl2tfFPJkGYhU",
   },

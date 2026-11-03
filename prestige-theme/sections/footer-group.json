@@ -1,0 +1,98 @@
+{
+  "type": "footer",
+  "name": "Footer group",
+  "sections": {
+    "benefits": {
+      "type": "text-with-icons",
+      "blocks": {
+        "benefit_1": {
+          "type": "item",
+          "settings": {
+            "icon": "picto-delivery-truck",
+            "title": "Free delivery worldwide",
+            "content": "<p>Free shipping on orders over $100</p>"
+          }
+        },
+        "benefit_2": {
+          "type": "item",
+          "settings": {
+            "icon": "picto-return",
+            "title": "Satisfied or refunded",
+            "content": "<p>30 days to change your mind</p>"
+          }
+        },
+        "benefit_3": {
+          "type": "item",
+          "settings": {
+            "icon": "picto-customer-support",
+            "title": "Top-notch support",
+            "content": "<p>Real people, ready to help</p>"
+          }
+        },
+        "benefit_4": {
+          "type": "item",
+          "settings": {
+            "icon": "picto-lock",
+            "title": "Secure payments",
+            "content": "<p>Encrypted checkout, every time</p>"
+          }
+        }
+      },
+      "block_order": [
+        "benefit_1",
+        "benefit_2",
+        "benefit_3",
+        "benefit_4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "separate_section_with_border": true,
+        "text_alignment": "center",
+        "stack_on_mobile": true
+      }
+    },
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "text": {
+          "type": "text",
+          "settings": {
+            "title": "Velvet Journal Co",
+            "content": "<p>Thoughtfully designed journals and planners for intentional living.</p><p>Email us at <a href=\"mailto:journals@velvetjournalco.store\">journals@velvetjournalco.store</a></p>"
+          }
+        },
+        "links": {
+          "type": "links",
+          "settings": {
+            "menu": "footer",
+            "show_menu_title": true,
+            "menu_title": "Shop"
+          }
+        },
+        "newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "title": "Join the community",
+            "content": "<p>New journals, planners and offers, straight to your inbox.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "text",
+        "links",
+        "newsletter"
+      ],
+      "settings": {
+        "color_scheme": "scheme-3",
+        "separate_section_with_border": true,
+        "show_social_media": true,
+        "show_payment_icons": true,
+        "show_powered_by_shopify": true
+      }
+    }
+  },
+  "order": [
+    "benefits",
+    "footer"
+  ]
+}

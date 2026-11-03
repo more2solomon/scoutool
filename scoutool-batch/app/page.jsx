@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 
 const DB_NAME = "scoutool-batch-db";
 const DB_VERSION = 2;
@@ -664,7 +665,7 @@ Scoutool`
       const storeHeader =
         firstRow.find(
           (header) =>
-            /store|company|business/i.test(
+            /store|company|business|domain/i.test(
               header
             )
         );
@@ -1055,6 +1056,14 @@ Scoutool`
           </div>
         </div>
 
+        <nav className="nav">
+          <Link href="/" className="active">Generator</Link>
+          <Link href="/drafts">Drafts</Link>
+          <Link href="/automation">Automation</Link>
+          <Link href="/scraper">Scraper</Link>
+          <Link href="/analytics">Analytics</Link>
+        </nav>
+
         <div className="liveStatus">
           {status}
         </div>
@@ -1194,7 +1203,7 @@ Scoutool`
             }
           >
             <option value="">
-              Select store column
+              Select store/domain column
             </option>
 
             {headers.map(
@@ -1826,9 +1835,14 @@ Scoutool`
       )}
 
       <footer>
-        Scoutool Batch · generated
-        messages and links stay in
-        this browser.
+        <div className="footerLinks">
+          <Link href="/terms">Terms of Service</Link>
+          <Link href="/privacy">Privacy Policy</Link>
+          <Link href="/policies">Policies</Link>
+        </div>
+        <div className="footerText">
+          Scoutool Batch · generated messages and links stay in this browser.
+        </div>
       </footer>
     </main>
   );

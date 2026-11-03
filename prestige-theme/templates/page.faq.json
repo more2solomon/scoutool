@@ -1,0 +1,61 @@
+{
+  "sections": {
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "question_1": {
+          "type": "question",
+          "settings": {
+            "question": "How long does delivery take?",
+            "answer": "<p>Orders are dispatched within 1-2 business days and delivered worldwide. You will receive a tracking link by email as soon as your parcel leaves our studio.</p>"
+          }
+        },
+        "question_2": {
+          "type": "question",
+          "settings": {
+            "question": "Can I return a journal or planner?",
+            "answer": "<p>Yes. You have 30 days to return unused items in their original packaging. Send us a message through our contact page and we will arrange the return for you.</p>"
+          }
+        },
+        "question_3": {
+          "type": "question",
+          "settings": {
+            "question": "What kind of paper do you use?",
+            "answer": "<p>Our journals are printed on smooth, fountain-pen friendly paper that resists bleeding and keeps fine detail crisp, so you can write with any pen you prefer.</p>"
+          }
+        },
+        "question_4": {
+          "type": "question",
+          "settings": {
+            "question": "Can I choose my delivery date?",
+            "answer": "<p>Yes. At checkout you can select the delivery date that suits you best, and we will make sure your order arrives on the day you choose.</p>"
+          }
+        },
+        "question_5": {
+          "type": "question",
+          "settings": {
+            "question": "Do you ship internationally?",
+            "answer": "<p>We ship worldwide. Delivery times and shipping costs are calculated at checkout based on your location.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "question_1",
+        "question_2",
+        "question_3",
+        "question_4",
+        "question_5"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "separate_section_with_border": true,
+        "show_categories": false,
+        "subheading": "Good to know",
+        "title": "Frequently asked questions"
+      }
+    }
+  },
+  "order": [
+    "faq"
+  ]
+}

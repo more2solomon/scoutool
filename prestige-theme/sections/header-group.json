@@ -1,0 +1,74 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "blocks": {
+        "message_1": {
+          "type": "message",
+          "settings": {
+            "text": "Free shipping on orders over $100"
+          }
+        },
+        "message_2": {
+          "type": "message",
+          "settings": {
+            "text": "14-day returns on every order"
+          }
+        },
+        "message_3": {
+          "type": "message",
+          "settings": {
+            "text": "Ships in 3-7 business days"
+          }
+        }
+      },
+      "block_order": [
+        "message_1",
+        "message_2",
+        "message_3"
+      ],
+      "settings": {
+        "color_scheme": "scheme-3",
+        "enable_sticky": true,
+        "autoplay": true,
+        "cycle_speed": 5,
+        "desktop_font_size": 12,
+        "mobile_font_size": 11
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "enable_sticky": true,
+        "hide_on_scroll": false,
+        "show_separation_border": true,
+        "reduce_padding": true,
+        "logo": "shopify://shop_images/ChatGPT_Image_Jun_5_2026_06_21_36_AM.png",
+        "logo_max_width": 130,
+        "logo_mobile_max_width": 90,
+        "menu": "main-menu",
+        "menu_open_trigger": "hover",
+        "menu_text_font": "heading",
+        "enable_search": true,
+        "sidebar_color_scheme": "scheme-2",
+        "sidebar_text_font": "heading",
+        "sidebar_show_dividers": true,
+        "sidebar_open_second_level_menus": true,
+        "layout": "logo_center_navigation_inline",
+        "show_icons": true,
+        "show_country_selector": false,
+        "show_country_name": false,
+        "show_country_flag": true,
+        "show_locale_selector": false,
+        "transparent_header_text_color": "#ffffff"
+      }
+    }
+  },
+  "order": [
+    "announcement-bar",
+    "header"
+  ]
+}
